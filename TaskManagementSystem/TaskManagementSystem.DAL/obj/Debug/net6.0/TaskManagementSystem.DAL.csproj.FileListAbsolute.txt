@@ -1,0 +1,17 @@
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.DAL\bin\Debug\net6.0\TaskManagementSystem.DAL.deps.json
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.DAL\bin\Debug\net6.0\TaskManagementSystem.DAL.runtimeconfig.json
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.DAL\bin\Debug\net6.0\TaskManagementSystem.DAL.dll
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.DAL\bin\Debug\net6.0\TaskManagementSystem.DAL.pdb
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.DAL\bin\Debug\net6.0\TaskManagementSystem.Common.dll
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.DAL\bin\Debug\net6.0\TaskManagementSystem.Common.pdb
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.DAL\obj\Debug\net6.0\TaskManagementSystem.DAL.csproj.AssemblyReference.cache
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.DAL\obj\Debug\net6.0\TaskManagementSystem.DAL.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.DAL\obj\Debug\net6.0\TaskManagementSystem.DAL.AssemblyInfoInputs.cache
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.DAL\obj\Debug\net6.0\TaskManagementSystem.DAL.AssemblyInfo.cs
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.DAL\obj\Debug\net6.0\TaskManagementSystem.DAL.csproj.CoreCompileInputs.cache
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.DAL\obj\Debug\net6.0\TaskManagementSystem.DAL.csproj.CopyComplete
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.DAL\obj\Debug\net6.0\TaskManagementSystem.DAL.dll
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.DAL\obj\Debug\net6.0\refint\TaskManagementSystem.DAL.dll
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.DAL\obj\Debug\net6.0\TaskManagementSystem.DAL.pdb
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.DAL\obj\Debug\net6.0\TaskManagementSystem.DAL.genruntimeconfig.cache
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.DAL\obj\Debug\net6.0\ref\TaskManagementSystem.DAL.dll

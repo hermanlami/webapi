@@ -1,0 +1,14 @@
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.Common\bin\Debug\net6.0\TaskManagementSystem.Common.deps.json
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.Common\bin\Debug\net6.0\TaskManagementSystem.Common.runtimeconfig.json
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.Common\bin\Debug\net6.0\TaskManagementSystem.Common.dll
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.Common\bin\Debug\net6.0\TaskManagementSystem.Common.pdb
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.Common\obj\Debug\net6.0\TaskManagementSystem.Common.csproj.AssemblyReference.cache
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.Common\obj\Debug\net6.0\TaskManagementSystem.Common.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.Common\obj\Debug\net6.0\TaskManagementSystem.Common.AssemblyInfoInputs.cache
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.Common\obj\Debug\net6.0\TaskManagementSystem.Common.AssemblyInfo.cs
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.Common\obj\Debug\net6.0\TaskManagementSystem.Common.csproj.CoreCompileInputs.cache
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.Common\obj\Debug\net6.0\TaskManagementSystem.Common.dll
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.Common\obj\Debug\net6.0\refint\TaskManagementSystem.Common.dll
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.Common\obj\Debug\net6.0\TaskManagementSystem.Common.pdb
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.Common\obj\Debug\net6.0\TaskManagementSystem.Common.genruntimeconfig.cache
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.Common\obj\Debug\net6.0\ref\TaskManagementSystem.Common.dll
