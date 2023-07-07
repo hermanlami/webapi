@@ -34,12 +34,12 @@ namespace TaskManagementSystem.DAL.Repositories
 
         public async Task<Project> GetProjectById(int id)
         {
-            return await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
+            return await _dbSet.Where(x => x.IsDeleted != true).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<List<Project>> GetProjects()
         {
-            return await _dbSet.ToListAsync();
+            return await _dbSet.Where(x => x.IsDeleted != true).ToListAsync();
         }
 
         public async Task<Project> UpdateProject(Project entity)

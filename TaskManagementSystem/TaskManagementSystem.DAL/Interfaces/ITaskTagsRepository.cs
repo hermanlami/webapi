@@ -7,7 +7,7 @@ using TaskManagementSystem.DAL.Entities;
 
 namespace TaskManagementSystem.DAL.Interfaces
 {
-    internal interface ITaskTagsRepository
+    public interface ITaskTagsRepository
     {
         Task<TaskTag> AddTaskTag(TaskTag entity);
         Task<List<TaskTag>> GetTaskTags();

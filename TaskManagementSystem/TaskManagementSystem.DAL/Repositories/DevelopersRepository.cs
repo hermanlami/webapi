@@ -32,14 +32,20 @@ namespace TaskManagementSystem.DAL.Repositories
             return entity;
         }
 
+        public async Task<Developer> GetDeveloperByEmail(string email)
+        {
+            return (Developer)await _context.People.Where(x=>x.IsDeleted!=true).FirstOrDefaultAsync(x => x.Email == email);
+
+        }
+
         public async Task<Developer> GetDeveloperById(int id)
         {
-            return (Developer)await _context.People.FirstOrDefaultAsync(x => x.Id == id);
+            return (Developer)await _context.People.Where(x => x.IsDeleted != true).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<List<Developer>> GetDevelopers()
         {
-            return await _context.People.Where(x=>x.PersonType==PersonType.Developer).Cast<Developer>().ToListAsync();
+            return await _context.People.Where(x=>x.PersonType==PersonType.Developer && x.IsDeleted != true).Cast<Developer>().ToListAsync();
         }
 
         public async Task<Developer> UpdateDeveloper(Developer entity)

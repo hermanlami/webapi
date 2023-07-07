@@ -34,19 +34,17 @@ namespace TaskManagementSystem.DAL.Repositories
 
         public async Task<Tag> GetTagById(int id)
         {
-            return await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
+            return await _dbSet.Where(x => x.IsDeleted != true).FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<Tag> GetTagByName(string name)
+        {
+            return await _dbSet.Where(x => x.IsDeleted != true).FirstOrDefaultAsync(x => x.Name == name);
         }
 
         public async Task<List<Tag>> GetTags()
         {
-           return await _dbSet.ToListAsync();
-        }
-
-        public async Task<Tag> UpdateTag(Tag entity)
-        {
-            _dbSet.Update(entity);
-            await _context.SaveChangesAsync();
-            return entity;
+           return await _dbSet.Where(x => x.IsDeleted != true).ToListAsync();
         }
     }
 }

@@ -33,12 +33,17 @@ namespace TaskManagementSystem.DAL.Repositories
 
         public async Task<ProjectManager> GetProjectManagerById(int id)
         {
-            return (ProjectManager)await _context.People.FirstOrDefaultAsync(x => x.Id==id);
+            return (ProjectManager)await _context.People.Where(x=>x.IsDeleted!=true).FirstOrDefaultAsync(x => x.Id==id);
+        }
+
+        public async Task<ProjectManager> GetProjectManagerByEmail(string email)
+        {
+            return (ProjectManager)await _context.People.Where(x => x.IsDeleted != true).FirstOrDefaultAsync(x => x.Email == email);
         }
 
         public async Task<List<ProjectManager>> GetProjectManagers()
         {
-            return await _context.People.Where(x=>x.PersonType==PersonType.ProjectManager).Cast<ProjectManager>().ToListAsync();
+            return await _context.People.Where(x=>x.PersonType==PersonType.ProjectManager&& x.IsDeleted!=true).Cast<ProjectManager>().ToListAsync();
         }
 
         public async Task<ProjectManager> UpdateProjectManager(ProjectManager entity)

@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TaskManagementSystem.BLL.DTO;
+
+namespace TaskManagementSystem.BLL.Interfaces
+{
+    public interface IProjectManagersService
+    {
+        Task<ProjectManager> AddProjectManager(ProjectManager model);
+        Task<List<ProjectManager>> GetProjectManagers();
+        Task<ProjectManager> GetProjectManagerById(int id);
+        Task<ProjectManager> GetProjectManagerByEmail(string email);
+        Task<ProjectManager> UpdateProjectManager(ProjectManager model);
+        Task<ProjectManager> DeleteProjectManager(ProjectManager model);
+    }
+}

@@ -35,18 +35,13 @@ namespace TaskManagementSystem.DAL.Repositories
 
         public async Task<Entities.Task> GetTaskById(int id)
         {
-            return await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
+            return await _dbSet.Where(x=>x.IsDeleted!=true).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public Task<List<Entities.Task>> GetTasks()
         {
-            return _dbSet.ToListAsync();
+            return _dbSet.Where(x => x.IsDeleted != true).ToListAsync();
         }
-
-        //public Task<List<Entities.Task>> GetTasksByDeveloperId(int developerId)
-        //{
-        //    return _dbSet.Where(x=>x.).ToListAsync();
-        //}
 
         public async Task<Entities.Task> UpdateTask(Entities.Task entity)
         {

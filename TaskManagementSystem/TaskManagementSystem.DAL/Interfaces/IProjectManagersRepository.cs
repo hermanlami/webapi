@@ -12,6 +12,8 @@ namespace TaskManagementSystem.DAL.Interfaces
         Task<ProjectManager> AddProjectManager(ProjectManager entity);
         Task<List<ProjectManager>> GetProjectManagers();
         Task<ProjectManager> GetProjectManagerById(int id);
+        Task<ProjectManager> GetProjectManagerByEmail(string email);
+
         Task<ProjectManager> UpdateProjectManager(ProjectManager entity);
         Task<ProjectManager> DeleteProjectManager(ProjectManager entity);
     }
