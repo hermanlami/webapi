@@ -20,33 +20,47 @@ namespace TaskManagementSystem.DAL.Repositories
         }
         public async Task<Project> AddProject(Project entity)
         {
-            await _dbSet.AddAsync(entity);
-            await _context.SaveChangesAsync();
-            return entity;
+            using (_context)
+            {
+                await _dbSet.AddAsync(entity);
+                await _context.SaveChangesAsync();
+                return entity;
+            }
         }
 
         public async Task<Project> DeleteProject(Project entity)
         {
-            _dbSet.Update(entity);
-            await _context.SaveChangesAsync();
-            return entity;
+            using (_context)
+            {
+                _dbSet.Update(entity);
+                await _context.SaveChangesAsync();
+                return entity;
+            }
         }
 
         public async Task<Project> GetProjectById(int id)
         {
-            return await _dbSet.Where(x => x.IsDeleted != true).FirstOrDefaultAsync(x => x.Id == id);
+            using (_context)
+            {
+                return await _dbSet.Where(x => x.IsDeleted != true).FirstOrDefaultAsync(x => x.Id == id);
+            }
         }
-
         public async Task<List<Project>> GetProjects()
         {
-            return await _dbSet.Where(x => x.IsDeleted != true).ToListAsync();
+            using (_context)
+            {
+                return await _dbSet.Where(x => x.IsDeleted != true).ToListAsync();
+            }
         }
 
         public async Task<Project> UpdateProject(Project entity)
         {
-            _dbSet.Update(entity);
-            await _context.SaveChangesAsync();
-            return entity;
+            using (_context)
+            {
+                _dbSet.Update(entity);
+                await _context.SaveChangesAsync();
+                return entity;
+            }
         }
     }
 }

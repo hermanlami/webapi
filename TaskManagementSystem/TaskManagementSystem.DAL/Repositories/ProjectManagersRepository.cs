@@ -19,38 +19,55 @@ namespace TaskManagementSystem.DAL.Repositories
         }
         public async Task<ProjectManager> AddProjectManager(ProjectManager entity)
         {
-            await _context.AddAsync(entity);
-            await _context.SaveChangesAsync();
-            return entity;
+            using (_context)
+            {
+                await _context.AddAsync(entity);
+                await _context.SaveChangesAsync();
+                return entity;
+            }
         }
 
         public async Task<ProjectManager> DeleteProjectManager(ProjectManager entity)
         {
-            _context.Update(entity);
-            await _context.SaveChangesAsync();
-            return entity;
+            using (_context)
+            {
+                _context.Update(entity);
+                await _context.SaveChangesAsync();
+                return entity;
+            }
         }
-
         public async Task<ProjectManager> GetProjectManagerById(int id)
         {
-            return (ProjectManager)await _context.People.Where(x=>x.IsDeleted!=true).FirstOrDefaultAsync(x => x.Id==id);
+            using (_context)
+            {
+                return (ProjectManager)await _context.People.Where(x => x.IsDeleted != true).FirstOrDefaultAsync(x => x.Id == id);
+            }
         }
 
         public async Task<ProjectManager> GetProjectManagerByEmail(string email)
         {
-            return (ProjectManager)await _context.People.Where(x => x.IsDeleted != true).FirstOrDefaultAsync(x => x.Email == email);
+            using (_context)
+            {
+                return (ProjectManager)await _context.People.Where(x => x.IsDeleted != true).FirstOrDefaultAsync(x => x.Email == email);
+            }
         }
 
         public async Task<List<ProjectManager>> GetProjectManagers()
         {
-            return await _context.People.Where(x=>x.PersonType==PersonType.ProjectManager&& x.IsDeleted!=true).Cast<ProjectManager>().ToListAsync();
+            using (_context)
+            {
+                return await _context.People.Where(x => x.PersonType == PersonType.ProjectManager && x.IsDeleted != true).Cast<ProjectManager>().ToListAsync();
+            }
         }
 
         public async Task<ProjectManager> UpdateProjectManager(ProjectManager entity)
         {
-            _context.Update(entity);
-            await _context.SaveChangesAsync();
-            return entity;
+            using (_context)
+            {
+                _context.Update(entity);
+                await _context.SaveChangesAsync();
+                return entity;
+            }
         }
     }
 }

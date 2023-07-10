@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace TaskManagementSystem.Middlewares
     public class TokenService
     {
         private const int ExpirationMinutes = 30;
-        public string CreateToken(Person user)
+        public TokenResponse CreateToken(Person user)
         {
 
             var expiration = DateTime.UtcNow.AddMinutes(ExpirationMinutes);
@@ -25,8 +26,26 @@ namespace TaskManagementSystem.Middlewares
                 expiration
             );
             var tokenHandler = new JwtSecurityTokenHandler();
-            return tokenHandler.WriteToken(token);
+            var refreshToken = CreateRefreshToken(user);
 
+            return new TokenResponse
+            {
+                AccessToken = tokenHandler.WriteToken(token),
+                RefreshToken = refreshToken,
+                ExpiresIn = ExpirationMinutes * 60
+            };
+
+        }
+        private string CreateRefreshToken(Person user)
+        {
+            var expiration = DateTime.UtcNow.AddDays(7);
+            var refreshToken = CreateJwtToken(
+                CreateClaims(user),
+                CreateSigningCredentials(),
+                expiration
+            );
+            var tokenHandler = new JwtSecurityTokenHandler();
+            return tokenHandler.WriteToken(refreshToken);
         }
 
         private JwtSecurityToken CreateJwtToken(List<Claim> claims, SigningCredentials credentials,
@@ -39,18 +58,19 @@ namespace TaskManagementSystem.Middlewares
                 signingCredentials: credentials
             );
 
-        private List<Claim> CreateClaims(IdentityUser user)
+        private List<Claim> CreateClaims(Person user)
         {
             try
             {
                 var claims = new List<Claim>
                 {
-                    new Claim(JwtRegisteredClaimNames.Sub, "TokenForTheApiWithAuth"),
+                    new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)),
-                    new Claim(ClaimTypes.NameIdentifier, user.Id),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.Email, user.Email)
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Role, user.PersonType.ToString())
                 };
                 return claims;
             }

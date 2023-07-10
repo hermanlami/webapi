@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Castle.MicroKernel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
 using TaskManagementSystem.Middlewares;
@@ -22,8 +24,8 @@ namespace TaskManagementSystem.Controllers
         }
 
         [HttpPost, Authorize]
-        [Route("api/developers")]
-        public async Task<IActionResult> AddDeveloper([FromBody] Developer model)
+        [Route("api/developers")] 
+        public async Task<IActionResult> AddDeveloper([FromBody] Developer model) 
         {
             return await HandleExceptionAsync(async () =>
             {
@@ -61,7 +63,8 @@ namespace TaskManagementSystem.Controllers
             });
         }
 
-        [HttpGet]
+        [HttpGet,Authorize]
+        [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "Developer" } })]
         [Route("api/developers")]
         public async Task<IActionResult> GetDevelopers()
         {
@@ -149,7 +152,7 @@ namespace TaskManagementSystem.Controllers
             {
                 Username = developer.UserName,
                 Email = developer.Email,
-                Token = accessToken,
+                Token = accessToken.AccessToken,
             });
         }
     }

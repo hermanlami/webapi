@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -15,37 +16,26 @@ namespace TaskManagementSystem.BLL.Services
     internal class DevelopersService : IDevelopersService
     {
         private readonly IDevelopersRepository _repository;
-        private readonly ILogger<DevelopersService> _logger;    
-        public DevelopersService(IDevelopersRepository repository, ILogger<DevelopersService> logger)
+        private readonly ILogger<DevelopersService> _logger;
+        private readonly IMapper _mapper;
+        public DevelopersService(IDevelopersRepository repository, ILogger<DevelopersService> logger, IMapper mapper)
         {
             _repository = repository;
             _logger = logger;
+            _mapper = mapper;
         }
         public async Task<Developer> AddDeveloper(Developer model)
         {
             try
             {
-                var dalDeveloper = new DAL.Entities.Developer()
-                {
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    PersonType = model.PersonType,
-                    Birthday = model.Birthday,
-                    ManagerId = model.ManagerId,
-                    Username = model.UserName,
-                    Email = model.Email,
-                    Password = model.Password,
-                };
+                var dalDeveloper = _mapper.Map<DAL.Entities.Developer>(model);
+
                 var addedDeveloper = await _repository.AddDeveloper(dalDeveloper);
-                if (model.ManagerId == 10)
-                {
-                    throw new CustomException("Manager is not available!.");
-                }
-                model.Id = addedDeveloper.Id;
+
                 if (addedDeveloper.Id > 0)
                 {
                     _logger.LogInformation("Developer added successfully");
-                    return model;
+                    return _mapper.Map<DTO.Developer>(addedDeveloper);
                 }
                 else
                 {
@@ -73,19 +63,13 @@ namespace TaskManagementSystem.BLL.Services
                 if (developer != null)
                 {
                     developer.IsDeleted = true;
+
                     var deletedDeveloper = await _repository.DeleteDeveloper(developer);
                     if (deletedDeveloper != null)
                     {
                         _logger.LogInformation("Developer deleted successfully");
 
-                        return new DTO.Developer()
-                        {
-                            FirstName = deletedDeveloper.FirstName,
-                            LastName = deletedDeveloper.LastName,
-                            PersonType = deletedDeveloper.PersonType,
-                            Birthday = deletedDeveloper.Birthday,
-                            ManagerId = deletedDeveloper.ManagerId,
-                        };
+                        return _mapper.Map<DTO.Developer>(deletedDeveloper);
 
                     }
                     else
@@ -111,15 +95,7 @@ namespace TaskManagementSystem.BLL.Services
                 {
                     _logger.LogInformation("Developer retrieved successfully");
 
-                    return new DTO.Developer()
-                    {
-                        Id = developer.Id,
-                        FirstName = developer.FirstName,
-                        LastName = developer.LastName,
-                        PersonType = developer.PersonType,
-                        Birthday = developer.Birthday,
-                        ManagerId = developer.ManagerId,
-                    };
+                    return _mapper.Map<DTO.Developer>(developer);
                 }
                 else
                 {
@@ -139,22 +115,11 @@ namespace TaskManagementSystem.BLL.Services
             try
             {
                 var developer = await _repository.GetDeveloperByEmail(email);
-                if (developer != null)
+                if (developer != null) 
                 {
-                    _logger.LogInformation("Developer retrieved successfully");
+                    _logger.LogInformation("Developer retrieved successfully"); 
 
-                    return new DTO.Developer()
-                    {
-                        Id = developer.Id,
-                        FirstName = developer.FirstName,
-                        LastName = developer.LastName,
-                        Email = developer.Email,
-                        UserName= developer.Username,
-                        Password= developer.Password,
-                        PersonType = developer.PersonType,
-                        Birthday = developer.Birthday,
-                        ManagerId = developer.ManagerId,
-                    };
+                    return _mapper.Map<DTO.Developer>(developer);
                 }
                 else
                 {
@@ -174,21 +139,11 @@ namespace TaskManagementSystem.BLL.Services
             try
             {
                 var developers = await _repository.GetDevelopers();
-                var dtoDevelopers = new List<Developer>();
                 if (developers != null)
                 {
                     _logger.LogInformation("Developers retrieved successfully");
 
-                    developers.ForEach(x => dtoDevelopers.Add(new Developer
-                    {
-                        Id = x.Id,
-                        Birthday = x.Birthday,
-                        FirstName = x.FirstName,
-                        LastName = x.LastName,
-                        ManagerId = x.ManagerId,
-                        PersonType = x.PersonType
-                    }));
-                    return dtoDevelopers;
+                    return _mapper.Map<List<DTO.Developer>>(developers);
                 }
                 else
                 {
@@ -220,18 +175,11 @@ namespace TaskManagementSystem.BLL.Services
                     {
                         _logger.LogInformation("Developer updated successfully");
 
-                        return new Developer()
-                        {
-                            FirstName = updated.FirstName,
-                            LastName = updated.LastName,
-                            ManagerId = updated.ManagerId,
-                            PersonType = updated.PersonType,
-                            Birthday = updated.Birthday,
-                        };
+                        return _mapper.Map<DTO.Developer>(updated);
                     }
                     else
                     {
-                    _logger.LogError("Developer could not be updated");
+                        _logger.LogError("Developer could not be updated");
 
                     }
                 }

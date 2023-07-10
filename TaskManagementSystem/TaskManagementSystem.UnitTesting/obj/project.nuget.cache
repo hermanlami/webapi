@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "ep4fIuYOEs9GPxFGMGh0JdGY3Uf0jPo6rEcNbKEY1CfcH+Zat4pCjr8i17S3mztVRiedgK7s7DYeJjM8n7wtbw==",
+  "dgSpecHash": "siESfuU8QSNJeXhgR9yoO7ARimsCPSH+gWkqyOZatlKfV/LO0Xm2f1JV3ma6mcTXj7u96txOmIffiMhqgHEf7g==",
   "success": true,
   "projectFilePath": "C:\\Users\\Lenovo\\Documents\\GitHub\\webapi\\TaskManagementSystem\\TaskManagementSystem.UnitTesting\\TaskManagementSystem.UnitTesting.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Lenovo\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
+    "C:\\Users\\Lenovo\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\coverlet.collector\\3.2.0\\coverlet.collector.3.2.0.nupkg.sha512",

@@ -156,7 +156,7 @@ namespace TaskManagementSystem.Controllers
             {
                 Username = pM.UserName,
                 Email = pM.Email,
-                Token = accessToken,
+                Token = accessToken.AccessToken,
             });
         }
     }

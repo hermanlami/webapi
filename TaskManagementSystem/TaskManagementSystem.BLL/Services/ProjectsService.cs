@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,28 +15,25 @@ namespace TaskManagementSystem.BLL.Services
     {
         private readonly IProjectsRepository _repository;
         private readonly ILogger<ProjectsService> _logger;
-        public ProjectsService(IProjectsRepository repository, ILogger<ProjectsService> logger)
+        private readonly IMapper _mapper;
+        public ProjectsService(IProjectsRepository repository, ILogger<ProjectsService> logger, IMapper mapper)
         {
             _repository = repository;
             _logger = logger;
+            _mapper = mapper;
         }
         public async Task<Project> AddProject(Project model)
         {
             try
             {
-                var dalProject = new DAL.Entities.Project()
-                {
-                    Name = model.Name,
-                    StartDate = model.StartDate,
-                    EndDate = model.EndDate,
-                    ProjectManagerId = model.ProjectManagerId,
-                };
+                var dalProject = _mapper.Map<DAL.Entities.Project>(model);
+
                 var addedProject = await _repository.AddProject(dalProject);
-                model.Id=addedProject.Id;
+
                 if (addedProject.Id > 0)
                 {
                     _logger.LogInformation("Project added successfully");
-                    return model;
+                    return _mapper.Map<DTO.Project>(addedProject);
                 }
                 else
                 {
@@ -64,13 +62,7 @@ namespace TaskManagementSystem.BLL.Services
                     {
                         _logger.LogInformation("Project deleted successfully");
 
-                        return new DTO.Project()
-                        {
-                            Name = deletedProject.Name,
-                            StartDate = deletedProject.StartDate,
-                            EndDate = deletedProject.EndDate,
-                            ProjectManagerId = deletedProject.ProjectManagerId,
-                        };
+                        return _mapper.Map<DTO.Project>(deletedProject);
 
                     }
                     else
@@ -96,14 +88,8 @@ namespace TaskManagementSystem.BLL.Services
                 {
                     _logger.LogInformation("Project retrieved successfully");
 
-                    return new DTO.Project()
-                    {
-                        Id = project.Id,
-                        Name = project.Name,
-                        StartDate = project.StartDate,
-                        EndDate = project.EndDate,
-                        ProjectManagerId = project.ProjectManagerId,
-                    };
+                    return _mapper.Map<DTO.Project>(project);
+
                 }
                 else
                 {
@@ -123,20 +109,11 @@ namespace TaskManagementSystem.BLL.Services
             try
             {
                 var projects = await _repository.GetProjects();
-                var dtoProjects = new List<Project>();
                 if (projects != null)
                 {
                     _logger.LogInformation("Projects retrieved successfully");
 
-                    projects.ForEach(x => dtoProjects.Add(new Project
-                    {
-                        Id = x.Id,
-                        Name = x.Name,
-                        StartDate = x.StartDate,
-                        EndDate = x.EndDate,
-                        ProjectManagerId = x.ProjectManagerId,
-                    }));
-                    return dtoProjects;
+                    return _mapper.Map<List<DTO.Project>>(projects);
                 }
                 else
                 {
@@ -167,13 +144,7 @@ namespace TaskManagementSystem.BLL.Services
                     {
                         _logger.LogInformation("Project updated successfully");
 
-                        return new Project()
-                        {
-                            Name = updated.Name,
-                            StartDate = updated.StartDate,
-                            EndDate = updated.EndDate,
-                            ProjectManagerId = updated.ProjectManagerId,
-                        };
+                        return _mapper.Map<DTO.Project>(updated);
                     }
                     else
                     {

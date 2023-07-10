@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -15,28 +16,25 @@ namespace TaskManagementSystem.BLL.Services
     {
         private readonly IProjectManagersRepository _repository;
         private readonly ILogger<ProjectManagersService> _logger;
-        public ProjectManagersService(IProjectManagersRepository repository, ILogger<ProjectManagersService> logger)
+        private readonly IMapper _mapper;
+        public ProjectManagersService(IProjectManagersRepository repository, ILogger<ProjectManagersService> logger, IMapper mapper)
         {
             _repository = repository;
             _logger = logger;
+            _mapper = mapper;
         }
         public async Task<ProjectManager> AddProjectManager(ProjectManager model)
         {
             try
             {
-                var dalPM = new DAL.Entities.ProjectManager()
-                {
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    PersonType = model.PersonType,
-                    Birthday = model.Birthday,
-                };
+                var dalPM = _mapper.Map<DAL.Entities.ProjectManager>(model);
+
                 var addedPM = await _repository.AddProjectManager(dalPM);
-                model.Id = addedPM.Id;
+                
                 if (addedPM.Id > 0)
                 {
                     _logger.LogInformation("Project manager added successfully");
-                    return model;
+                    return _mapper.Map<ProjectManager>(addedPM);
                 }
                 else
                 {
@@ -64,13 +62,7 @@ namespace TaskManagementSystem.BLL.Services
                     {
                         _logger.LogInformation("Project manager deleted successfully");
 
-                        return new DTO.ProjectManager()
-                        {
-                            FirstName = deletedPM.FirstName,
-                            LastName = deletedPM.LastName,
-                            PersonType = deletedPM.PersonType,
-                            Birthday = deletedPM.Birthday,
-                        };
+                        return _mapper.Map<ProjectManager>(deletedPM);
 
                     }
                     else
@@ -96,14 +88,7 @@ namespace TaskManagementSystem.BLL.Services
                 {
                     _logger.LogInformation("Project manager retrieved successfully");
 
-                    return new DTO.ProjectManager()
-                    {
-                        Id = pM.Id,
-                        FirstName = pM.FirstName,
-                        LastName = pM.LastName,
-                        PersonType = pM.PersonType,
-                        Birthday = pM.Birthday,
-                    };
+                    return _mapper.Map<ProjectManager>(pM);
                 }
                 else
                 {
@@ -127,17 +112,7 @@ namespace TaskManagementSystem.BLL.Services
                 {
                     _logger.LogInformation("Project manager retrieved successfully");
 
-                    return new DTO.ProjectManager()
-                    {
-                        Id = pM.Id,
-                        FirstName = pM.FirstName,
-                        LastName = pM.LastName,
-                        Email = pM.Email,
-                        UserName = pM.Username,
-                        Password = pM.Password,
-                        PersonType = pM.PersonType,
-                        Birthday = pM.Birthday,
-                    };
+                    return _mapper.Map<ProjectManager>(pM);
                 }
                 else
                 {
@@ -157,20 +132,11 @@ namespace TaskManagementSystem.BLL.Services
             try
             {
                 var pMs = await _repository.GetProjectManagers();
-                var dtoPMs = new List<ProjectManager>();
                 if (pMs != null)
                 {
                     _logger.LogInformation("Project managers retrieved successfully");
 
-                    pMs.ForEach(x => dtoPMs.Add(new ProjectManager
-                    {
-                        Id = x.Id,
-                        Birthday = x.Birthday,
-                        FirstName = x.FirstName,
-                        LastName = x.LastName,
-                        PersonType = x.PersonType
-                    }));
-                    return dtoPMs;
+                    return _mapper.Map<List<ProjectManager>>(pMs);
                 }
                 else
                 {
@@ -189,6 +155,7 @@ namespace TaskManagementSystem.BLL.Services
         {
             try
             {
+                // me pak rreshta
                 var pM = await _repository.GetProjectManagerById(model.Id);
                 if (pM != null)
                 {
@@ -201,13 +168,7 @@ namespace TaskManagementSystem.BLL.Services
                     {
                         _logger.LogInformation("Project manager updated successfully");
 
-                        return new ProjectManager()
-                        {
-                            FirstName = updated.FirstName,
-                            LastName = updated.LastName,
-                            PersonType = updated.PersonType,
-                            Birthday = updated.Birthday,
-                        };
+                        return _mapper.Map<ProjectManager>(updated);
                     }
                     else
                     {

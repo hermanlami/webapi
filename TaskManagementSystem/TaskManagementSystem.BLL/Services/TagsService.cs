@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -15,25 +16,23 @@ namespace TaskManagementSystem.BLL.Services
     {
         private readonly ITagsRepository _repository;
         private readonly ILogger<TagsService> _logger;
-        public TagsService(ITagsRepository repository, ILogger<TagsService> logger)
+        private readonly IMapper _mapper;
+        public TagsService(ITagsRepository repository, ILogger<TagsService> logger, IMapper mapper)
         {
             _repository = repository;
             _logger = logger;
+            _mapper = mapper;
         }
         public async Task<Tag> AddTag(Tag model)
         {
             try
             {
-                var dalTag = new DAL.Entities.Tag()
-                {
-                    Name = model.Name,
-                };
+                var dalTag =_mapper.Map<DAL.Entities.Tag>(model);
                 var addedTag = await _repository.AddTag(dalTag);
-                model.Id = addedTag.Id;
                 if (addedTag.Id > 0)
                 {
                     _logger.LogInformation("Tag added successfully");
-                    return model;
+                    return _mapper.Map<Tag>(addedTag);
                 }
                 else
                 {
@@ -63,10 +62,7 @@ namespace TaskManagementSystem.BLL.Services
                     {
                         _logger.LogInformation("Tag deleted successfully");
 
-                        return new DTO.Tag()
-                        {
-                            Name = deletedTag.Name,
-                        };
+                        return _mapper.Map<Tag>(deletedTag);
 
                     }
                     else
@@ -92,12 +88,7 @@ namespace TaskManagementSystem.BLL.Services
                 {
                     _logger.LogInformation("Tag retrieved successfully");
 
-                    return new DTO.Tag()
-                    {
-                        Id = tag.Id,
-                        Name = tag.Name,
-
-                    };
+                    return _mapper.Map<Tag>(tag);
                 }
                 else
                 {
@@ -117,16 +108,10 @@ namespace TaskManagementSystem.BLL.Services
             try
             {
                 var tags = await _repository.GetTags();
-                var dtoTags = new List<Tag>();
                 if (tags != null)
                 {
                     _logger.LogInformation("Tags retrieved successfully");
-                    tags.ForEach(x => dtoTags.Add(new Tag
-                    {
-                        Id = x.Id,
-                        Name = x.Name,
-                    }));
-                    return dtoTags;
+                    return _mapper.Map<List<Tag>>(tags);
                 }
                 else
                 {

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
@@ -6,30 +7,27 @@ using TaskManagementSystem.DAL.Interfaces;
 
 namespace TaskManagementSystem.BLL.Services
 {
-    internal class TaskTagsService:ITaskTagsService
+    internal class TaskTagsService : ITaskTagsService
     {
         private readonly ITaskTagsRepository _repository;
         private readonly ILogger<TaskTagsService> _logger;
-        public TaskTagsService(ITaskTagsRepository repository,ILogger<TaskTagsService> logger)
+        private readonly IMapper _mapper;
+        public TaskTagsService(ITaskTagsRepository repository, ILogger<TaskTagsService> logger, IMapper mapper)
         {
             _repository = repository;
             _logger = logger;
+            _mapper = mapper;
         }
         public async Task<TaskTag> AddTaskTag(TaskTag model)
         {
             try
             {
-                var dalTaskTag = new DAL.Entities.TaskTag()
-                {
-                    TagId = model.Id,
-                    TaskId=model.TagId
-                };
+                var dalTaskTag = _mapper.Map<DAL.Entities.TaskTag>(model);
                 var addedTaskTag = await _repository.AddTaskTag(dalTaskTag);
-                model.Id = addedTaskTag.Id;
                 if (addedTaskTag.Id > 0)
                 {
                     _logger.LogInformation("Task tag added successfully");
-                    return model;
+                    return _mapper.Map<TaskTag>(addedTaskTag);
                 }
                 else
                 {
@@ -48,7 +46,7 @@ namespace TaskManagementSystem.BLL.Services
         {
             try
             {
-                var taskTag= await _repository.GetTaskTagById(model.Id);
+                var taskTag = await _repository.GetTaskTagById(model.Id);
                 if (taskTag != null)
                 {
                     var deletedTaskTag = await _repository.DeleteTaskTag(taskTag);
@@ -56,11 +54,8 @@ namespace TaskManagementSystem.BLL.Services
                     {
                         _logger.LogInformation("Task tag deleted successfully");
 
-                        return new DTO.TaskTag()
-                        {
-                           TagId=deletedTaskTag.Id,
-                           TaskId=deletedTaskTag.TaskId
-                        };
+                        return _mapper.Map<TaskTag>(deletedTaskTag);
+
 
                     }
                     else
@@ -85,13 +80,7 @@ namespace TaskManagementSystem.BLL.Services
                 {
                     _logger.LogInformation("Task tag retrieved successfully");
 
-                    return new DTO.TaskTag()
-                    {
-                        Id = task.Id,
-                        TaskId = task.TaskId,
-                        TagId = task.TagId,
-                        
-                    };
+                    return _mapper.Map<TaskTag>(task);
                 }
                 else
                 {
@@ -111,18 +100,11 @@ namespace TaskManagementSystem.BLL.Services
             try
             {
                 var taskTags = await _repository.GetTaskTags();
-                var dtoTaskTags = new List<TaskTag>();
                 if (taskTags != null)
                 {
                     _logger.LogInformation("Task tags retrieved successfully");
 
-                    taskTags.ForEach(x => dtoTaskTags.Add(new DTO.TaskTag
-                    {
-                        Id = x.Id,
-                        TagId = x.TagId,
-                        TaskId = x.TaskId,
-                    }));
-                    return dtoTaskTags;
+                    return _mapper.Map<List<TaskTag>>(taskTags);
                 }
                 else
                 {
@@ -151,11 +133,7 @@ namespace TaskManagementSystem.BLL.Services
                     {
                         _logger.LogInformation("Task tag updated successfully");
 
-                        return new DTO.TaskTag()
-                        {
-                            TaskId = updated.TaskId,
-                            TagId = updated.TagId,
-                        };
+                        return _mapper.Map<TaskTag>(updated);
                     }
                     else
                     {

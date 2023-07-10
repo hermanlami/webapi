@@ -7,16 +7,19 @@ using System.Text;
 using TaskManagementSystem.BLL;
 using TaskManagementSystem.Middlewares; 
 using TaskManagementSystem.Middlewears;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.RegisterBllServices(builder.Configuration);
 
-Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Debug()
-            .WriteTo.File("C:\\Users\\Lenovo\\Documents\\TMSLogs\\TmsLogs.txt", rollingInterval: RollingInterval.Day)
-            .CreateLogger();
+    Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.File("C:\\Users\\Lenovo\\Documents\\TMSLogs\\TmsLogs.txt", rollingInterval: RollingInterval.Day)
+                .WriteTo.MSSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), "Logs", autoCreateSqlTable: true)
+                .CreateLogger(); 
 
 builder.Services.AddLogging(loggingBuilder =>
 {
@@ -24,11 +27,13 @@ builder.Services.AddLogging(loggingBuilder =>
     loggingBuilder.AddSerilog();
 });
 
+
 builder.Services.AddTransient<CustomErrorMiddleware>();
-//jwt
+
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
 builder.Services.AddControllers().AddNewtonsoftJson();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {
@@ -80,7 +85,6 @@ builder.Services
     });
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

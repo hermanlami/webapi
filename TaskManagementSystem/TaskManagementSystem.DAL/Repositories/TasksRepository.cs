@@ -21,33 +21,48 @@ namespace TaskManagementSystem.DAL.Repositories
         }
         public async Task<Entities.Task> AddTask(Entities.Task entity)
         {
-            await _dbSet.AddAsync(entity);
-            await _context.SaveChangesAsync();
-            return entity;
+            using (_context)
+            {
+                await _dbSet.AddAsync(entity);
+                await _context.SaveChangesAsync();
+                return entity;
+            }
         }
 
         public async Task<Entities.Task> DeleteTask(Entities.Task entity)
         {
-            _dbSet.Update(entity);
-            await _context.SaveChangesAsync();
-            return entity;
+            using (_context)
+            {
+                _dbSet.Update(entity);
+                await _context.SaveChangesAsync();
+                return entity;
+            }
         }
 
         public async Task<Entities.Task> GetTaskById(int id)
         {
-            return await _dbSet.Where(x=>x.IsDeleted!=true).FirstOrDefaultAsync(x => x.Id == id);
+            using (_context)
+            {
+                return await _dbSet.Where(x => x.IsDeleted != true).FirstOrDefaultAsync(x => x.Id == id);
+            }
         }
 
         public Task<List<Entities.Task>> GetTasks()
         {
-            return _dbSet.Where(x => x.IsDeleted != true).ToListAsync();
+            using (_context)
+            {
+                return _dbSet.Where(x => x.IsDeleted != true).ToListAsync();
+            }
         }
 
         public async Task<Entities.Task> UpdateTask(Entities.Task entity)
         {
-            _dbSet.Update(entity);
-            await _context.SaveChangesAsync();
-            return entity;
+            using (_context)
+            {
+                _dbSet.Update(entity);
+                await _context.SaveChangesAsync();
+                return entity;
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -16,31 +17,26 @@ namespace TaskManagementSystem.BLL.Services
         private readonly ITaskTagsRepository _taskTagsRepository;
         private readonly ITagsRepository _tagsRepository;
         private readonly ILogger<TasksService> _logger;
+        private readonly IMapper _mapper;
 
-        public TasksService(ITasksRepository repository, ITaskTagsRepository taskTagsRepository, ITagsRepository tagsRepository, ILogger<TasksService> logger)
+        public TasksService(ITasksRepository repository, ITaskTagsRepository taskTagsRepository, ITagsRepository tagsRepository, ILogger<TasksService> logger, IMapper mapper)
         {
             _repository = repository;
             _taskTagsRepository = taskTagsRepository;
             _tagsRepository = tagsRepository;
             _logger = logger;
+            _mapper = mapper;
         }
         public async Task<DTO.Task> AddTask(DTO.Task model)
         {
             try
             {
-                var dalTask = new DAL.Entities.Task()
-                {
-                    Name = model.Name,
-                    EndDate = model.EndDate,
-                    Description = model.Description,
-                    Importance = model.Importance,
-                    ProjectId = model.ProjectId,
-                };
+                var dalTask = _mapper.Map<DAL.Entities.Task>(model);
                 var addedTask = await _repository.AddTask(dalTask);
-                model.Id = addedTask.Id;
                 if (addedTask.Id > 0)
                 {
                     _logger.LogInformation("Task added successfully");
+
                     var tagNames = model.Tags.Split(',');
                     foreach (var tagName in tagNames)
                     {
@@ -48,10 +44,11 @@ namespace TaskManagementSystem.BLL.Services
                         await _taskTagsRepository.AddTaskTag(new DAL.Entities.TaskTag()
                         {
                             TagId = tag.Id,
-                            TaskId = addedTask.Id,
+                            TaskId = addedTask.Id, 
                         });
                     }
-                    return model;
+
+                    return _mapper.Map<DTO.Task>(model);
                 }
                 else
                 {
@@ -80,14 +77,7 @@ namespace TaskManagementSystem.BLL.Services
                     {
                         _logger.LogInformation("Task deleted successfully");
 
-                        return new DTO.Task()
-                        {
-                            Name = deletedTask.Name,
-                            EndDate = deletedTask.EndDate,
-                            Description = deletedTask.Description,
-                            Importance = deletedTask.Importance,
-                            ProjectId = deletedTask.ProjectId,
-                        };
+                        return _mapper.Map<DTO.Task>(deletedTask);
 
                     }
                 }
@@ -113,15 +103,7 @@ namespace TaskManagementSystem.BLL.Services
                 {
                     _logger.LogInformation("Task retrieved successfully");
 
-                    return new DTO.Task()
-                    {
-                        Id = task.Id,
-                        Name = task.Name,
-                        EndDate = task.EndDate,
-                        Description = task.Description,
-                        Importance = task.Importance,
-                        ProjectId = task.ProjectId,
-                    };
+                    return _mapper.Map<DTO.Task>(task);
                 }
                 else
                 {
@@ -141,21 +123,11 @@ namespace TaskManagementSystem.BLL.Services
             try
             {
                 var tasks = await _repository.GetTasks();
-                var dtoTasks = new List<DTO.Task>();
                 if (tasks != null)
                 {
                     _logger.LogInformation("Tasks retrieved successfully");
 
-                    tasks.ForEach(x => dtoTasks.Add(new DTO.Task
-                    {
-                        Id = x.Id,
-                        Name = x.Name,
-                        EndDate = x.EndDate,
-                        Description = x.Description,
-                        Importance = x.Importance,
-                        ProjectId = x.ProjectId,
-                    }));
-                    return dtoTasks;
+                    return _mapper.Map<List<DTO.Task>>(tasks);
                 }
                 else
                 {
@@ -187,14 +159,7 @@ namespace TaskManagementSystem.BLL.Services
                     {
                         _logger.LogInformation("Task updated successfully");
 
-                        return new DTO.Task()
-                        {
-                            Name = task.Name,
-                            EndDate = task.EndDate,
-                            Description = task.Description,
-                            Importance = task.Importance,
-                            ProjectId = task.ProjectId,
-                        };
+                        return _mapper.Map<DTO.Task>(updated);
                     }
                     else
                     {

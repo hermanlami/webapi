@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "7kudyNotSM27YFcLBlD49YSoEbYIvf25kP+8EY54y1xD/BZ2bYoxO8taq32govEyv3lbEdUTIz22+27K0LO9sg==",
+  "dgSpecHash": "XVxGyJiD0sYZU6kuKTFx4af5Mgc9xxaoQzE5Y3k5tiMk7BlvMAF5N4Ar6F5nytAFP/VUNw/oUJWHiO6OiMqQag==",
   "success": true,
   "projectFilePath": "C:\\Users\\Lenovo\\Documents\\GitHub\\webapi\\TaskManagementSystem\\TaskManagementSystem.DAL\\TaskManagementSystem.DAL.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Lenovo\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
+    "C:\\Users\\Lenovo\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
