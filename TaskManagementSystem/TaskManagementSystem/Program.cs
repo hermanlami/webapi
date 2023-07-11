@@ -5,10 +5,7 @@ using Serilog;
 using Newtonsoft.Json.Serialization;
 using System.Text;
 using TaskManagementSystem.BLL;
-using TaskManagementSystem.Middlewares; 
-using TaskManagementSystem.Middlewears;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.AspNetCore.Mvc.Filters;
+using TaskManagementSystem.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,7 +59,7 @@ builder.Services.AddSwaggerGen(option =>
         }
     });
 });
-builder.Services.AddScoped<TokenService, TokenService>();
+
 builder.Services.AddScoped<CustomErrorMiddleware>();
 
 builder.Services

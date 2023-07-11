@@ -1,6 +1,6 @@
 ﻿using TaskManagementSystem.Common;
 
-namespace TaskManagementSystem.Middlewears
+namespace TaskManagementSystem.Middlewares
 {
     public class CustomErrorMiddleware : IMiddleware
     {

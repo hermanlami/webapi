@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
@@ -18,18 +19,22 @@ namespace TaskManagementSystem.BLL.Services
         private readonly IDevelopersRepository _repository;
         private readonly ILogger<DevelopersService> _logger;
         private readonly IMapper _mapper;
-        public DevelopersService(IDevelopersRepository repository, ILogger<DevelopersService> logger, IMapper mapper)
+        private readonly ITokensService _tokensService;
+        public DevelopersService(IDevelopersRepository repository, ILogger<DevelopersService> logger, IMapper mapper, ITokensService tokensService)
         {
             _repository = repository;
             _logger = logger;
             _mapper = mapper;
+            _tokensService = tokensService;
         }
         public async Task<Developer> AddDeveloper(Developer model)
         {
             try
             {
                 var dalDeveloper = _mapper.Map<DAL.Entities.Developer>(model);
-
+                byte[] salt;
+                dalDeveloper.PasswordHash = PasswordHashing.HashPasword(model.Password, out salt);
+                dalDeveloper.PasswordSalt = salt;
                 var addedDeveloper = await _repository.AddDeveloper(dalDeveloper);
 
                 if (addedDeveloper.Id > 0)
@@ -115,9 +120,9 @@ namespace TaskManagementSystem.BLL.Services
             try
             {
                 var developer = await _repository.GetDeveloperByEmail(email);
-                if (developer != null) 
+                if (developer != null)
                 {
-                    _logger.LogInformation("Developer retrieved successfully"); 
+                    _logger.LogInformation("Developer retrieved successfully");
 
                     return _mapper.Map<DTO.Developer>(developer);
                 }
@@ -189,6 +194,31 @@ namespace TaskManagementSystem.BLL.Services
 
             }
             return new Developer();
+        }
+        public async Task<AuthenticationResponse> Authenticate(AuthenticationRequest request)
+        {
+            try
+            {
+                var developer = await GetDeveloperByEmail(request.Email);
+                if (developer != null)
+                {
+                    if (PasswordHashing.VerifyPassword(request.Password, developer.PasswordHash, developer.PasswordSalt))
+                    {
+                        var accessToken = _tokensService.CreateToken(developer);
+                        return new AuthenticationResponse
+                        {
+                            Username = developer.Username,
+                            Email = developer.Email,
+                            Token = accessToken.AccessToken,
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return new AuthenticationResponse();
         }
     }
 }

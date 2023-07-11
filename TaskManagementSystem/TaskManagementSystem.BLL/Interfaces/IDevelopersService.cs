@@ -15,5 +15,7 @@ namespace TaskManagementSystem.BLL.Interfaces
         Task<Developer> GetDeveloperById(int id);
         Task<Developer> UpdateDeveloper(Developer model);
         Task<Developer> DeleteDeveloper(Developer model);
+        Task<AuthenticationResponse> Authenticate(AuthenticationRequest request);
+
     }
 }

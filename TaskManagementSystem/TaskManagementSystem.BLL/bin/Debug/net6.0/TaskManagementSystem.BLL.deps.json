@@ -10,6 +10,7 @@
         "dependencies": {
           "AutoMapper": "12.0.1",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "12.0.1",
+          "Castle.Core": "5.1.1",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.19",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.19",
           "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "6.0.19",
@@ -18,6 +19,7 @@
           "Microsoft.EntityFrameworkCore.SqlServer": "7.0.8",
           "Microsoft.EntityFrameworkCore.Tools": "7.0.8",
           "Newtonsoft.Json": "13.0.3",
+          "Serilog": "3.0.1",
           "Serilog.Extensions.Logging": "7.0.0",
           "Serilog.Sinks.MSSqlServer": "6.3.0",
           "System.IdentityModel.Tokens.Jwt": "6.31.0",
@@ -82,6 +84,17 @@
           "lib/netstandard2.0/Azure.Identity.dll": {
             "assemblyVersion": "1.6.0.0",
             "fileVersion": "1.600.22.20503"
+          }
+        }
+      },
+      "Castle.Core/5.1.1": {
+        "dependencies": {
+          "System.Diagnostics.EventLog": "6.0.0"
+        },
+        "runtime": {
+          "lib/net6.0/Castle.Core.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.1.1.0"
           }
         }
       },
@@ -621,18 +634,18 @@
           }
         }
       },
-      "Serilog/2.12.0": {
+      "Serilog/3.0.1": {
         "runtime": {
           "lib/net6.0/Serilog.dll": {
             "assemblyVersion": "2.0.0.0",
-            "fileVersion": "2.12.0.0"
+            "fileVersion": "3.0.1.0"
           }
         }
       },
       "Serilog.Extensions.Logging/7.0.0": {
         "dependencies": {
           "Microsoft.Extensions.Logging": "7.0.0",
-          "Serilog": "2.12.0"
+          "Serilog": "3.0.1"
         },
         "runtime": {
           "lib/net6.0/Serilog.Extensions.Logging.dll": {
@@ -646,7 +659,7 @@
           "Microsoft.Data.SqlClient": "5.0.2",
           "Microsoft.Extensions.Configuration": "6.0.1",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "6.0.0",
-          "Serilog": "2.12.0",
+          "Serilog": "3.0.1",
           "Serilog.Sinks.PeriodicBatching": "3.1.0",
           "System.Configuration.ConfigurationManager": "6.0.1"
         },
@@ -659,7 +672,7 @@
       },
       "Serilog.Sinks.PeriodicBatching/3.1.0": {
         "dependencies": {
-          "Serilog": "2.12.0"
+          "Serilog": "3.0.1"
         },
         "runtime": {
           "lib/netstandard2.1/Serilog.Sinks.PeriodicBatching.dll": {
@@ -690,6 +703,7 @@
         }
       },
       "System.Diagnostics.DiagnosticSource/5.0.0": {},
+      "System.Diagnostics.EventLog/6.0.0": {},
       "System.Drawing.Common/6.0.0": {
         "dependencies": {
           "Microsoft.Win32.SystemEvents": "6.0.0"
@@ -918,12 +932,14 @@
         "dependencies": {
           "AutoMapper": "12.0.1",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "12.0.1",
+          "Castle.Core": "5.1.1",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.19",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.19",
           "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "6.0.19",
           "Microsoft.EntityFrameworkCore": "7.0.8",
           "Microsoft.EntityFrameworkCore.SqlServer": "7.0.8",
           "Newtonsoft.Json": "13.0.3",
+          "Serilog": "3.0.1",
           "Serilog.Extensions.Logging": "7.0.0",
           "Serilog.Sinks.MSSqlServer": "6.3.0",
           "System.IdentityModel.Tokens.Jwt": "6.31.0"
@@ -936,12 +952,14 @@
         "dependencies": {
           "AutoMapper": "12.0.1",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "12.0.1",
+          "Castle.Core": "5.1.1",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.19",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.19",
           "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "6.0.19",
           "Microsoft.EntityFrameworkCore": "7.0.8",
           "Microsoft.EntityFrameworkCore.SqlServer": "7.0.8",
           "Newtonsoft.Json": "13.0.3",
+          "Serilog": "3.0.1",
           "Serilog.Extensions.Logging": "7.0.0",
           "Serilog.Sinks.MSSqlServer": "6.3.0",
           "System.IdentityModel.Tokens.Jwt": "6.31.0",
@@ -986,6 +1004,13 @@
       "sha512": "sha512-EycyMsb6rD2PK9P0SyibFfEhvWWttdrYhyPF4f41uzdB/44yQlV+2Wehxyg489Rj6gbPvSPgbKq0xsHJBhipZA==",
       "path": "azure.identity/1.6.0",
       "hashPath": "azure.identity.1.6.0.nupkg.sha512"
+    },
+    "Castle.Core/5.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rpYtIczkzGpf+EkZgDr9CClTdemhsrwA/W5hMoPjLkRFnXzH44zDLoovXeKtmxb1ykXK9aJVODSpiJml8CTw2g==",
+      "path": "castle.core/5.1.1",
+      "hashPath": "castle.core.5.1.1.nupkg.sha512"
     },
     "Humanizer.Core/2.14.1": {
       "type": "package",
@@ -1330,12 +1355,12 @@
       "path": "newtonsoft.json.bson/1.0.2",
       "hashPath": "newtonsoft.json.bson.1.0.2.nupkg.sha512"
     },
-    "Serilog/2.12.0": {
+    "Serilog/3.0.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-xaiJLIdu6rYMKfQMYUZgTy8YK7SMZjB4Yk50C/u//Z4OsvxkUfSPJy4nknfvwAC34yr13q7kcyh4grbwhSxyZg==",
-      "path": "serilog/2.12.0",
-      "hashPath": "serilog.2.12.0.nupkg.sha512"
+      "sha512": "sha512-E4UmOQ++eNJax1laE+lws7E3zbhKgHsGJbO7ra0yE5smUh+5FfUPIKKBxM3MO1tK4sgpQke6/pLReDxIc/ggNw==",
+      "path": "serilog/3.0.1",
+      "hashPath": "serilog.3.0.1.nupkg.sha512"
     },
     "Serilog.Extensions.Logging/7.0.0": {
       "type": "package",
@@ -1385,6 +1410,13 @@
       "sha512": "sha512-tCQTzPsGZh/A9LhhA6zrqCRV4hOHsK90/G7q3Khxmn6tnB1PuNU0cRaKANP2AWcF9bn0zsuOoZOSrHuJk6oNBA==",
       "path": "system.diagnostics.diagnosticsource/5.0.0",
       "hashPath": "system.diagnostics.diagnosticsource.5.0.0.nupkg.sha512"
+    },
+    "System.Diagnostics.EventLog/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-lcyUiXTsETK2ALsZrX+nWuHSIQeazhqPphLfaRxzdGaG93+0kELqpgEHtwWOlQe7+jSFnKwaCAgL4kjeZCQJnw==",
+      "path": "system.diagnostics.eventlog/6.0.0",
+      "hashPath": "system.diagnostics.eventlog.6.0.0.nupkg.sha512"
     },
     "System.Drawing.Common/6.0.0": {
       "type": "package",

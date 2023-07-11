@@ -23,7 +23,8 @@ namespace TaskManagementSystem.DAL.Migrations
                     Birthday = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PasswordSalt = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     ManagerId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -84,11 +85,18 @@ namespace TaskManagementSystem.DAL.Migrations
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Importance = table.Column<byte>(type: "tinyint", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DevloperId = table.Column<int>(type: "int", nullable: false),
+                    DeveloperId = table.Column<int>(type: "int", nullable: false),
                     ProjectId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tasks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Tasks_People_DeveloperId",
+                        column: x => x.DeveloperId,
+                        principalTable: "People",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Tasks_Projects_ProjectId",
                         column: x => x.ProjectId,
@@ -129,6 +137,11 @@ namespace TaskManagementSystem.DAL.Migrations
                 name: "IX_Projects_ProjectManagerId",
                 table: "Projects",
                 column: "ProjectManagerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tasks_DeveloperId",
+                table: "Tasks",
+                column: "DeveloperId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tasks_ProjectId",

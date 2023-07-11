@@ -11,6 +11,7 @@ namespace TaskManagementSystem.DAL.Interfaces
         Task<Entities.Task> AddTask(Entities.Task entity);
         Task<List<Entities.Task>> GetTasks();
         Task<Entities.Task> GetTaskById(int id);
+        Task<List<Entities.Task>> GetTasksByDeveloperId(int developerId);
         Task<Entities.Task> UpdateTask(Entities.Task entity);
         Task<Entities.Task> DeleteTask(Entities.Task entity);
 

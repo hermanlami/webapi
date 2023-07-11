@@ -49,6 +49,20 @@ namespace TaskManagementSystem.Controllers
         }
 
         [HttpGet]
+        [Route("api/tasks/byDeveloperId/{developerId}")]
+        public async Task<IActionResult> GetTasksByDeveloperId(int developerId)
+        {
+            return await HandleExceptionAsync(async () =>
+            {
+                var tasks = await _tasksService.GetTasksByDeveloperId(developerId);
+                _logger.LogInformation("Tasks retrieved successfully");
+
+                return Ok(tasks);
+            }
+            );
+        }
+
+        [HttpGet]
         [Route("api/tasks/{id}")]
         public async Task<IActionResult> GetTask(int id)
         {

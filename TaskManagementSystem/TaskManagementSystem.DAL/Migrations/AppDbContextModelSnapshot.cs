@@ -48,9 +48,13 @@ namespace TaskManagementSystem.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<byte>("PersonType")
                         .HasColumnType("tinyint");
@@ -131,6 +135,12 @@ namespace TaskManagementSystem.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("DeveloperId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DevloperId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
@@ -148,6 +158,8 @@ namespace TaskManagementSystem.DAL.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DeveloperId");
 
                     b.HasIndex("ProjectId");
 
@@ -215,10 +227,17 @@ namespace TaskManagementSystem.DAL.Migrations
 
             modelBuilder.Entity("TaskManagementSystem.DAL.Entities.Task", b =>
                 {
+                    b.HasOne("TaskManagementSystem.DAL.Entities.Developer", "Developer")
+                        .WithMany()
+                        .HasForeignKey("DeveloperId")
+                        .IsRequired();
+
                     b.HasOne("TaskManagementSystem.DAL.Entities.Project", "Project")
                         .WithMany()
                         .HasForeignKey("ProjectId")
                         .IsRequired();
+
+                    b.Navigation("Developer");
 
                     b.Navigation("Project");
                 });

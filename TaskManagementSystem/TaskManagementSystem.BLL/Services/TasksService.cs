@@ -142,6 +142,30 @@ namespace TaskManagementSystem.BLL.Services
             return new List<DTO.Task>();
         }
 
+        public async Task<List<DTO.Task>> GetTasksByDeveloperId(int developerId)
+        {
+            try
+            {
+                var task = await _repository.GetTasksByDeveloperId(developerId);
+                if (task != null)
+                {
+                    _logger.LogInformation("Task retrieved successfully");
+
+                    return _mapper.Map<List<DTO.Task>>(task);
+                }
+                else
+                {
+                    _logger.LogError("Task could not be added");
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return new List<DTO.Task>();
+        }
+
         public async Task<DTO.Task> UpdateTask(DTO.Task model)
         {
             try

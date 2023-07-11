@@ -16,7 +16,8 @@ namespace TaskManagementSystem.DAL.Entities
         public DateTime EndDate { get; set; }
         public Importance Importance { get; set; }
         public bool IsDeleted { get; set; }
-
+        public int DeveloperId { get; set; }                                   
+        public Developer Developer { get; set; }
         public int ProjectId { get; set; }
         [ForeignKey("ProjectId")]
         public Project Project { get; set; }

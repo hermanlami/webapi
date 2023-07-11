@@ -28,7 +28,9 @@ namespace TaskManagementSystem.BLL.Services
             try
             {
                 var dalPM = _mapper.Map<DAL.Entities.ProjectManager>(model);
-
+                byte[] salt;
+                dalPM.PasswordHash = PasswordHashing.HashPasword(model.Password, out salt);
+                dalPM.PasswordSalt = salt;
                 var addedPM = await _repository.AddProjectManager(dalPM);
                 
                 if (addedPM.Id > 0)

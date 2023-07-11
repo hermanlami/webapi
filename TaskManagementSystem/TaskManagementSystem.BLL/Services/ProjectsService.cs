@@ -3,11 +3,14 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
 using TaskManagementSystem.DAL.Interfaces;
+
+[assembly: InternalsVisibleTo("TaskManagementSystem.UnitTesting")]
 
 namespace TaskManagementSystem.BLL.Services
 {
@@ -21,6 +24,10 @@ namespace TaskManagementSystem.BLL.Services
             _repository = repository;
             _logger = logger;
             _mapper = mapper;
+        }
+        public ProjectsService(IProjectsRepository repository)
+        {
+            _repository = repository;
         }
         public async Task<Project> AddProject(Project model)
         {
@@ -135,6 +142,7 @@ namespace TaskManagementSystem.BLL.Services
                 var project = await _repository.GetProjectById(model.Id);
                 if (project != null)
                 {
+                    model.Id = project.Id;
                     project.Name = model.Name;
                     project.StartDate = model.StartDate;
                     project.EndDate = model.EndDate;

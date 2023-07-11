@@ -1,12 +1,13 @@
-﻿using Castle.MicroKernel;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using TaskManagementSystem.BLL;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
 using TaskManagementSystem.Middlewares;
+using Serilog;
 
 namespace TaskManagementSystem.Controllers
 {
@@ -14,12 +15,12 @@ namespace TaskManagementSystem.Controllers
     public class DevelopersController : BaseController
     {
         private readonly IDevelopersService _developersService;
-        private readonly TokenService _tokenService;
+        private readonly ITokensService _tokensService;
         private readonly ILogger<DevelopersController> _logger;
-        public DevelopersController(IDevelopersService developersService, TokenService tokenService, ILogger<DevelopersController> logger)
+        public DevelopersController(IDevelopersService developersService, ITokensService tokensService, ILogger<DevelopersController> logger)
         {
             _developersService = developersService;
-            _tokenService = tokenService;
+            _tokensService = tokensService;
             _logger = logger;
         }
 
@@ -32,7 +33,7 @@ namespace TaskManagementSystem.Controllers
                 var developer = await _developersService.AddDeveloper(model);
                 if (developer.Id > 0)
                 {
-                    _logger.LogInformation("Developer added successfully");
+                    _logger.LogInformation("Developer added successfully"); 
                     return Ok(developer);
                 }
                 else
@@ -136,24 +137,8 @@ namespace TaskManagementSystem.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            var developer = await _developersService.GetDeveloperByEmail(request.Email);
-            if (developer == null)
-            {
-                return BadRequest("Bad credentials");
-            }
-            if (developer.Password!=request.Password)
-            {
-                return BadRequest("Bad credentials");
-            }
-
-            var accessToken = _tokenService.CreateToken(developer);
-            return Ok(new AuthenticationResponse
-            {
-                Username = developer.UserName,
-                Email = developer.Email,
-                Token = accessToken.AccessToken,
-            });
+            var response= await _developersService.Authenticate(request);
+            return Ok(response);
         }
     }
 }

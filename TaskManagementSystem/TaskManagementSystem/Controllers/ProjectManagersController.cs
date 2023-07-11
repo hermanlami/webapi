@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TaskManagementSystem.BLL;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
 using TaskManagementSystem.Middlewares;
@@ -9,13 +10,13 @@ namespace TaskManagementSystem.Controllers
     public class ProjectManagersController : BaseController
     {
         private readonly IProjectManagersService _projectManagersService;
-        private readonly TokenService _tokenService;
+        private readonly ITokensService _tokensService;
         private readonly ILogger<ProjectManagersController> _logger;
 
-        public ProjectManagersController(IProjectManagersService projectManagersService, TokenService tokenService, ILogger<ProjectManagersController> logger)
+        public ProjectManagersController(IProjectManagersService projectManagersService, ITokensService tokensService, ILogger<ProjectManagersController> logger)
         {
             _projectManagersService = projectManagersService;
-            _tokenService = tokenService;
+            _tokensService = tokensService;
             _logger = logger;
         }
 
@@ -146,15 +147,15 @@ namespace TaskManagementSystem.Controllers
             {
                 return BadRequest("Bad credentials");
             }
-            if (pM.Password != request.Password)
+            if (!PasswordHashing.VerifyPassword(request.Password, pM.PasswordHash, pM.PasswordSalt))
             {
                 return BadRequest("Bad credentials");
             }
 
-            var accessToken = _tokenService.CreateToken(pM);
+            var accessToken = _tokensService.CreateToken(pM);
             return Ok(new AuthenticationResponse
             {
-                Username = pM.UserName,
+                Username = pM.Username,
                 Email = pM.Email,
                 Token = accessToken.AccessToken,
             });
