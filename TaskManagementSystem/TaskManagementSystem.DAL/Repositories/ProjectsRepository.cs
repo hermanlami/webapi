@@ -42,9 +42,18 @@ namespace TaskManagementSystem.DAL.Repositories
         {
             using (_context)
             {
-                return await _dbSet.Where(x => x.IsDeleted != true).FirstOrDefaultAsync(x => x.Id == id);
+                return await _dbSet.Where(x => x.IsDeleted != true && x.Id == id).FirstOrDefaultAsync();
             }
         }
+
+        public async Task<Project> GetProjectByName(string name)
+        {
+            using (_context)
+            {
+                return await _dbSet.Where(x => x.IsDeleted != true && x.Name == name).FirstOrDefaultAsync();
+            }
+        }
+
         public async Task<List<Project>> GetProjects()
         {
             using (_context)

@@ -138,9 +138,6 @@ namespace TaskManagementSystem.DAL.Migrations
                     b.Property<int>("DeveloperId")
                         .HasColumnType("int");
 
-                    b.Property<int>("DevloperId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
@@ -156,6 +153,9 @@ namespace TaskManagementSystem.DAL.Migrations
 
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 

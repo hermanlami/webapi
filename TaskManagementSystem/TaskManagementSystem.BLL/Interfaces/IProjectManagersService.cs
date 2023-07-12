@@ -13,7 +13,9 @@ namespace TaskManagementSystem.BLL.Interfaces
         Task<List<ProjectManager>> GetProjectManagers();
         Task<ProjectManager> GetProjectManagerById(int id);
         Task<ProjectManager> GetProjectManagerByEmail(string email);
-        Task<ProjectManager> UpdateProjectManager(ProjectManager model);
-        Task<ProjectManager> DeleteProjectManager(ProjectManager model);
+        Task<ProjectManager> UpdateProjectManager(int id, ProjectManager model);
+        Task<ProjectManager> DeleteProjectManager(int id);
+        Task<AuthenticationResponse> Authenticate(AuthenticationRequest request);
+
     }
 }

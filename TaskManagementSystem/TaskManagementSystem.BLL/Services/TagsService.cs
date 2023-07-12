@@ -1,11 +1,5 @@
 ﻿using AutoMapper;
-using Microsoft.Extensions.Logging;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
 using TaskManagementSystem.DAL.Interfaces;
@@ -15,12 +9,10 @@ namespace TaskManagementSystem.BLL.Services
     internal class TagsService : ITagsService
     {
         private readonly ITagsRepository _repository;
-        private readonly ILogger<TagsService> _logger;
         private readonly IMapper _mapper;
-        public TagsService(ITagsRepository repository, ILogger<TagsService> logger, IMapper mapper)
+        public TagsService(ITagsRepository repository, IMapper mapper)
         {
             _repository = repository;
-            _logger = logger;
             _mapper = mapper;
         }
         public async Task<Tag> AddTag(Tag model)
@@ -31,12 +23,12 @@ namespace TaskManagementSystem.BLL.Services
                 var addedTag = await _repository.AddTag(dalTag);
                 if (addedTag.Id > 0)
                 {
-                    _logger.LogInformation("Tag added successfully");
+                    Log.Information("Tag added successfully");
                     return _mapper.Map<Tag>(addedTag);
                 }
                 else
                 {
-                    _logger.LogError("Tag could not be added");
+                    Log.Error("Tag could not be added");
 
                 }
 
@@ -48,11 +40,11 @@ namespace TaskManagementSystem.BLL.Services
             return new DTO.Tag();
         }
 
-        public async Task<Tag> DeleteTag(Tag model)
+        public async Task<Tag> DeleteTag(int id)
         {
             try
             {
-                var tag = await _repository.GetTagById(model.Id);
+                var tag = await _repository.GetTagById(id);
                 if (tag != null)
                 {
                     tag.IsDeleted = true;
@@ -60,14 +52,14 @@ namespace TaskManagementSystem.BLL.Services
                     var deletedTag = await _repository.DeleteTag(tag);
                     if (deletedTag != null)
                     {
-                        _logger.LogInformation("Tag deleted successfully");
+                        Log.Information("Tag deleted successfully");
 
                         return _mapper.Map<Tag>(deletedTag);
 
                     }
                     else
                     {
-                        _logger.LogError("Tag could not be deleted");
+                        Log.Error("Tag could not be deleted");
 
                     }
                 }
@@ -86,13 +78,37 @@ namespace TaskManagementSystem.BLL.Services
                 var tag = await _repository.GetTagById(id);
                 if (tag != null)
                 {
-                    _logger.LogInformation("Tag retrieved successfully");
+                    Log.Information("Tag retrieved successfully");
 
                     return _mapper.Map<Tag>(tag);
                 }
                 else
                 {
-                    _logger.LogError("Tag could not be retrieved");
+                    Log.Error("Tag could not be retrieved");
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return new DTO.Tag();
+        }
+
+        public async Task<Tag> GetTagByName(string name)
+        {
+            try
+            {
+                var tag = await _repository.GetTagByName(name);
+                if (tag != null)
+                {
+                    Log.Information("Tag retrieved successfully");
+
+                    return _mapper.Map<Tag>(tag);
+                }
+                else
+                {
+                    Log.Error("Tag could not be retrieved");
 
                 }
             }
@@ -110,12 +126,12 @@ namespace TaskManagementSystem.BLL.Services
                 var tags = await _repository.GetTags();
                 if (tags != null)
                 {
-                    _logger.LogInformation("Tags retrieved successfully");
+                    Log.Information("Tags retrieved successfully");
                     return _mapper.Map<List<Tag>>(tags);
                 }
                 else
                 {
-                    _logger.LogError("Tags could not be retrieved");
+                    Log.Error("Tags could not be retrieved");
 
                 }
             }

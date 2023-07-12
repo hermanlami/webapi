@@ -15,32 +15,19 @@ namespace TaskManagementSystem.Controllers
     public class DevelopersController : BaseController
     {
         private readonly IDevelopersService _developersService;
-        private readonly ITokensService _tokensService;
-        private readonly ILogger<DevelopersController> _logger;
-        public DevelopersController(IDevelopersService developersService, ITokensService tokensService, ILogger<DevelopersController> logger)
+        public DevelopersController(IDevelopersService developersService)
         {
             _developersService = developersService;
-            _tokensService = tokensService;
-            _logger = logger;
         }
 
         [HttpPost, Authorize]
-        [Route("api/developers")] 
-        public async Task<IActionResult> AddDeveloper([FromBody] Developer model) 
+        [Route("api/developers")]
+        public async Task<IActionResult> AddDeveloper([FromBody] Developer model)
         {
             return await HandleExceptionAsync(async () =>
             {
                 var developer = await _developersService.AddDeveloper(model);
-                if (developer.Id > 0)
-                {
-                    _logger.LogInformation("Developer added successfully"); 
-                    return Ok(developer);
-                }
-                else
-                {
-                    _logger.LogError("Developer could not be added");
-                    return BadRequest("Could not add developer");
-                }
+                return Ok(developer);
             });
         }
 
@@ -51,20 +38,13 @@ namespace TaskManagementSystem.Controllers
             return await HandleExceptionAsync(async () =>
             {
                 var developer = await _developersService.GetDeveloperById(id);
-                if (developer != null)
-                {
-                    _logger.LogInformation("Developer retrieved successfully");
-                    return Ok(developer);
-                }
-                else
-                {
-                    _logger.LogError("Developer could not be retrieved");
-                    return BadRequest("Could not get developer!");
-                }
+
+                return Ok(developer);
+
             });
         }
 
-        [HttpGet,Authorize]
+        [HttpGet, Authorize]
         [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "Developer" } })]
         [Route("api/developers")]
         public async Task<IActionResult> GetDevelopers()
@@ -72,16 +52,8 @@ namespace TaskManagementSystem.Controllers
             return await HandleExceptionAsync(async () =>
             {
                 var developers = await _developersService.GetDevelopers();
-                if (developers != null)
-                {
-                    _logger.LogInformation("Developers retrieved successfully");
-                    return Ok(developers);
-                }
-                else
-                {
-                    _logger.LogError("Developers could not be retrieved");
-                    return BadRequest("Could not get developers!");
-                }
+
+                return Ok(developers);
             });
         }
 
@@ -92,18 +64,9 @@ namespace TaskManagementSystem.Controllers
         {
             return await HandleExceptionAsync(async () =>
             {
-                var developer = await _developersService.UpdateDeveloper(model);
+                var developer = await _developersService.UpdateDeveloper(id, model);
+                return Ok(developer);
 
-                if (developer != null)
-                {
-                    _logger.LogInformation("Developer updated successfully");
-                    return Ok(developer);
-                }
-                else
-                {
-                    _logger.LogError("Developer could not be updated");
-                    return NotFound();
-                }
             });
         }
 
@@ -113,19 +76,9 @@ namespace TaskManagementSystem.Controllers
         {
             return await HandleExceptionAsync(async () =>
             {
-                var developer = await _developersService.GetDeveloperById(id);
-                var deleted = await _developersService.DeleteDeveloper(developer);
+                var deleted = await _developersService.DeleteDeveloper(id);
 
-                if (deleted.Id != 0)
-                {
-                    _logger.LogInformation("Developer deleted successfully");
-                    return Ok(deleted);
-                }
-                else
-                {
-                    _logger.LogError("Developer could not be deleted");
-                    return NotFound();
-                }
+                return Ok(deleted);   
             });
         }
 
@@ -137,7 +90,7 @@ namespace TaskManagementSystem.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var response= await _developersService.Authenticate(request);
+            var response = await _developersService.Authenticate(request);
             return Ok(response);
         }
     }

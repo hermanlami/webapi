@@ -42,7 +42,7 @@ namespace TaskManagementSystem.DAL.Repositories
         {
             using (_context)
             {
-                return await _dbSet.Where(x => x.IsDeleted != true).FirstOrDefaultAsync(x => x.Id == id);
+                return await _dbSet.Where(x => x.IsDeleted != true&& x.Id == id).FirstOrDefaultAsync();
             }
         }
 
@@ -50,7 +50,7 @@ namespace TaskManagementSystem.DAL.Repositories
         {
             using (_context)
             {
-                return await _dbSet.Where(x => x.IsDeleted != true).FirstOrDefaultAsync(x => x.Name == name);
+                return await _dbSet.Where(x => x.IsDeleted != true && x.Name == name).FirstOrDefaultAsync();
             }
         }
 

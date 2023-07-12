@@ -14,6 +14,7 @@ namespace TaskManagementSystem.BLL.DTO
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime EndDate { get; set; }
+        public bool Status { get; set; } 
         public Importance Importance { get; set; }
         public int ProjectId { get; set; }
         public int DeveloperId { get; set; }

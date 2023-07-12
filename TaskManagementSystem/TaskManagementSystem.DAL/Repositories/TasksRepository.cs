@@ -51,7 +51,14 @@ namespace TaskManagementSystem.DAL.Repositories
         {
             using (_context)
             {
-                return _dbSet.Where(x => x.IsDeleted != true).ToListAsync();
+                return _dbSet.Where(x => x.IsDeleted != true&& x.Status==false).OrderBy(x => x.EndDate).ToListAsync();
+            }
+        }
+        public Task<List<Entities.Task>> GetCompletedTasks()
+        {
+            using (_context)
+            {
+                return _dbSet.Where(x => x.IsDeleted != true && x.Status == true).ToListAsync();
             }
         }
 
@@ -59,7 +66,15 @@ namespace TaskManagementSystem.DAL.Repositories
         {
             using (_context)
             {
-                return _dbSet.Where(x => x.IsDeleted != true && x.DeveloperId==developerId).ToListAsync();
+                return _dbSet.Where(x => x.IsDeleted != true && x.DeveloperId == developerId && x.Status == false).OrderBy(x => x.EndDate).ThenByDescending(x => x.Importance).ToListAsync();
+            }
+        }
+
+        public Task<List<Entities.Task>> GetTasksByProjectId(int id)
+        {
+            using (_context)
+            {
+                return _dbSet.Where(x => x.IsDeleted != true && x.Status == false && x.ProjectId == id).ToListAsync();
             }
         }
 

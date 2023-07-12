@@ -9,7 +9,6 @@ using TaskManagementSystem.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.RegisterBllServices(builder.Configuration);
 
     Log.Logger = new LoggerConfiguration()

@@ -12,6 +12,8 @@ namespace TaskManagementSystem.DAL.Interfaces
         Task<Project> AddProject(Project entity);
         Task<List<Project>> GetProjects();
         Task<Project> GetProjectById(int id);
+        Task<Project> GetProjectByName(string name);
+
         Task<Project> UpdateProject(Project entity);
         Task<Project> DeleteProject(Project entity);
     }

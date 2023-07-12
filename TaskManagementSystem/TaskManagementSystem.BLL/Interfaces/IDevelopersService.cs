@@ -12,9 +12,10 @@ namespace TaskManagementSystem.BLL.Interfaces
         Task<Developer> AddDeveloper(Developer model);
         Task<List<Developer>> GetDevelopers();
         Task<Developer> GetDeveloperByEmail(string email);
+        Task<Developer> GetDeveloperByUsername(string email);
         Task<Developer> GetDeveloperById(int id);
-        Task<Developer> UpdateDeveloper(Developer model);
-        Task<Developer> DeleteDeveloper(Developer model);
+        Task<Developer> UpdateDeveloper(int id, Developer model);
+        Task<Developer> DeleteDeveloper(int id);
         Task<AuthenticationResponse> Authenticate(AuthenticationRequest request);
 
     }

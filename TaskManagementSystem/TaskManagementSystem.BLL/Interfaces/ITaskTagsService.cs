@@ -13,6 +13,6 @@ namespace TaskManagementSystem.BLL.Interfaces
         Task<List<TaskTag>> GetTaskTags();
         Task<TaskTag> GetTaskTagById(int id);
         Task<TaskTag> UpdateTaskTag(TaskTag model);
-        Task<TaskTag> DeleteTaskTag(TaskTag model);
+        Task<TaskTag> DeleteTaskTag(int id);
     }
 }

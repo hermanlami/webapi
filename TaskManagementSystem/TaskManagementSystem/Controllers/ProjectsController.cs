@@ -8,11 +8,9 @@ namespace TaskManagementSystem.Controllers
     public class ProjectsController : BaseController
     {
         private readonly IProjectsService _projectsService;
-        private readonly ILogger<ProjectsController> _logger;
-        public ProjectsController(IProjectsService projectsService, ILogger<ProjectsController> logger)
+        public ProjectsController(IProjectsService projectsService)
         {
             _projectsService = projectsService;
-            _logger = logger;
         }
         [HttpPost]
         [Route("api/projects")]
@@ -20,39 +18,22 @@ namespace TaskManagementSystem.Controllers
         {
             return await HandleExceptionAsync(async () =>
             {
-                var project=await _projectsService.AddProject(model);
-                if(project.Id>0)
-                {
-                    _logger.LogInformation("Project added successfully");
-                    return Ok(project);
-                }
-                else
-                {
-                    _logger.LogError("Project could not be added");
-                    return BadRequest("Could not add project");
-                }
+                var project = await _projectsService.AddProject(model);
+                return Ok(project);
+
             });
         }
 
         [HttpGet]
         [Route("api/projects/{id}")]
-        public async Task<IActionResult> GetProject(int id)  
+        public async Task<IActionResult> GetProject(int id)
         {
             return await HandleExceptionAsync(async () =>
             {
-                var project= await _projectsService.GetProjectById(id);
-                if(project!=null)
-                {
-                    _logger.LogInformation("Project retrieved successfully");
+                var project = await _projectsService.GetProjectById(id);
 
-                    return Ok(project);
-                }
-                else
-                {
-                    _logger.LogError("Project could not be retrieved");
+                return Ok(project);
 
-                    return BadRequest("Could not get project!"); 
-                }
             });
         }
 
@@ -63,18 +44,8 @@ namespace TaskManagementSystem.Controllers
             return await HandleExceptionAsync(async () =>
             {
                 var projects = await _projectsService.GetProjects();
-                if (projects != null)
-                {
-                    _logger.LogInformation("Projects retrieved successfully");
+                return Ok(projects);
 
-                    return Ok(projects);
-                }
-                else
-                {
-                    _logger.LogError("Projects could not be added");
-
-                    return BadRequest("Could not get projects!");
-                }
             });
         }
 
@@ -85,19 +56,9 @@ namespace TaskManagementSystem.Controllers
         {
             return await HandleExceptionAsync(async () =>
             {
-                var project = await _projectsService.UpdateProject(model);
+                var project = await _projectsService.UpdateProject(id, model);
+                return Ok(project);
 
-                if (project != null)
-                {
-                    _logger.LogInformation("Project updated successfully");
-                    return Ok(project);
-                }
-                else
-                {
-                    _logger.LogError("Project could not be updated");
-
-                    return NotFound();
-                }
             });
         }
 
@@ -107,20 +68,8 @@ namespace TaskManagementSystem.Controllers
         {
             return await HandleExceptionAsync(async () =>
             {
-                var project = await _projectsService.GetProjectById(id);
-                var deleted = await _projectsService.DeleteProject(project);
-
-                if (deleted.Id != 0)
-                {
-                    _logger.LogInformation("Project deleted successfully");
-                    return Ok(project);
-                }
-                else
-                {
-                    _logger.LogError("Project could not be deleted");
-
-                    return NotFound();
-                }
+                var deleted = await _projectsService.DeleteProject(id);
+                return Ok(deleted);
             });
         }
     }

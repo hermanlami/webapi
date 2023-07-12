@@ -7,7 +7,6 @@ namespace TaskManagementSystem.Controllers
     public class TasksController : BaseController
     {
         private readonly ITasksService _tasksService;
-        private readonly ILogger<TasksController> _logger;
         public TasksController(ITasksService tasksService)
         {
             _tasksService = tasksService;
@@ -20,16 +19,8 @@ namespace TaskManagementSystem.Controllers
             return await HandleExceptionAsync(async () =>
             {
                 var task = await _tasksService.AddTask(model);
-                if (task.Id > 0)
-                {
-                    _logger.LogInformation("Task added successfully");
-                    return Ok(task);
-                }
-                else
-                {
-                    _logger.LogError("Task could not be added");
-                    return BadRequest("Failed to add task!");
-                }
+
+                return Ok(task);
 
             });
         }
@@ -41,7 +32,6 @@ namespace TaskManagementSystem.Controllers
             return await HandleExceptionAsync(async () =>
             {
                 var tasks = await _tasksService.GetTasks();
-                _logger.LogInformation("Tasks retrieved successfully");
 
                 return Ok(tasks);
             }
@@ -49,13 +39,51 @@ namespace TaskManagementSystem.Controllers
         }
 
         [HttpGet]
-        [Route("api/tasks/byDeveloperId/{developerId}")]
-        public async Task<IActionResult> GetTasksByDeveloperId(int developerId)
+        [Route("api/tasks/completed")]
+        public async Task<IActionResult> GetCompletedTasks()
         {
             return await HandleExceptionAsync(async () =>
             {
-                var tasks = await _tasksService.GetTasksByDeveloperId(developerId);
-                _logger.LogInformation("Tasks retrieved successfully");
+                var tasks = await _tasksService.GetCompletedTasks();
+
+                return Ok(tasks);
+            }
+            );
+        }
+
+        [HttpGet]
+        [Route("api/tasks/byDeveloperUsername/{username}")]
+        public async Task<IActionResult> GetTasksByDevelopersUsername(string username)
+        {
+            return await HandleExceptionAsync(async () =>
+            {
+                var tasks = await _tasksService.GetTasksByDevelopersUsername(username);
+
+                return Ok(tasks);
+            }
+            );
+        }
+
+        [HttpGet]
+        [Route("api/tasks/byProjectName/{name}")]
+        public async Task<IActionResult> GetTasksByProjectName(string name)
+        {
+            return await HandleExceptionAsync(async () =>
+            {
+                var tasks = await _tasksService.GetTasksByProjectName(name);
+
+                return Ok(tasks);
+            }
+            );
+        }
+
+        [HttpGet]
+        [Route("api/tasks/byTagName/{name}")]
+        public async Task<IActionResult> GetTasksByTagName(string name)
+        {
+            return await HandleExceptionAsync(async () =>
+            {
+                var tasks = await _tasksService.GetTasksByTagName(name);
 
                 return Ok(tasks);
             }
@@ -70,17 +98,8 @@ namespace TaskManagementSystem.Controllers
             {
                 var task = await _tasksService.GetTasks();
 
-                if (task != null)
-                {
-                    _logger.LogInformation("Task retrieved successfully");
+                return Ok(task);
 
-                    return Ok(task);
-                }
-                else
-                {
-                    _logger.LogError("Task could not be retrieved");
-                    return NotFound();
-                }
             });
         }
 
@@ -90,18 +109,9 @@ namespace TaskManagementSystem.Controllers
         {
             return await HandleExceptionAsync(async () =>
             {
-                var task = await _tasksService.UpdateTask(model);
+                var task = await _tasksService.UpdateTask(id, model);
 
-                if (task != null)
-                {
-                    _logger.LogInformation("Task updated successfully");
-                    return Ok(task);
-                }
-                else
-                {
-                    _logger.LogError("Task could not be updated");
-                    return BadRequest("Task could not be updated");
-                }
+                return Ok(task);
             });
         }
 
@@ -111,20 +121,10 @@ namespace TaskManagementSystem.Controllers
         {
             return await HandleExceptionAsync(async () =>
             {
-                var task = await _tasksService.GetTaskById(id);
-                var deleted = await _tasksService.DeleteTask(task);
+                var deleted = await _tasksService.DeleteTask(id);
 
-                if (deleted.Id != 0)
-                {
-                    _logger.LogInformation("Task deleted successfully");
+                return Ok(deleted);
 
-                    return Ok();
-                }
-                else
-                {
-                    _logger.LogError("Task could not be updated");
-                    return BadRequest("Task could not be updated");
-                }
             });
         }
     }

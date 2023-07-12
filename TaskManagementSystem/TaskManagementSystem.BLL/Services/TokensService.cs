@@ -17,7 +17,7 @@ namespace TaskManagementSystem.BLL.Services
     internal class TokensService:ITokensService
     {
         private const int ExpirationMinutes = 30;
-        public TokenResponse CreateToken(Person user)
+        public TokenResponse CreateToken(DAL.Entities.Person user)
         {
 
             var expiration = DateTime.UtcNow.AddMinutes(ExpirationMinutes);
@@ -37,7 +37,7 @@ namespace TaskManagementSystem.BLL.Services
             };
 
         }
-        private string CreateRefreshToken(Person user)
+        private string CreateRefreshToken(DAL.Entities.Person user)
         {
             var expiration = DateTime.UtcNow.AddDays(7);
             var refreshToken = CreateJwtToken(
@@ -59,7 +59,7 @@ namespace TaskManagementSystem.BLL.Services
                 signingCredentials: credentials
             );
 
-        private List<Claim> CreateClaims(Person user)
+        private List<Claim> CreateClaims(DAL.Entities.Person user)
         {
             try
             {

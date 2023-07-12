@@ -51,7 +51,7 @@ namespace TaskManagementSystem.UnitTesting
         {
             var project = new Project
             {
-                Id = 0,
+                Id = 50,
                 Name = "Project",
                 StartDate = DateTime.Now,
                 EndDate = DateTime.Now.AddDays(10),
@@ -61,7 +61,7 @@ namespace TaskManagementSystem.UnitTesting
             _projectsRepository.Setup(x => x.GetProjectById(project.Id))
                          .ReturnsAsync(new DAL.Entities.Project());
 
-            var result = await _projectsService.DeleteProject(project);
+            var result = await _projectsService.DeleteProject(project.Id);
             Assert.True(result.Id == 0);
         }
 
@@ -70,7 +70,7 @@ namespace TaskManagementSystem.UnitTesting
         {
             var project = new Project
             {
-                Id = 0,
+                Id = 50,
                 Name = "Project",
                 StartDate = DateTime.Now,
                 EndDate = DateTime.Now.AddDays(10),
@@ -80,7 +80,7 @@ namespace TaskManagementSystem.UnitTesting
             _projectsRepository.Setup(x => x.GetProjectById(project.Id))
                          .ReturnsAsync(new DAL.Entities.Project());
 
-            var result = await _projectsService.UpdateProject(project);
+            var result = await _projectsService.UpdateProject(project.Id, project);
             Assert.True(result.Id == 0);
         }
     }

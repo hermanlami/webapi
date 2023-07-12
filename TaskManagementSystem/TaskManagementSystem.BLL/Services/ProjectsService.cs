@@ -1,11 +1,6 @@
-﻿using AutoMapper;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿.using AutoMapper;
+using Serilog;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
 using TaskManagementSystem.DAL.Interfaces;
@@ -17,12 +12,10 @@ namespace TaskManagementSystem.BLL.Services
     internal class ProjectsService : IProjectsService
     {
         private readonly IProjectsRepository _repository;
-        private readonly ILogger<ProjectsService> _logger;
         private readonly IMapper _mapper;
-        public ProjectsService(IProjectsRepository repository, ILogger<ProjectsService> logger, IMapper mapper)
+        public ProjectsService(IProjectsRepository repository, IMapper mapper)
         {
             _repository = repository;
-            _logger = logger;
             _mapper = mapper;
         }
         public ProjectsService(IProjectsRepository repository)
@@ -39,12 +32,12 @@ namespace TaskManagementSystem.BLL.Services
 
                 if (addedProject.Id > 0)
                 {
-                    _logger.LogInformation("Project added successfully");
+                    Log.Information("Project added successfully");
                     return _mapper.Map<DTO.Project>(addedProject);
                 }
                 else
                 {
-                    _logger.LogError("Project could not be added");
+                    Log.Error("Project could not be added");
 
                 }
 
@@ -56,25 +49,25 @@ namespace TaskManagementSystem.BLL.Services
             return new DTO.Project();
         }
 
-        public async Task<Project> DeleteProject(Project model)
+        public async Task<Project> DeleteProject(int id)
         {
             try
             {
-                var project = await _repository.GetProjectById(model.Id);
+                var project = await _repository.GetProjectById(id);
                 if (project != null)
                 {
                     project.IsDeleted = true;
                     var deletedProject = await _repository.DeleteProject(project);
                     if (deletedProject != null)
                     {
-                        _logger.LogInformation("Project deleted successfully");
+                        Log.Information("Project deleted successfully");
 
                         return _mapper.Map<DTO.Project>(deletedProject);
 
                     }
                     else
                     {
-                        _logger.LogError("Project could not be deleted");
+                        Log.Error("Project could not be deleted");
 
                     }
                 }
@@ -93,14 +86,14 @@ namespace TaskManagementSystem.BLL.Services
                 var project = await _repository.GetProjectById(id);
                 if (project != null)
                 {
-                    _logger.LogInformation("Project retrieved successfully");
+                    Log.Information("Project retrieved successfully");
 
                     return _mapper.Map<DTO.Project>(project);
 
                 }
                 else
                 {
-                    _logger.LogError("Project could not be retrieved");
+                    Log.Error("Project could not be retrieved");
 
                 }
             }
@@ -118,13 +111,13 @@ namespace TaskManagementSystem.BLL.Services
                 var projects = await _repository.GetProjects();
                 if (projects != null)
                 {
-                    _logger.LogInformation("Projects retrieved successfully");
+                    Log.Information("Projects retrieved successfully");
 
                     return _mapper.Map<List<DTO.Project>>(projects);
                 }
                 else
                 {
-                    _logger.LogError("Projects could not be retrieved");
+                    Log.Error("Projects could not be retrieved");
 
                 }
             }
@@ -135,28 +128,24 @@ namespace TaskManagementSystem.BLL.Services
             return new List<Project>();
         }
 
-        public async Task<Project> UpdateProject(Project model)
+        public async Task<Project> UpdateProject(int id, Project model)
         {
             try
             {
-                var project = await _repository.GetProjectById(model.Id);
+                var project = await _repository.GetProjectById(id);
                 if (project != null)
                 {
-                    model.Id = project.Id;
-                    project.Name = model.Name;
-                    project.StartDate = model.StartDate;
-                    project.EndDate = model.EndDate;
-                    project.ProjectManagerId = model.ProjectManagerId;
-                    var updated = await _repository.UpdateProject(project);
+                    model.Id = id;
+                    var updated = await _repository.UpdateProject(_mapper.Map<DAL.Entities.Project>(model));
                     if (updated != null)
                     {
-                        _logger.LogInformation("Project updated successfully");
+                        Log.Information("Project updated successfully");
 
                         return _mapper.Map<DTO.Project>(updated);
                     }
                     else
                     {
-                        _logger.LogError("Project could not be updated");
+                            Log.Error("Project could not be updated");
 
                     }
                 }
@@ -166,6 +155,31 @@ namespace TaskManagementSystem.BLL.Services
 
             }
             return new Project();
+        }
+
+        public async Task<Project> GetProjectByName(string name)
+        {
+            try
+            {
+                var project = await _repository.GetProjectByName(name);
+                if (project != null)
+                {
+                    Log.Information("Project retrieved successfully");
+
+                    return _mapper.Map<DTO.Project>(project);
+
+                }
+                else
+                {
+                    Log.Error("Project could not be retrieved");
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return new DTO.Project();
         }
     }
 }

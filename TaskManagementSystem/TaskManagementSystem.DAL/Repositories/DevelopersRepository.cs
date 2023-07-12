@@ -42,7 +42,7 @@ namespace TaskManagementSystem.DAL.Repositories
         {
             using (_context)
             {
-                return (Developer)await _context.People.Where(x => x.IsDeleted != true).FirstOrDefaultAsync(x => x.Email == email);
+                return (Developer)await _context.People.Where(x => x.IsDeleted != true && x.Email == email).FirstOrDefaultAsync();
             }
         }
 
@@ -50,7 +50,15 @@ namespace TaskManagementSystem.DAL.Repositories
         {
             using (_context)
             {
-                return (Developer)await _context.People.Where(x => x.IsDeleted != true).FirstOrDefaultAsync(x => x.Id == id);
+                return (Developer)await _context.People.Where(x => x.IsDeleted != true && x.Id == id).FirstOrDefaultAsync();
+            }
+        }
+
+        public async Task<Developer> GetDeveloperByUsername(string username)
+        {
+            using (_context)
+            {
+                return (Developer)await _context.People.Where(x => x.IsDeleted != true && x.Username == username).FirstOrDefaultAsync();
             }
         }
 

@@ -9,7 +9,7 @@ namespace TaskManagementSystem.BLL.Interfaces
 {
     public interface ITokensService
     {
-        TokenResponse CreateToken(Person user);
+        TokenResponse CreateToken(DAL.Entities.Person user);
 
     }
 }

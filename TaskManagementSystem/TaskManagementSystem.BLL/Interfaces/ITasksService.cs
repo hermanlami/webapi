@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,9 +11,12 @@ namespace TaskManagementSystem.BLL.Interfaces
     {
         Task<DTO.Task> AddTask(DTO.Task model);
         Task<List<DTO.Task>> GetTasks();
+        Task<List<DTO.Task>> GetCompletedTasks();
         Task<DTO.Task> GetTaskById(int id);
-        Task<List<DTO.Task>> GetTasksByDeveloperId(int developerId);
-        Task<DTO.Task> UpdateTask(DTO.Task model);
-        Task<DTO.Task> DeleteTask(DTO.Task model);
+        Task<List<DTO.Task>> GetTasksByDevelopersUsername(string username);
+        Task<List<DTO.Task>> GetTasksByProjectName(string name);
+        //Task<IActionResult> GetTasksByTagName(string name);
+        Task<DTO.Task> UpdateTask(int id, DTO.Task model);
+        Task<DTO.Task> DeleteTask(int id);
     }
 }

@@ -12,6 +12,8 @@ namespace TaskManagementSystem.BLL.Interfaces
         Task<Tag> AddTag(Tag model);
         Task<List<Tag>> GetTags();
         Task<Tag> GetTagById(int id);
-        Task<Tag> DeleteTag(Tag model);
+        Task<Tag> GetTagByName(string name);
+
+        Task<Tag> DeleteTag(int id);
     }
 }

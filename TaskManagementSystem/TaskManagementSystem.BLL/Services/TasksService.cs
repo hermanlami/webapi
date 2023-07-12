@@ -1,11 +1,6 @@
 ﻿using AutoMapper;
-using Microsoft.Extensions.Logging;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
 using TaskManagementSystem.DAL.Interfaces;
 
@@ -14,17 +9,19 @@ namespace TaskManagementSystem.BLL.Services
     internal class TasksService : ITasksService
     {
         private readonly ITasksRepository _repository;
-        private readonly ITaskTagsRepository _taskTagsRepository;
-        private readonly ITagsRepository _tagsRepository;
-        private readonly ILogger<TasksService> _logger;
+        private readonly ITaskTagsService _taskTagsService;
+        private readonly ITagsService _tagsService;
+        private readonly IDevelopersService _developersService;
+        private readonly IProjectsService _projectsService;
+
         private readonly IMapper _mapper;
 
-        public TasksService(ITasksRepository repository, ITaskTagsRepository taskTagsRepository, ITagsRepository tagsRepository, ILogger<TasksService> logger, IMapper mapper)
+        public TasksService(ITasksRepository repository, ITaskTagsService taskTagsService, ITagsService tagsService, IProjectsService projectsService,IMapper mapper)
         {
             _repository = repository;
-            _taskTagsRepository = taskTagsRepository;
-            _tagsRepository = tagsRepository;
-            _logger = logger;
+            _taskTagsService = taskTagsService;
+            _tagsService = tagsService;
+            _projectsService = projectsService;
             _mapper = mapper;
         }
         public async Task<DTO.Task> AddTask(DTO.Task model)
@@ -35,13 +32,13 @@ namespace TaskManagementSystem.BLL.Services
                 var addedTask = await _repository.AddTask(dalTask);
                 if (addedTask.Id > 0)
                 {
-                    _logger.LogInformation("Task added successfully");
+                    Log.Information("Task added successfully");
 
                     var tagNames = model.Tags.Split(',');
                     foreach (var tagName in tagNames)
                     {
-                        var tag = await _tagsRepository.GetTagByName(tagName);
-                        await _taskTagsRepository.AddTaskTag(new DAL.Entities.TaskTag()
+                        var tag = await _tagsService.GetTagByName(tagName);
+                        await _taskTagsService.AddTaskTag(new TaskTag()
                         {
                             TagId = tag.Id,
                             TaskId = addedTask.Id, 
@@ -52,7 +49,7 @@ namespace TaskManagementSystem.BLL.Services
                 }
                 else
                 {
-                    _logger.LogError("Task could not be added");
+                    Log.Error("Task could not be added");
 
                 }
 
@@ -64,18 +61,18 @@ namespace TaskManagementSystem.BLL.Services
             return new DTO.Task();
         }
 
-        public async Task<DTO.Task> DeleteTask(DTO.Task model)
+        public async Task<DTO.Task> DeleteTask(int id)
         {
             try
             {
-                var task = await _repository.GetTaskById(model.Id);
+                var task = await _repository.GetTaskById(id);
                 if (task != null)
                 {
                     task.IsDeleted = true;
                     var deletedTask = await _repository.DeleteTask(task);
                     if (deletedTask != null)
                     {
-                        _logger.LogInformation("Task deleted successfully");
+                        Log.Information("Task deleted successfully");
 
                         return _mapper.Map<DTO.Task>(deletedTask);
 
@@ -83,7 +80,7 @@ namespace TaskManagementSystem.BLL.Services
                 }
                 else
                 {
-                    _logger.LogError ("Task could not be deleted");
+                    Log.Error ("Task could not be deleted");
 
                 }
             }
@@ -92,6 +89,30 @@ namespace TaskManagementSystem.BLL.Services
 
             }
             return new DTO.Task();
+        }
+
+        public async Task<List<DTO.Task>> GetCompletedTasks()
+        {
+            try
+            {
+                var tasks = await _repository.GetCompletedTasks();
+                if (tasks != null)
+                {
+                    Log.Information("Tasks retrieved successfully");
+
+                    return _mapper.Map<List<DTO.Task>>(tasks);
+                }
+                else
+                {
+                    Log.Error("Tasks could not be retrieved");
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return new List<DTO.Task>();
         }
 
         public async Task<DTO.Task> GetTaskById(int id)
@@ -101,13 +122,13 @@ namespace TaskManagementSystem.BLL.Services
                 var task = await _repository.GetTaskById(id);
                 if (task != null)
                 {
-                    _logger.LogInformation("Task retrieved successfully");
+                    Log.Information("Task retrieved successfully");
 
                     return _mapper.Map<DTO.Task>(task);
                 }
                 else
                 {
-                    _logger.LogError("Task could not be added");
+                    Log.Error("Task could not be added");
 
                 }
             }
@@ -125,13 +146,13 @@ namespace TaskManagementSystem.BLL.Services
                 var tasks = await _repository.GetTasks();
                 if (tasks != null)
                 {
-                    _logger.LogInformation("Tasks retrieved successfully");
+                    Log.Information("Tasks retrieved successfully");
 
                     return _mapper.Map<List<DTO.Task>>(tasks);
                 }
                 else
                 {
-                    _logger.LogError("Task could not be retrieved");
+                    Log.Error("Task could not be retrieved");
 
                 }
             }
@@ -142,20 +163,21 @@ namespace TaskManagementSystem.BLL.Services
             return new List<DTO.Task>();
         }
 
-        public async Task<List<DTO.Task>> GetTasksByDeveloperId(int developerId)
+        public async Task<List<DTO.Task>> GetTasksByDevelopersUsername(string username)
         {
             try
             {
-                var task = await _repository.GetTasksByDeveloperId(developerId);
+                var developer= await _developersService.GetDeveloperByUsername(username);
+                var task = await _repository.GetTasksByDeveloperId(developer.Id);
                 if (task != null)
                 {
-                    _logger.LogInformation("Task retrieved successfully");
+                    Log.Information("Task retrieved successfully");
 
                     return _mapper.Map<List<DTO.Task>>(task);
                 }
                 else
                 {
-                    _logger.LogError("Task could not be added");
+                    Log.Error("Task could not be added");
 
                 }
             }
@@ -166,28 +188,49 @@ namespace TaskManagementSystem.BLL.Services
             return new List<DTO.Task>();
         }
 
-        public async Task<DTO.Task> UpdateTask(DTO.Task model)
+        public async Task<List<DTO.Task>> GetTasksByProjectName(string name)
         {
             try
             {
-                var task = await _repository.GetTaskById(model.Id);
+                var project = await _projectsService.GetProjectByName(name);
+                var task = await _repository.GetTasksByProjectId(project.Id);
                 if (task != null)
                 {
-                    task.Name = model.Name;
-                    task.EndDate = model.EndDate;
-                    task.Description = model.Description;
-                    task.Importance = model.Importance;
-                    task.ProjectId = model.ProjectId;
-                    var updated = await _repository.UpdateTask(task);
+                    Log.Information("Task retrieved successfully");
+
+                    return _mapper.Map<List<DTO.Task>>(task);
+                }
+                else
+                {
+                    Log.Error("Task could not be retrieved");
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return new List<DTO.Task>();
+        }
+
+        public async Task<DTO.Task> UpdateTask(int id, DTO.Task model)
+        {
+            try
+            {
+                var task = await _repository.GetTaskById(id);
+                if (task != null)
+                {
+                    model.Id = id;
+                    var updated = await _repository.UpdateTask(_mapper.Map<DAL.Entities.Task>(model));
                     if (updated != null)
                     {
-                        _logger.LogInformation("Task updated successfully");
+                        Log.Information("Task updated successfully");
 
                         return _mapper.Map<DTO.Task>(updated);
                     }
                     else
                     {
-                        _logger.LogError("Task could not be updated");
+                        Log.Error("Task could not be updated");
 
                     }
                 }

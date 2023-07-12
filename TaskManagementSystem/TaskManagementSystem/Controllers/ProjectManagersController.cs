@@ -11,13 +11,11 @@ namespace TaskManagementSystem.Controllers
     {
         private readonly IProjectManagersService _projectManagersService;
         private readonly ITokensService _tokensService;
-        private readonly ILogger<ProjectManagersController> _logger;
 
-        public ProjectManagersController(IProjectManagersService projectManagersService, ITokensService tokensService, ILogger<ProjectManagersController> logger)
+        public ProjectManagersController(IProjectManagersService projectManagersService, ITokensService tokensService)
         {
             _projectManagersService = projectManagersService;
             _tokensService = tokensService;
-            _logger = logger;
         }
 
         [HttpPost]
@@ -27,39 +25,19 @@ namespace TaskManagementSystem.Controllers
             return await HandleExceptionAsync(async () =>
             {
                 var pM = await _projectManagersService.AddProjectManager(model);
-                if (pM.Id > 0)
-                {
-                    _logger.LogInformation("Project manager added sucessfully");
-                    return Ok(pM);
-                }
-                else
-                {
-                    _logger.LogError("Could not add project manager");
+                return Ok(pM);
 
-                    return BadRequest("Could not add project manager");
-                }
             });
         }
 
         [HttpGet]
         [Route("api/projectManagers/{id}")]
-        public async Task<IActionResult> GetProjectManager( int id)
+        public async Task<IActionResult> GetProjectManager(int id)
         {
             return await HandleExceptionAsync(async () =>
             {
                 var pM = await _projectManagersService.GetProjectManagerById(id);
-                if (pM != null)
-                {
-                    _logger.LogInformation("Project manager retrieved sucessfully");
-
-                    return Ok(pM);
-                }
-                else
-                {
-                    _logger.LogError("Could not get project manager");
-
-                    return BadRequest("Could not get project manager!");
-                }
+                return Ok(pM);
             });
         }
 
@@ -70,18 +48,8 @@ namespace TaskManagementSystem.Controllers
             return await HandleExceptionAsync(async () =>
             {
                 var pM = await _projectManagersService.GetProjectManagers();
-                if (pM != null)
-                {
-                    _logger.LogInformation("Project managers retrieved sucessfully");
+                return Ok(pM);
 
-                    return Ok(pM);
-                }
-                else
-                {
-                    _logger.LogError("Could not get project managers");
-
-                    return BadRequest("Could not get project managers!");
-                }
             });
         }
 
@@ -92,20 +60,8 @@ namespace TaskManagementSystem.Controllers
         {
             return await HandleExceptionAsync(async () =>
             {
-                var pM = await _projectManagersService.UpdateProjectManager(model);
-
-                if (pM != null)
-                {
-                    _logger.LogInformation("Project manager updated sucessfully");
-
-                    return Ok(pM);
-                }
-                else
-                {
-                    _logger.LogError("Could not update project manager");
-
-                    return BadRequest("Could not update project manager");
-                }
+                var pM = await _projectManagersService.UpdateProjectManager(id, model);
+                return Ok(pM);
             });
         }
 
@@ -115,21 +71,9 @@ namespace TaskManagementSystem.Controllers
         {
             return await HandleExceptionAsync(async () =>
             {
-                var pM = await _projectManagersService.GetProjectManagerById(id);
-                var deleted = await _projectManagersService.DeleteProjectManager(pM);
+                var deleted = await _projectManagersService.DeleteProjectManager(id);
+                return Ok(deleted);
 
-                if (deleted.Id != 0)
-                {
-                    _logger.LogInformation("Project manager deleted sucessfully");
-
-                    return Ok(pM);
-                }
-                else
-                {
-                    _logger.LogError("Could not delete project manager");
-
-                    return BadRequest("Could not delete project manager");
-                }
             });
         }
 
@@ -141,24 +85,8 @@ namespace TaskManagementSystem.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            var pM = await _projectManagersService.GetProjectManagerByEmail(request.Email);
-            if (pM == null)
-            {
-                return BadRequest("Bad credentials");
-            }
-            if (!PasswordHashing.VerifyPassword(request.Password, pM.PasswordHash, pM.PasswordSalt))
-            {
-                return BadRequest("Bad credentials");
-            }
-
-            var accessToken = _tokensService.CreateToken(pM);
-            return Ok(new AuthenticationResponse
-            {
-                Username = pM.Username,
-                Email = pM.Email,
-                Token = accessToken.AccessToken,
-            });
+            var response = _projectManagersService.Authenticate(request);
+            return Ok(response);
         }
     }
 }

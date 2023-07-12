@@ -1,12 +1,5 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
 using TaskManagementSystem.Common;
@@ -17,13 +10,11 @@ namespace TaskManagementSystem.BLL.Services
     internal class DevelopersService : IDevelopersService
     {
         private readonly IDevelopersRepository _repository;
-        private readonly ILogger<DevelopersService> _logger;
         private readonly IMapper _mapper;
         private readonly ITokensService _tokensService;
-        public DevelopersService(IDevelopersRepository repository, ILogger<DevelopersService> logger, IMapper mapper, ITokensService tokensService)
+        public DevelopersService(IDevelopersRepository repository, IMapper mapper, ITokensService tokensService)
         {
             _repository = repository;
-            _logger = logger;
             _mapper = mapper;
             _tokensService = tokensService;
         }
@@ -39,12 +30,12 @@ namespace TaskManagementSystem.BLL.Services
 
                 if (addedDeveloper.Id > 0)
                 {
-                    _logger.LogInformation("Developer added successfully");
+                    Log.Information("Developer added successfully");
                     return _mapper.Map<DTO.Developer>(addedDeveloper);
                 }
                 else
                 {
-                    _logger.LogError("Developer could not be added");
+                    Log.Error("Developer could not be added");
 
                 }
 
@@ -60,11 +51,11 @@ namespace TaskManagementSystem.BLL.Services
             return new DTO.Developer();
         }
 
-        public async Task<Developer> DeleteDeveloper(Developer model)
+        public async Task<Developer> DeleteDeveloper(int id)
         {
             try
             {
-                var developer = await _repository.GetDeveloperById(model.Id);
+                var developer = await _repository.GetDeveloperById(id);
                 if (developer != null)
                 {
                     developer.IsDeleted = true;
@@ -72,14 +63,14 @@ namespace TaskManagementSystem.BLL.Services
                     var deletedDeveloper = await _repository.DeleteDeveloper(developer);
                     if (deletedDeveloper != null)
                     {
-                        _logger.LogInformation("Developer deleted successfully");
+                        Log.Information("Developer deleted successfully");
 
                         return _mapper.Map<DTO.Developer>(deletedDeveloper);
 
                     }
                     else
                     {
-                        _logger.LogError("Developer could not be deleted");
+                        Log.Error("Developer could not be deleted");
 
                     }
                 }
@@ -98,13 +89,13 @@ namespace TaskManagementSystem.BLL.Services
                 var developer = await _repository.GetDeveloperById(id);
                 if (developer != null)
                 {
-                    _logger.LogInformation("Developer retrieved successfully");
+                    Log.Information("Developer retrieved successfully");
 
                     return _mapper.Map<DTO.Developer>(developer);
                 }
                 else
                 {
-                    _logger.LogError("Developer could not be retrieved");
+                    Log.Error("Developer could not be retrieved");
 
                 }
             }
@@ -122,13 +113,37 @@ namespace TaskManagementSystem.BLL.Services
                 var developer = await _repository.GetDeveloperByEmail(email);
                 if (developer != null)
                 {
-                    _logger.LogInformation("Developer retrieved successfully");
+                    Log.Information("Developer retrieved successfully");
 
                     return _mapper.Map<DTO.Developer>(developer);
                 }
                 else
                 {
-                    _logger.LogError("Developer could not be retrieved");
+                    Log.Error("Developer could not be retrieved");
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return new DTO.Developer();
+        }
+
+        public async Task<Developer> GetDeveloperByUsername(string name)
+        { 
+            try
+            {
+                var developer = await _repository.GetDeveloperByUsername(name);
+                if (developer != null)
+                {
+                    Log.Information("Developer retrieved successfully");
+
+                    return _mapper.Map<DTO.Developer>(developer);
+                }
+                else
+                {
+                    Log.Error("Developer could not be retrieved");
 
                 }
             }
@@ -146,13 +161,13 @@ namespace TaskManagementSystem.BLL.Services
                 var developers = await _repository.GetDevelopers();
                 if (developers != null)
                 {
-                    _logger.LogInformation("Developers retrieved successfully");
+                    Log.Information("Developers retrieved successfully");
 
                     return _mapper.Map<List<DTO.Developer>>(developers);
                 }
                 else
                 {
-                    _logger.LogError("Developers could not be retrieved");
+                    Log.Error("Developers could not be retrieved");
 
                 }
             }
@@ -163,28 +178,24 @@ namespace TaskManagementSystem.BLL.Services
             return new List<Developer>();
         }
 
-        public async Task<Developer> UpdateDeveloper(Developer model)
+        public async Task<Developer> UpdateDeveloper(int id, Developer model)
         {
             try
             {
-                var developer = await _repository.GetDeveloperById(model.Id);
+                var developer = await _repository.GetDeveloperById(id);
                 if (developer != null)
                 {
-                    developer.FirstName = model.FirstName;
-                    developer.LastName = model.LastName;
-                    developer.ManagerId = model.ManagerId;
-                    developer.PersonType = model.PersonType;
-                    developer.Birthday = model.Birthday;
-                    var updated = await _repository.UpdateDeveloper(developer);
+                    model.Id = id;
+                    var updated = await _repository.UpdateDeveloper(_mapper.Map<DAL.Entities.Developer>(model));
                     if (updated != null)
                     {
-                        _logger.LogInformation("Developer updated successfully");
+                        Log.Information("Developer updated successfully");
 
                         return _mapper.Map<DTO.Developer>(updated);
                     }
                     else
                     {
-                        _logger.LogError("Developer could not be updated");
+                        Log.Error("Developer could not be updated");
 
                     }
                 }
@@ -199,19 +210,16 @@ namespace TaskManagementSystem.BLL.Services
         {
             try
             {
-                var developer = await GetDeveloperByEmail(request.Email);
-                if (developer != null)
+                var developer = await _repository.GetDeveloperByEmail(request.Email);
+                if (developer != null && PasswordHashing.VerifyPassword(request.Password, developer.PasswordHash, developer.PasswordSalt))
                 {
-                    if (PasswordHashing.VerifyPassword(request.Password, developer.PasswordHash, developer.PasswordSalt))
+                    var accessToken = _tokensService.CreateToken(developer);
+                    return new AuthenticationResponse
                     {
-                        var accessToken = _tokensService.CreateToken(developer);
-                        return new AuthenticationResponse
-                        {
-                            Username = developer.Username,
-                            Email = developer.Email,
-                            Token = accessToken.AccessToken,
-                        };
-                    }
+                        Username = developer.Username,
+                        Email = developer.Email,
+                        Token = accessToken.AccessToken,
+                    };
                 }
             }
             catch (Exception ex)

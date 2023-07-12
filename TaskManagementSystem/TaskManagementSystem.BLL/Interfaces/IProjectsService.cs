@@ -12,7 +12,8 @@ namespace TaskManagementSystem.BLL.Interfaces
         Task<Project> AddProject(Project model);
         Task<List<Project>> GetProjects();
         Task<Project> GetProjectById(int id);
-        Task<Project> UpdateProject(Project model);
-        Task<Project> DeleteProject(Project model);
+        Task<Project> GetProjectByName(string name);
+        Task<Project> UpdateProject(int id, Project model);
+        Task<Project> DeleteProject(int id);
     }
 }
