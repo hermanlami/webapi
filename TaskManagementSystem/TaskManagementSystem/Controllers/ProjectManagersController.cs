@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TaskManagementSystem.BLL;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
-using TaskManagementSystem.Middlewares;
 
 namespace TaskManagementSystem.Controllers
 {

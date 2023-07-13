@@ -3,10 +3,13 @@ using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
 using Serilog;
 using Serilog.Configuration;
+using TaskManagementSystem.BLL;
 
 namespace TaskManagementSystem.Controllers
 {
     [ApiController]
+    [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Developer" } })]
+
     public class TagsController : BaseController
     {
         private readonly ITagsService _tagsService;

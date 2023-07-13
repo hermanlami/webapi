@@ -20,64 +20,51 @@ namespace TaskManagementSystem.DAL.Repositories
         }
         public async Task<Developer> AddDeveloper(Developer entity)
         {
-            using (_context)
-            {
-                await _context.AddAsync(entity);
-                await _context.SaveChangesAsync();
-                return entity;
-            }
+
+            await _context.AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
 
         public async Task<Developer> DeleteDeveloper(Developer entity)
         {
-            using (_context)
-            {
-                _context.Update(entity);
-                await _context.SaveChangesAsync();
-                return entity;
-            }
+
+            _context.Update(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
 
         public async Task<Developer> GetDeveloperByEmail(string email)
         {
-            using (_context)
-            {
-                return (Developer)await _context.People.Where(x => x.IsDeleted != true && x.Email == email).FirstOrDefaultAsync();
-            }
+
+            return (Developer)await _context.People.Where(x => x.IsDeleted != true && x.PersonType == PersonType.Developer && x.Email == email).FirstOrDefaultAsync();
         }
 
         public async Task<Developer> GetDeveloperById(int id)
         {
-            using (_context)
-            {
-                return (Developer)await _context.People.Where(x => x.IsDeleted != true && x.Id == id).FirstOrDefaultAsync();
-            }
+
+            return (Developer)await _context.People.Where(x => x.IsDeleted != true && x.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<Developer> GetDeveloperByUsername(string username)
         {
-            using (_context)
-            {
-                return (Developer)await _context.People.Where(x => x.IsDeleted != true && x.Username == username).FirstOrDefaultAsync();
-            }
+
+            return (Developer)await _context.People.Where(x => x.IsDeleted != true && x.PersonType == PersonType.Developer && x.Username == username).FirstOrDefaultAsync();
         }
 
         public async Task<List<Developer>> GetDevelopers()
         {
-            using (_context)
-            {
-                return await _context.People.Where(x => x.PersonType == PersonType.Developer && x.IsDeleted != true).Cast<Developer>().ToListAsync();
-            }
+
+            return await _context.People.Where(x => x.PersonType == PersonType.Developer && x.IsDeleted != true).Cast<Developer>().ToListAsync();
         }
 
         public async Task<Developer> UpdateDeveloper(Developer entity)
         {
-            using (_context)
-            {
-                _context.Update(entity);
-                await _context.SaveChangesAsync();
-                return entity;
-            }
+
+            _context.Update(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
+
     }
 }

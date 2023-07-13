@@ -9,7 +9,6 @@ namespace TaskManagementSystem.BLL.DTO
 {
     public class Developer : Person
     {
-        public int ManagerId { get; set; }
 
     }
 }

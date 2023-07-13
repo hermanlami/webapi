@@ -12,6 +12,7 @@ using Serilog;
 namespace TaskManagementSystem.Controllers
 {
     [ApiController]
+
     public class DevelopersController : BaseController
     {
         private readonly IDevelopersService _developersService;

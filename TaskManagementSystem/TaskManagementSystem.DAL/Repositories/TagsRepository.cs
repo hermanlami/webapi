@@ -20,46 +20,36 @@ namespace TaskManagementSystem.DAL.Repositories
         }
         public async Task<Tag> AddTag(Tag entity)
         {
-            using (_context)
-            {
-                await _dbSet.AddAsync(entity);
-                await _context.SaveChangesAsync();
-                return entity;
-            }
+
+            await _dbSet.AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
 
         public async Task<Tag> DeleteTag(Tag entity)
         {
-            using (_context)
-            {
-                _dbSet.Update(entity);
-                await _context.SaveChangesAsync();
-                return entity;
-            }
+
+            _dbSet.Update(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
 
         public async Task<Tag> GetTagById(int id)
         {
-            using (_context)
-            {
-                return await _dbSet.Where(x => x.IsDeleted != true&& x.Id == id).FirstOrDefaultAsync();
-            }
+
+            return await _dbSet.Where(x => x.IsDeleted != true && x.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<Tag> GetTagByName(string name)
         {
-            using (_context)
-            {
-                return await _dbSet.Where(x => x.IsDeleted != true && x.Name == name).FirstOrDefaultAsync();
-            }
+
+            return await _dbSet.Where(x => x.IsDeleted != true && x.Name == name).FirstOrDefaultAsync();
         }
 
         public async Task<List<Tag>> GetTags()
         {
-            using (_context)
-            {
-                return await _dbSet.Where(x => x.IsDeleted != true).ToListAsync();
-            }
+
+            return await _dbSet.Where(x => x.IsDeleted != true).ToListAsync();
         }
     }
 }

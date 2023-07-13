@@ -19,17 +19,14 @@ namespace TaskManagementSystem.BLL.Services
         {
             try
             {
-                var dalTaskTag = _mapper.Map<DAL.Entities.TaskTag>(model);
-                var addedTaskTag = await _repository.AddTaskTag(dalTaskTag);
+                var addedTaskTag = await _repository.AddTaskTag(_mapper.Map<DAL.Entities.TaskTag>(model));
                 if (addedTaskTag.Id > 0)
                 {
-                    Log.Information("Task tag added successfully");
+                    Log.Information($"Task tag added successfully");
                     return _mapper.Map<TaskTag>(addedTaskTag);
                 }
-                else
-                {
-                    Log.Error("Task tag could not be added");
-                }
+
+                Log.Information("Task tag could not be added");
 
             }
             catch (Exception ex)
@@ -44,22 +41,19 @@ namespace TaskManagementSystem.BLL.Services
             try
             {
                 var taskTag = await _repository.GetTaskTagById(id);
-                if (taskTag != null)
+                if (taskTag == null)
                 {
-                    var deletedTaskTag = await _repository.DeleteTaskTag(taskTag);
-                    if (deletedTaskTag != null)
-                    {
-                        Log.Information("Task tag deleted successfully");
+                    Log.Information("Task tag could not be deleted");
+                    return new DTO.TaskTag();
 
-                        return _mapper.Map<TaskTag>(deletedTaskTag);
-
-
-                    }
-                    else
-                    {
-                        Log.Error("Task tag could not be deleted");
-                    }
                 }
+                var deletedTaskTag = await _repository.DeleteTaskTag(taskTag);
+                if (deletedTaskTag != null)
+                {
+                    Log.Information("Task tag deleted successfully");
+                    return _mapper.Map<TaskTag>(deletedTaskTag);
+                }
+
             }
             catch (Exception ex)
             {
@@ -76,20 +70,37 @@ namespace TaskManagementSystem.BLL.Services
                 if (task != null)
                 {
                     Log.Information("Task tag retrieved successfully");
-
                     return _mapper.Map<TaskTag>(task);
                 }
-                else
-                {
-                    Log.Error("Task tag could not be retrieved");
 
-                }
+                Log.Information("Task tag could not be retrieved");
             }
             catch (Exception ex)
             {
 
             }
             return new TaskTag();
+        }
+
+        public async Task<List<TaskTag>> GetTaskTagByTagId(int id)
+        {
+            try
+            {
+                var task = await _repository.GetTaskTagByTagId(id);
+                if (task != null)
+                {
+                    Log.Information("Task tag retrieved successfully");
+                    return _mapper.Map<List<DTO.TaskTag>>(task);
+                }
+
+                Log.Information("Task tag could not be retrieved");
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return new List<TaskTag>();
         }
 
         public async Task<List<TaskTag>> GetTaskTags()
@@ -100,14 +111,11 @@ namespace TaskManagementSystem.BLL.Services
                 if (taskTags != null)
                 {
                     Log.Information("Task tags retrieved successfully");
-
                     return _mapper.Map<List<TaskTag>>(taskTags);
                 }
-                else
-                {
-                    Log.Error("Task tags could not be retrieved");
 
-                }
+                Log.Information("Task tags could not be retrieved");
+
             }
             catch (Exception ex)
             {
@@ -121,23 +129,19 @@ namespace TaskManagementSystem.BLL.Services
             try
             {
                 var taskTag = await _repository.GetTaskTagById(model.Id);
-                if (taskTag != null)
+                if (taskTag == null)
                 {
-                    model.Id = taskTag.Id;
-                    taskTag.TaskId = model.TaskId;
-                    var updated = await _repository.UpdateTaskTag(_mapper.Map<DAL.Entities.TaskTag>(model));
-                    if (updated != null)
-                    {
-                        Log.Information("Task tag updated successfully");
-
-                        return _mapper.Map<TaskTag>(updated);
-                    }
-                    else
-                    {
-                        Log.Error("Task tag could not be updated");
-
-                    }
+                    Log.Information("Task tag not found");
+                    return new DTO.TaskTag();
                 }
+                var updated = await _repository.UpdateTaskTag(_mapper.Map<DAL.Entities.TaskTag>(model));
+                if (updated != null)
+                {
+                    Log.Information("Task tag updated successfully");
+                    return _mapper.Map<TaskTag>(updated);
+                }
+                Log.Information("Task tag could not be updated");
+
             }
             catch (Exception ex)
             {

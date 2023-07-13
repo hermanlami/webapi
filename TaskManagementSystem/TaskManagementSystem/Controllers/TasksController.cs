@@ -78,7 +78,7 @@ namespace TaskManagementSystem.Controllers
         }
 
         [HttpGet]
-        [Route("api/tasks/byTagName/{name}")]
+        [Route("api/tasks/bytagname/{name}")]
         public async Task<IActionResult> GetTasksByTagName(string name)
         {
             return await HandleExceptionAsync(async () =>
@@ -100,6 +100,18 @@ namespace TaskManagementSystem.Controllers
 
                 return Ok(task);
 
+            });
+        }
+        
+        [HttpPut]
+        [Route("api/tasks/complete/{id}")]
+        public async Task<IActionResult> MarkTaskAsCompleted(int id)
+        {
+            return await HandleExceptionAsync(async () =>
+            {
+                var task = await _tasksService.MarkTaskAsCompleted(id);
+
+                return Ok(task);
             });
         }
 

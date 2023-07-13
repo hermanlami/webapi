@@ -21,71 +21,54 @@ namespace TaskManagementSystem.DAL.Repositories
         }
         public async Task<Entities.Task> AddTask(Entities.Task entity)
         {
-            using (_context)
-            {
-                await _dbSet.AddAsync(entity);
-                await _context.SaveChangesAsync();
-                return entity;
-            }
+
+            await _dbSet.AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
 
         public async Task<Entities.Task> DeleteTask(Entities.Task entity)
         {
-            using (_context)
-            {
-                _dbSet.Update(entity);
-                await _context.SaveChangesAsync();
-                return entity;
-            }
+
+            _dbSet.Update(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
 
         public async Task<Entities.Task> GetTaskById(int id)
         {
-            using (_context)
-            {
-                return await _dbSet.Where(x => x.IsDeleted != true && x.Id == id).FirstOrDefaultAsync();
-            }
+
+            return await _dbSet.Where(x => x.IsDeleted != true && x.Id == id).FirstOrDefaultAsync();
         }
 
         public Task<List<Entities.Task>> GetTasks()
         {
-            using (_context)
-            {
-                return _dbSet.Where(x => x.IsDeleted != true&& x.Status==false).OrderBy(x => x.EndDate).ToListAsync();
-            }
+
+            return _dbSet.Where(x => x.IsDeleted != true && x.Status == false).OrderBy(x => x.EndDate).ToListAsync();
         }
         public Task<List<Entities.Task>> GetCompletedTasks()
         {
-            using (_context)
-            {
-                return _dbSet.Where(x => x.IsDeleted != true && x.Status == true).ToListAsync();
-            }
+
+            return _dbSet.Where(x => x.IsDeleted != true && x.Status == true).ToListAsync();
         }
 
         public Task<List<Entities.Task>> GetTasksByDeveloperId(int developerId)
         {
-            using (_context)
-            {
-                return _dbSet.Where(x => x.IsDeleted != true && x.DeveloperId == developerId && x.Status == false).OrderBy(x => x.EndDate).ThenByDescending(x => x.Importance).ToListAsync();
-            }
+
+            return _dbSet.Where(x => x.IsDeleted != true && x.DeveloperId == developerId && x.Status == false).OrderBy(x => x.EndDate).ThenByDescending(x => x.Importance).ToListAsync();
         }
 
         public Task<List<Entities.Task>> GetTasksByProjectId(int id)
         {
-            using (_context)
-            {
-                return _dbSet.Where(x => x.IsDeleted != true && x.Status == false && x.ProjectId == id).ToListAsync();
-            }
+
+            return _dbSet.Where(x => x.IsDeleted != true && x.Status == false && x.ProjectId == id).ToListAsync();
         }
 
         public async Task<Entities.Task> UpdateTask(Entities.Task entity)
         {
-            using (_context)
-            {
-                _dbSet.Update(entity);
-                await _context.SaveChangesAsync();
-                return entity;
-            }
+            _dbSet.Update(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
     }
 }

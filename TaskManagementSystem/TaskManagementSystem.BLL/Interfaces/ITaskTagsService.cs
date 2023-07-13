@@ -11,6 +11,7 @@ namespace TaskManagementSystem.BLL.Interfaces
     {
         Task<TaskTag> AddTaskTag(TaskTag model);
         Task<List<TaskTag>> GetTaskTags();
+        Task<List<TaskTag>> GetTaskTagByTagId(int id);
         Task<TaskTag> GetTaskTagById(int id);
         Task<TaskTag> UpdateTaskTag(TaskTag model);
         Task<TaskTag> DeleteTaskTag(int id);

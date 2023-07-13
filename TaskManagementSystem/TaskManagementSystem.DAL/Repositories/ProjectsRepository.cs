@@ -20,56 +20,44 @@ namespace TaskManagementSystem.DAL.Repositories
         }
         public async Task<Project> AddProject(Project entity)
         {
-            using (_context)
-            {
-                await _dbSet.AddAsync(entity);
-                await _context.SaveChangesAsync();
-                return entity;
-            }
+
+            await _dbSet.AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
 
         public async Task<Project> DeleteProject(Project entity)
         {
-            using (_context)
-            {
-                _dbSet.Update(entity);
-                await _context.SaveChangesAsync();
-                return entity;
-            }
+
+            _dbSet.Update(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
 
         public async Task<Project> GetProjectById(int id)
         {
-            using (_context)
-            {
-                return await _dbSet.Where(x => x.IsDeleted != true && x.Id == id).FirstOrDefaultAsync();
-            }
+
+            return await _dbSet.Where(x => x.IsDeleted != true && x.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<Project> GetProjectByName(string name)
         {
-            using (_context)
-            {
-                return await _dbSet.Where(x => x.IsDeleted != true && x.Name == name).FirstOrDefaultAsync();
-            }
+
+            return await _dbSet.Where(x => x.IsDeleted != true && x.Name == name).FirstOrDefaultAsync();
         }
 
         public async Task<List<Project>> GetProjects()
         {
-            using (_context)
-            {
-                return await _dbSet.Where(x => x.IsDeleted != true).ToListAsync();
-            }
+
+            return await _dbSet.Where(x => x.IsDeleted != true).ToListAsync();
         }
 
         public async Task<Project> UpdateProject(Project entity)
         {
-            using (_context)
-            {
-                _dbSet.Update(entity);
-                await _context.SaveChangesAsync();
-                return entity;
-            }
+
+            _dbSet.Update(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
     }
 }

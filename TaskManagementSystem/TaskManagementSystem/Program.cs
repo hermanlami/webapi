@@ -6,16 +6,17 @@ using Newtonsoft.Json.Serialization;
 using System.Text;
 using TaskManagementSystem.BLL;
 using TaskManagementSystem.Middlewares;
+using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.RegisterBllServices(builder.Configuration);
 
-    Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .WriteTo.File("C:\\Users\\Lenovo\\Documents\\TMSLogs\\TmsLogs.txt", rollingInterval: RollingInterval.Day)
-                .WriteTo.MSSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), "Logs", autoCreateSqlTable: true)
-                .CreateLogger(); 
+Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.File("C:\\Users\\Lenovo\\Documents\\TMSLogs\\TmsLogs.txt", rollingInterval: RollingInterval.Day)
+            .WriteTo.MSSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), "Logs", autoCreateSqlTable: true)
+            .CreateLogger();
 
 builder.Services.AddLogging(loggingBuilder =>
 {
@@ -23,12 +24,15 @@ builder.Services.AddLogging(loggingBuilder =>
     loggingBuilder.AddSerilog();
 });
 
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+{
+    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+});
 
 builder.Services.AddTransient<CustomErrorMiddleware>();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-builder.Services.AddControllers().AddNewtonsoftJson();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>

@@ -15,7 +15,8 @@ namespace TaskManagementSystem.BLL.Interfaces
         Task<DTO.Task> GetTaskById(int id);
         Task<List<DTO.Task>> GetTasksByDevelopersUsername(string username);
         Task<List<DTO.Task>> GetTasksByProjectName(string name);
-        //Task<IActionResult> GetTasksByTagName(string name);
+        Task<List<DTO.Task>> GetTasksByTagName(string name);
+        Task<DTO.Task> MarkTaskAsCompleted(int id);
         Task<DTO.Task> UpdateTask(int id, DTO.Task model);
         Task<DTO.Task> DeleteTask(int id);
     }

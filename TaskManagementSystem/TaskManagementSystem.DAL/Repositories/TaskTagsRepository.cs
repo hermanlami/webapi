@@ -20,48 +20,43 @@ namespace TaskManagementSystem.DAL.Repositories
         }
         public async Task<TaskTag> AddTaskTag(TaskTag entity)
         {
-            using (_context)
-            {
-                await _dbSet.AddAsync(entity);
-                await _context.SaveChangesAsync();
-                return entity;
-            }
+
+            await _dbSet.AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
 
         public async Task<TaskTag> DeleteTaskTag(TaskTag entity)
         {
-            using (_context)
-            {
-                _dbSet.Update(entity);
-                await _context.SaveChangesAsync();
-                return entity;
-            }
+
+            _dbSet.Update(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
 
         public async Task<TaskTag> GetTaskTagById(int id)
         {
-            using (_context)
-            {
-                return await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
-            }
+
+            return await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<List<TaskTag>> GetTaskTagByTagId(int id)
+        {
+
+            return await _dbSet.Where(x => x.TagId == id).ToListAsync();
         }
 
         public async Task<List<TaskTag>> GetTaskTags()
         {
-            using (_context)
-            {
-                return await _dbSet.ToListAsync();
-            }
+
+            return await _dbSet.ToListAsync();
         }
 
         public async Task<TaskTag> UpdateTaskTag(TaskTag entity)
         {
-            using (_context)
-            {
-                _dbSet.Update(entity);
-                await _context.SaveChangesAsync();
-                return entity;
-            }
+            _dbSet.Update(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
     }
 }

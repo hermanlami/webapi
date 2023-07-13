@@ -2,6 +2,7 @@
 using Serilog;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
+using TaskManagementSystem.Common;
 using TaskManagementSystem.DAL.Interfaces;
 
 namespace TaskManagementSystem.BLL.Services
@@ -19,19 +20,25 @@ namespace TaskManagementSystem.BLL.Services
         {
             try
             {
-                var dalTag =_mapper.Map<DAL.Entities.Tag>(model);
-                var addedTag = await _repository.AddTag(dalTag);
+                if (await _repository.GetTagByName(model.Name) != null)
+                {
+                    Log.Error($"Tag {model.Name} already exists");
+                    throw new CustomException($"Tag {model.Name} already exists");
+                }
+                var addedTag = await _repository.AddTag(_mapper.Map<DAL.Entities.Tag>(model));
                 if (addedTag.Id > 0)
                 {
-                    Log.Information("Tag added successfully");
+                    Log.Information($"Tag {addedTag.Name} added successfully");
                     return _mapper.Map<Tag>(addedTag);
                 }
-                else
-                {
-                    Log.Error("Tag could not be added");
 
-                }
+                Log.Error("Tag could not be added");
+                throw new CustomException("Tag could not be added");
 
+            }
+            catch (CustomException ex)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -45,24 +52,27 @@ namespace TaskManagementSystem.BLL.Services
             try
             {
                 var tag = await _repository.GetTagById(id);
-                if (tag != null)
+                if (tag == null)
                 {
-                    tag.IsDeleted = true;
+                    Log.Error("Tag not found");
+                    throw new CustomException("Tag not found");
 
-                    var deletedTag = await _repository.DeleteTag(tag);
-                    if (deletedTag != null)
-                    {
-                        Log.Information("Tag deleted successfully");
-
-                        return _mapper.Map<Tag>(deletedTag);
-
-                    }
-                    else
-                    {
-                        Log.Error("Tag could not be deleted");
-
-                    }
                 }
+
+                tag.IsDeleted = true;
+                var deletedTag = await _repository.DeleteTag(tag);
+                if (deletedTag != null)
+                {
+                    Log.Information($"Tag {deletedTag.Name} deleted successfully");
+                    return _mapper.Map<Tag>(deletedTag);
+                }
+
+                Log.Error("Tag could not be deleted");
+                throw new CustomException("Tag could not be deleted");
+            }
+            catch (CustomException ex)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -76,17 +86,18 @@ namespace TaskManagementSystem.BLL.Services
             try
             {
                 var tag = await _repository.GetTagById(id);
-                if (tag != null)
+                if (tag == null)
                 {
-                    Log.Information("Tag retrieved successfully");
-
-                    return _mapper.Map<Tag>(tag);
-                }
-                else
-                {
-                    Log.Error("Tag could not be retrieved");
+                    Log.Error("Tag not found");
+                    throw new CustomException("Tag not found");
 
                 }
+                Log.Information($"Tag {tag.Name} retrieved successfully");
+                return _mapper.Map<Tag>(tag);
+            }
+            catch (CustomException ex)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -102,15 +113,15 @@ namespace TaskManagementSystem.BLL.Services
                 var tag = await _repository.GetTagByName(name);
                 if (tag != null)
                 {
-                    Log.Information("Tag retrieved successfully");
-
+                    Log.Information($"Tag {name} retrieved successfully");
                     return _mapper.Map<Tag>(tag);
                 }
-                else
-                {
-                    Log.Error("Tag could not be retrieved");
-
-                }
+                Log.Information("Tag not found");
+                throw new CustomException("Tag not found");
+            }
+            catch (CustomException ex)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -129,11 +140,14 @@ namespace TaskManagementSystem.BLL.Services
                     Log.Information("Tags retrieved successfully");
                     return _mapper.Map<List<Tag>>(tags);
                 }
-                else
-                {
-                    Log.Error("Tags could not be retrieved");
 
-                }
+                Log.Error("Tags could not be retrieved");
+                throw new CustomException("Tag could not be retrieved");
+
+            }
+            catch (CustomException ex)
+            {
+                throw;
             }
             catch (Exception ex)
             {

@@ -2,6 +2,8 @@
 using Serilog;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
+using TaskManagementSystem.Common;
+using TaskManagementSystem.Common.Enums;
 using TaskManagementSystem.DAL.Interfaces;
 
 namespace TaskManagementSystem.BLL.Services
@@ -21,22 +23,30 @@ namespace TaskManagementSystem.BLL.Services
         {
             try
             {
+                if (await _repository.GetProjectManagerByEmail(model.Email) != null)
+                {
+                    Log.Error($"Project manager with email {model.Email} already exists");
+                    throw new CustomException($"Project manager with email {model.Email} already exists");
+                }
                 var dalPM = _mapper.Map<DAL.Entities.ProjectManager>(model);
-                byte[] salt;
-                dalPM.PasswordHash = PasswordHashing.HashPasword(model.Password, out salt);
+                dalPM.PasswordHash = PasswordHashing.HashPasword(model.Password, out byte[] salt);
                 dalPM.PasswordSalt = salt;
+                dalPM.PersonType = PersonType.ProjectManager;
                 var addedPM = await _repository.AddProjectManager(dalPM);
 
                 if (addedPM.Id > 0)
                 {
-                    Log.Information("Project manager added successfully");
+                    Log.Information($"Project manager with username {addedPM.Username} added successfully");
                     return _mapper.Map<ProjectManager>(addedPM);
                 }
-                else
-                {
-                    Log.Error("Project manager could not be added");
-                }
 
+                Log.Information($"Project manager with username {dalPM.Username} could not be added");
+                throw new CustomException($"Project manager could not be added");
+
+            }
+            catch (CustomException ex)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -50,23 +60,29 @@ namespace TaskManagementSystem.BLL.Services
             try
             {
                 var pM = await _repository.GetProjectManagerById(id);
-                if (pM != null)
+                if (pM == null)
                 {
-                    pM.IsDeleted = true;
-                    var deletedPM = await _repository.DeleteProjectManager(pM);
-                    if (deletedPM != null)
-                    {
-                        Log.Information("Project manager deleted successfully");
-
-                        return _mapper.Map<ProjectManager>(deletedPM);
-
-                    }
-                    else
-                    {
-                        Log.Error("Project manager could not be deleted");
-
-                    }
+                    Log.Information("Project manager not found");
+                    throw new CustomException($"Project manager not found");
                 }
+
+                pM.IsDeleted = true;
+                var deletedPM = await _repository.DeleteProjectManager(pM);
+                if (deletedPM != null)
+                {
+                    Log.Information($"Project manager with username {deletedPM.Username} deleted successfully");
+                    return _mapper.Map<ProjectManager>(deletedPM);
+
+                }
+
+                Log.Error($"Project manager with username {pM.Username} could not be deleted");
+                throw new CustomException($"Project manager {pM.Username} could not be deleted");
+
+
+            }
+            catch (CustomException ex)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -82,15 +98,18 @@ namespace TaskManagementSystem.BLL.Services
                 var pM = await _repository.GetProjectManagerById(id);
                 if (pM != null)
                 {
-                    Log.Information("Project manager retrieved successfully");
-
+                    Log.Information($"Project manager with username {pM.Username} retrieved successfully");
                     return _mapper.Map<ProjectManager>(pM);
                 }
-                else
-                {
-                    Log.Error("Project manager could not be retrieved");
 
-                }
+                Log.Information("Project manager could not be retrieved");
+                throw new CustomException($"Project manager not found");
+
+
+            }
+            catch (CustomException ex)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -106,15 +125,16 @@ namespace TaskManagementSystem.BLL.Services
                 var pM = await _repository.GetProjectManagerByEmail(email);
                 if (pM != null)
                 {
-                    Log.Information("Project manager retrieved successfully");
-
+                    Log.Information($"Project manager with username {pM.Username} retrieved successfully");
                     return _mapper.Map<ProjectManager>(pM);
                 }
-                else
-                {
-                    Log.Error("Project manager could not be retrieved");
 
-                }
+                Log.Information("Project manager could not be retrieved");
+
+            }
+            catch (CustomException ex)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -131,14 +151,17 @@ namespace TaskManagementSystem.BLL.Services
                 if (pMs != null)
                 {
                     Log.Information("Project managers retrieved successfully");
-
                     return _mapper.Map<List<ProjectManager>>(pMs);
                 }
-                else
-                {
-                    Log.Error("Project managers could not be retrieved");
 
-                }
+                Log.Information("Project managers could not be retrieved");
+                throw new CustomException($"Project managers could not be retrieved");
+
+
+            }
+            catch (CustomException ex)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -152,22 +175,25 @@ namespace TaskManagementSystem.BLL.Services
             try
             {
                 var pM = await _repository.GetProjectManagerById(id);
-                if (pM != null)
+                if (pM == null)
                 {
-                    model.Id = id;
-                    var updated = await _repository.UpdateProjectManager(_mapper.Map<DAL.Entities.ProjectManager>(model));
-                    if (updated != null)
-                    {
-                        Log.Information("Project manager updated successfully");
-
-                        return _mapper.Map<ProjectManager>(updated);
-                    }
-                    else
-                    {
-                        Log.Error("Project manager could not be updated");
-
-                    }
+                    Log.Information("Project manager not found");
+                    throw new CustomException($"Project manager not found");
                 }
+                model.Id = id;
+                var updated = await _repository.UpdateProjectManager(_mapper.Map<DAL.Entities.ProjectManager>(model));
+                if (updated != null)
+                {
+                    Log.Information($"Project manager with username {updated.Username} updated successfully");
+                    return _mapper.Map<ProjectManager>(updated);
+                }
+
+                Log.Information($"Project manager with username {pM.Username} could not be updated");
+                throw new CustomException($"Project manager could not be updated");
+            }
+            catch (CustomException ex)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -180,7 +206,10 @@ namespace TaskManagementSystem.BLL.Services
             try
             {
                 var pM = await _repository.GetProjectManagerByEmail(request.Email);
-
+                if(pM == null)
+                {
+                    throw new CustomException($"Project manager with email {request.Email} not found");
+                }
                 if (pM != null && PasswordHashing.VerifyPassword(request.Password, pM.PasswordHash, pM.PasswordSalt))
                 {
                     var accessToken = _tokensService.CreateToken(pM);
@@ -191,6 +220,10 @@ namespace TaskManagementSystem.BLL.Services
                         Token = accessToken.AccessToken,
                     };
                 }
+            }
+            catch (CustomException ex)
+            {
+                throw;
             }
             catch (Exception ex)
             {
