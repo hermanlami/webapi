@@ -27,6 +27,11 @@ namespace TaskManagementSystem.BLL
             CreateMap<DTO.Task, DAL.Entities.Task>();
             CreateMap<DAL.Entities.Task, DTO.Task>();
 
+            CreateMap<DAL.Entities.Admin, Person>();
+            CreateMap<DAL.Entities.Developer, Person>();
+            CreateMap<DAL.Entities.ProjectManager, Person>();
+
+
         }
     }
 }

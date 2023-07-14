@@ -82,17 +82,5 @@ namespace TaskManagementSystem.Controllers
                 return Ok(deleted);   
             });
         }
-
-        [HttpPost]
-        [Route("api/developers/login")]
-        public async Task<ActionResult<AuthenticationResponse>> Authenticate([FromBody] AuthenticationRequest request)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var response = await _developersService.Authenticate(request);
-            return Ok(response);
-        }
     }
 }

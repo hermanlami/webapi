@@ -18,6 +18,7 @@ namespace TaskManagementSystem.BLL
             services.AddScoped<IProjectManagersService, ProjectManagersService>();
             services.AddScoped<IProjectsService, ProjectsService>();
             services.AddScoped<ITokensService, TokensService>();
+            services.AddScoped<IAuthenticationsService, AuthenticationsService>();
         }
     }
 }

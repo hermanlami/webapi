@@ -7,6 +7,7 @@ using System.Text;
 using TaskManagementSystem.BLL;
 using TaskManagementSystem.Middlewares;
 using Newtonsoft.Json;
+using SendGrid.Helpers.Mail;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,10 +30,9 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
 });
 
-builder.Services.AddTransient<CustomErrorMiddleware>();
+builder.Services.AddScoped<CustomErrorMiddleware>();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
-
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
@@ -62,8 +62,6 @@ builder.Services.AddSwaggerGen(option =>
         }
     });
 });
-
-builder.Services.AddScoped<CustomErrorMiddleware>();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

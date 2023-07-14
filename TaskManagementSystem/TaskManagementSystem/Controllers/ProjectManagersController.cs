@@ -74,17 +74,5 @@ namespace TaskManagementSystem.Controllers
 
             });
         }
-
-        [HttpPost]
-        [Route("api/projectManagers/login")]
-        public async Task<ActionResult<AuthenticationResponse>> Authenticate([FromBody] AuthenticationRequest request)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var response = _projectManagersService.Authenticate(request);
-            return Ok(response);
-        }
     }
 }

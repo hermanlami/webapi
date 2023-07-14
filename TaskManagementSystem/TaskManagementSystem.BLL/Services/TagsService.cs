@@ -116,7 +116,7 @@ namespace TaskManagementSystem.BLL.Services
                     Log.Information($"Tag {name} retrieved successfully");
                     return _mapper.Map<Tag>(tag);
                 }
-                Log.Information("Tag not found");
+                Log.Error("Tag not found");
                 throw new CustomException("Tag not found");
             }
             catch (CustomException ex)

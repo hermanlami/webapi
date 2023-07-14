@@ -40,7 +40,7 @@ namespace TaskManagementSystem.BLL.Services
                     return _mapper.Map<DTO.Project>(addedProject);
                 }
 
-                Log.Information($"Project {model.Name} could not be added");
+                Log.Error($"Project {model.Name} could not be added");
                 throw new CustomException($"Project could not be added");
 
             }
@@ -62,7 +62,7 @@ namespace TaskManagementSystem.BLL.Services
                 var project = await _repository.GetProjectById(id);
                 if (project == null)
                 {
-                    Log.Information("Project not found");
+                    Log.Error("Project not found");
                     throw new CustomException("Project not found");
                 }
 
@@ -75,7 +75,7 @@ namespace TaskManagementSystem.BLL.Services
 
                 }
 
-                Log.Information($"Project {project.Name} could not be deleted");
+                Log.Error($"Project {project.Name} could not be deleted");
                 throw new CustomException("Project could not be deleted");
 
             }
@@ -102,7 +102,7 @@ namespace TaskManagementSystem.BLL.Services
 
                 }
 
-                Log.Information("Project could not be retrieved");
+                Log.Error("Project could not be retrieved");
                 throw new CustomException("Project not found");
 
             }
@@ -150,7 +150,7 @@ namespace TaskManagementSystem.BLL.Services
                 var project = await _repository.GetProjectById(id);
                 if (project == null)
                 {
-                    Log.Information($"Project not found");
+                    Log.Error($"Project not found");
                     throw new CustomException("Projects not found");
 
                 }
@@ -162,7 +162,7 @@ namespace TaskManagementSystem.BLL.Services
                     return _mapper.Map<DTO.Project>(updated);
                 }
 
-                Log.Information($"Project {project.Name} could not be updated");
+                Log.Error($"Project {project.Name} could not be updated");
                 throw new CustomException("Projects could not be updated");
 
             }

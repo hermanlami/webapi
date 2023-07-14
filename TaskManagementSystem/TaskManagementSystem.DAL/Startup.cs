@@ -16,6 +16,7 @@ namespace TaskManagementSystem.DAL
             services.AddScoped<IDevelopersRepository, DevelopersRepository>();
             services.AddScoped<IProjectManagersRepository, ProjectManagersRepository>();
             services.AddScoped<IProjectsRepository, ProjectsRepository>();
+            services.AddScoped<IAuthenticationsRepository, AuthenticationsRepository>();
         }
     }
 }

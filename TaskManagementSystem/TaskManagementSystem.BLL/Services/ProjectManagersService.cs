@@ -40,7 +40,7 @@ namespace TaskManagementSystem.BLL.Services
                     return _mapper.Map<ProjectManager>(addedPM);
                 }
 
-                Log.Information($"Project manager with username {dalPM.Username} could not be added");
+                Log.Error($"Project manager with username {dalPM.Username} could not be added");
                 throw new CustomException($"Project manager could not be added");
 
             }
@@ -62,7 +62,7 @@ namespace TaskManagementSystem.BLL.Services
                 var pM = await _repository.GetProjectManagerById(id);
                 if (pM == null)
                 {
-                    Log.Information("Project manager not found");
+                    Log.Error("Project manager not found");
                     throw new CustomException($"Project manager not found");
                 }
 
@@ -102,34 +102,9 @@ namespace TaskManagementSystem.BLL.Services
                     return _mapper.Map<ProjectManager>(pM);
                 }
 
-                Log.Information("Project manager could not be retrieved");
+                Log.Error("Project manager could not be retrieved");
                 throw new CustomException($"Project manager not found");
 
-
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new DTO.ProjectManager();
-        }
-
-        public async Task<ProjectManager> GetProjectManagerByEmail(string email)
-        {
-            try
-            {
-                var pM = await _repository.GetProjectManagerByEmail(email);
-                if (pM != null)
-                {
-                    Log.Information($"Project manager with username {pM.Username} retrieved successfully");
-                    return _mapper.Map<ProjectManager>(pM);
-                }
-
-                Log.Information("Project manager could not be retrieved");
 
             }
             catch (CustomException ex)
@@ -154,7 +129,7 @@ namespace TaskManagementSystem.BLL.Services
                     return _mapper.Map<List<ProjectManager>>(pMs);
                 }
 
-                Log.Information("Project managers could not be retrieved");
+                Log.Error("Project managers could not be retrieved");
                 throw new CustomException($"Project managers could not be retrieved");
 
 
@@ -177,7 +152,7 @@ namespace TaskManagementSystem.BLL.Services
                 var pM = await _repository.GetProjectManagerById(id);
                 if (pM == null)
                 {
-                    Log.Information("Project manager not found");
+                    Log.Error("Project manager not found");
                     throw new CustomException($"Project manager not found");
                 }
                 model.Id = id;
@@ -188,7 +163,7 @@ namespace TaskManagementSystem.BLL.Services
                     return _mapper.Map<ProjectManager>(updated);
                 }
 
-                Log.Information($"Project manager with username {pM.Username} could not be updated");
+                Log.Error($"Project manager with username {pM.Username} could not be updated");
                 throw new CustomException($"Project manager could not be updated");
             }
             catch (CustomException ex)
@@ -200,36 +175,6 @@ namespace TaskManagementSystem.BLL.Services
 
             }
             return new ProjectManager();
-        }
-        public async Task<AuthenticationResponse> Authenticate(AuthenticationRequest request)
-        {
-            try
-            {
-                var pM = await _repository.GetProjectManagerByEmail(request.Email);
-                if(pM == null)
-                {
-                    throw new CustomException($"Project manager with email {request.Email} not found");
-                }
-                if (pM != null && PasswordHashing.VerifyPassword(request.Password, pM.PasswordHash, pM.PasswordSalt))
-                {
-                    var accessToken = _tokensService.CreateToken(pM);
-                    return new AuthenticationResponse
-                    {
-                        Username = pM.Username,
-                        Email = pM.Email,
-                        Token = accessToken.AccessToken,
-                    };
-                }
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new AuthenticationResponse();
         }
     }
 }

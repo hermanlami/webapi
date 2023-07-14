@@ -14,7 +14,7 @@ namespace TaskManagementSystem.Controllers
             }
             catch (CustomException ex)
             {
-                return StatusCode(500, ex);
+               return BadRequest(ex.Message);
             }
         }
     }

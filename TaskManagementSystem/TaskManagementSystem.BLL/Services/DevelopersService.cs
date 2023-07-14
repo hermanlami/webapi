@@ -46,7 +46,7 @@ namespace TaskManagementSystem.BLL.Services
                     return _mapper.Map<DTO.Developer>(addedDeveloper);
                 }
 
-                Log.Information($"Developer with username {dalDeveloper.Username} could not be added");
+                Log.Error($"Developer with username {dalDeveloper.Username} could not be added");
                 throw new CustomException($"Developer could not be added");
 
             }
@@ -68,7 +68,7 @@ namespace TaskManagementSystem.BLL.Services
                 var developer = await _repository.GetDeveloperById(id);
                 if (developer == null)
                 {
-                    Log.Information("Developer not found");
+                    Log.Error("Developer not found");
                     throw new CustomException("Developer not found");
                 }
 
@@ -107,55 +107,12 @@ namespace TaskManagementSystem.BLL.Services
                     Log.Information($"Developer with username {developer.Username} retrieved successfully");
                     return _mapper.Map<DTO.Developer>(developer);
                 }
-                Log.Information("Developer could not be retrieved");
+                Log.Error("Developer could not be retrieved");
                 throw new CustomException("Developer not found");
             }
             catch (CustomException ex)
             {
                 throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new DTO.Developer();
-        }
-
-        public async Task<Developer> GetDeveloperByEmail(string email)
-        {
-            try
-            {
-                var developer = await _repository.GetDeveloperByEmail(email);
-                if (developer != null)
-                {
-                    Log.Information($"Developer with username {developer.Username} retrieved successfully");
-                    return _mapper.Map<DTO.Developer>(developer);
-                }
-                Log.Information("Developer could not be retrieved");
-            }
-            catch (CustomException ex)
-            {
-
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new DTO.Developer();
-        }
-
-        public async Task<Developer> GetDeveloperByUsername(string username)
-        {
-            try
-            {
-                var developer = await _repository.GetDeveloperByUsername(username);
-                if (developer != null)
-                {
-                    Log.Information($"Developer with username {developer.Username} retrieved successfully");
-                    return _mapper.Map<DTO.Developer>(developer);
-                }
-
-                Log.Error("Developer could not be retrieved");
             }
             catch (Exception ex)
             {
@@ -175,7 +132,7 @@ namespace TaskManagementSystem.BLL.Services
                     return _mapper.Map<List<DTO.Developer>>(developers);
                 }
 
-                Log.Information("Developers could not be retrieved");
+                Log.Error("Developers could not be retrieved");
                 throw new CustomException($"Developers could not be retrieved");
 
             }
@@ -193,7 +150,7 @@ namespace TaskManagementSystem.BLL.Services
                 var developer = await _repository.GetDeveloperById(id);
                 if (developer == null)
                 {
-                    Log.Information("Developer not found");
+                    Log.Error("Developer not found");
                     throw new CustomException("Developer could not be found");
                 }
 
@@ -205,7 +162,7 @@ namespace TaskManagementSystem.BLL.Services
                     return _mapper.Map<DTO.Developer>(updated);
                 }
 
-                Log.Information($"Developer with username {developer.Username} could not be updated");
+                Log.Error($"Developer with username {developer.Username} could not be updated");
                 throw new CustomException("Developer could not be updated");
 
             }
@@ -214,36 +171,6 @@ namespace TaskManagementSystem.BLL.Services
 
             }
             return new Developer();
-        }
-        public async Task<AuthenticationResponse> Authenticate(AuthenticationRequest request)
-        {
-            try
-            {
-                var developer = await _repository.GetDeveloperByEmail(request.Email);
-                if (developer == null)
-                {
-                    throw new CustomException($"Developer with email {request.Email} not found");
-                }
-                if (developer != null && PasswordHashing.VerifyPassword(request.Password, developer.PasswordHash, developer.PasswordSalt))
-                {
-                    var accessToken = _tokensService.CreateToken(developer);
-                    return new AuthenticationResponse
-                    {
-                        Username = developer.Username,
-                        Email = developer.Email,
-                        Token = accessToken.AccessToken,
-                    };
-                }
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new AuthenticationResponse();
         }
     }
 }

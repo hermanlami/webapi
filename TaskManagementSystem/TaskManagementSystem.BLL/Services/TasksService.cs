@@ -16,16 +16,18 @@ namespace TaskManagementSystem.BLL.Services
         private readonly ITagsService _tagsService;
         private readonly IDevelopersService _developersService;
         private readonly IProjectsService _projectsService;
+        private readonly IAuthenticationsService _peoplesService;
 
         private readonly IMapper _mapper;
 
-        public TasksService(ITasksRepository repository, ITaskTagsService taskTagsService, ITagsService tagsService, IProjectsService projectsService, IMapper mapper)
+        public TasksService(ITasksRepository repository, ITaskTagsService taskTagsService, ITagsService tagsService, IProjectsService projectsService, IMapper mapper, IAuthenticationsService peoplesService)
         {
             _repository = repository;
             _taskTagsService = taskTagsService;
             _tagsService = tagsService;
             _projectsService = projectsService;
             _mapper = mapper;
+            _peoplesService = peoplesService;
         }
         public async Task<DTO.Task> AddTask(DTO.Task model)
         {
@@ -180,11 +182,11 @@ namespace TaskManagementSystem.BLL.Services
         {
             try
             {
-                var developer = await _developersService.GetDeveloperByUsername(username);
+                var developer = await _peoplesService.GetPersonByUsername(username);
                 if (developer == null)
                 {
-                    Log.Error($"Developer with username {username} does not exist");
-                    throw new CustomException("Developer does not exist");
+                    Log.Error($"User with username {username} does not exist");
+                    throw new CustomException("User does not exist");
 
                 }
                 var task = await _repository.GetTasksByDeveloperId(developer.Id);
