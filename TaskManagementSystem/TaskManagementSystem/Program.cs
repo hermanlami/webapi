@@ -8,6 +8,9 @@ using TaskManagementSystem.BLL;
 using TaskManagementSystem.Middlewares;
 using Newtonsoft.Json;
 using SendGrid.Helpers.Mail;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using TaskManagementSystem.BLL.BackgroundJobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,8 +34,9 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 });
 
 builder.Services.AddScoped<CustomErrorMiddleware>();
-
+//builder.Services.AddHostedService<BackgroundJobsService>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddSingleton<AuthenticationMiddleware>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
@@ -93,10 +97,9 @@ app.UseRouting();
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
+app.UseMiddleware(typeof(AuthenticationMiddleware));
 
-app.UseAuthorization();
-
+//app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
 {

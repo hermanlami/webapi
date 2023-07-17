@@ -21,9 +21,10 @@ namespace TaskManagementSystem.DAL.Repositories
         public async Task<Developer> AddDeveloper(Developer entity)
         {
 
-            await _context.AddAsync(entity);
-            await _context.SaveChangesAsync();
-            return entity;
+                await _context.AddAsync(entity);
+                await _context.SaveChangesAsync();
+                return entity;
+           
         }
 
         public async Task<Developer> DeleteDeveloper(Developer entity)

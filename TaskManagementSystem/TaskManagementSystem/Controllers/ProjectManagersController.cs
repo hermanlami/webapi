@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TaskManagementSystem.BLL;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
 
 namespace TaskManagementSystem.Controllers
 {
     [ApiController]
+    [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin" } })]
+
     public class ProjectManagersController : BaseController
     {
         private readonly IProjectManagersService _projectManagersService;

@@ -19,5 +19,7 @@ namespace TaskManagementSystem.BLL.Interfaces
         Task<DTO.Task> MarkTaskAsCompleted(int id);
         Task<DTO.Task> UpdateTask(int id, DTO.Task model);
         Task<DTO.Task> DeleteTask(int id);
+        Task NotifyForTasksCloseToDeadline();
+
     }
 }

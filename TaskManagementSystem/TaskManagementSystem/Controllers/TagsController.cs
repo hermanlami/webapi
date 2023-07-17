@@ -8,8 +8,7 @@ using TaskManagementSystem.BLL;
 namespace TaskManagementSystem.Controllers
 {
     [ApiController]
-    [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Developer" } })]
-
+    [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin" } })]
     public class TagsController : BaseController
     {
         private readonly ITagsService _tagsService;

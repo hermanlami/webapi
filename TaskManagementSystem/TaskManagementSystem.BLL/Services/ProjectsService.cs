@@ -25,9 +25,9 @@ namespace TaskManagementSystem.BLL.Services
         }
         public async Task<Project> AddProject(Project model)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
-                if (_repository.GetProjectByName(model.Name) != null)
+                if (await _repository.GetProjectByName(model.Name) != null)
                 {
                     Log.Error($"Project {model.Name} already exists");
                     throw new CustomException($"Project {model.Name} already exists");
@@ -42,22 +42,12 @@ namespace TaskManagementSystem.BLL.Services
 
                 Log.Error($"Project {model.Name} could not be added");
                 throw new CustomException($"Project could not be added");
-
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new DTO.Project();
+            });
         }
 
         public async Task<Project> DeleteProject(int id)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var project = await _repository.GetProjectById(id);
                 if (project == null)
@@ -78,21 +68,12 @@ namespace TaskManagementSystem.BLL.Services
                 Log.Error($"Project {project.Name} could not be deleted");
                 throw new CustomException("Project could not be deleted");
 
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new DTO.Project();
+            });
         }
 
         public async Task<Project> GetProjectById(int id)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var project = await _repository.GetProjectById(id);
                 if (project != null)
@@ -105,21 +86,12 @@ namespace TaskManagementSystem.BLL.Services
                 Log.Error("Project could not be retrieved");
                 throw new CustomException("Project not found");
 
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new DTO.Project();
+            });
         }
 
         public async Task<List<Project>> GetProjects()
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var projects = await _repository.GetProjects();
                 if (projects != null)
@@ -131,21 +103,12 @@ namespace TaskManagementSystem.BLL.Services
                 Log.Error("Projects could not be retrieved");
                 throw new CustomException("Projects could not be retrieved");
 
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new List<Project>();
+            });
         }
 
         public async Task<Project> UpdateProject(int id, Project model)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var project = await _repository.GetProjectById(id);
                 if (project == null)
@@ -154,7 +117,9 @@ namespace TaskManagementSystem.BLL.Services
                     throw new CustomException("Projects not found");
 
                 }
+
                 model.Id = id;
+                
                 var updated = await _repository.UpdateProject(_mapper.Map<DAL.Entities.Project>(model));
                 if (updated != null)
                 {
@@ -165,21 +130,12 @@ namespace TaskManagementSystem.BLL.Services
                 Log.Error($"Project {project.Name} could not be updated");
                 throw new CustomException("Projects could not be updated");
 
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new Project();
+            });
         }
 
         public async Task<Project> GetProjectByName(string name)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var project = await _repository.GetProjectByName(name);
                 if (project != null)
@@ -188,19 +144,10 @@ namespace TaskManagementSystem.BLL.Services
                     return _mapper.Map<DTO.Project>(project);
 
                 }
-
                 Log.Information($"Project {name} could not be retrieved");
+                throw new CustomException($"Project {name} could not be retrieved");
 
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new DTO.Project();
+            });
         }
     }
 }

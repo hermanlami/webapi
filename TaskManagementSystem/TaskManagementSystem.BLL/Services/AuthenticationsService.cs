@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ using TaskManagementSystem.DAL.Repositories;
 
 namespace TaskManagementSystem.BLL.Services
 {
-    internal class AuthenticationsService:IAuthenticationsService
+    internal class AuthenticationsService : IAuthenticationsService
     {
         private readonly IAuthenticationsRepository _peoplesRepository;
         private readonly ITokensService _tokensService;
@@ -26,77 +27,62 @@ namespace TaskManagementSystem.BLL.Services
         }
         public async Task<AuthenticationResponse> Authenticate(AuthenticationRequest request)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
-                var pM = await _peoplesRepository.GetPersonByEmail(request.Email);
-                if (pM == null)
+                var person = await _peoplesRepository.GetPersonByEmail(request.Email);
+                if (person == null)
                 {
-                    throw new CustomException($"Project manager with email {request.Email} not found");
+                    throw new CustomException($"Person with email {request.Email} not found");
                 }
-                if (pM != null && PasswordHashing.VerifyPassword(request.Password, pM.PasswordHash, pM.PasswordSalt))
+                if (person != null && PasswordHashing.VerifyPassword(request.Password, person.PasswordHash, person.PasswordSalt))
                 {
-                    var accessToken = _tokensService.CreateToken(pM);
+                    var accessToken = _tokensService.CreateToken(person);
                     return new AuthenticationResponse
                     {
-                        Username = pM.Username,
-                        Email = pM.Email,
+                        Username = person.Username,
+                        Email = person.Email,
                         Token = accessToken.AccessToken,
                     };
                 }
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
+                throw new CustomException($"Person with email {request.Email} could not be authenticated");
 
-            }
-            return new AuthenticationResponse();
+            });
         }
 
         public async Task<Person> ChangePassword(int id, UpdatePasswordRequest model)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var person = await _peoplesRepository.GetPersonById(id);
-                if (person  == null)
+                if (person == null)
                 {
                     Log.Information("User not found");
                     throw new CustomException($"User not found");
                 }
-                if(!PasswordHashing.VerifyPassword(model.OldPassword, person.PasswordHash, person.PasswordSalt))
+                if (!PasswordHashing.VerifyPassword(model.OldPassword, person.PasswordHash, person.PasswordSalt))
                 {
                     Log.Error("Old password value is incorrect");
                     throw new CustomException($"Old password value is incorrect");
                 }
+
                 person.PasswordHash = PasswordHashing.HashPasword(model.NewPassword, out byte[] salt);
                 person.PasswordSalt = salt;
 
                 var updated = await _peoplesRepository.ChangePassword(person);
                 if (updated != null)
                 {
-                    Log.Information($"Password of user with username {updated.Username} updated successfully");
+                    Log.Information($"Password of {updated.Username} updated successfully");
                     return _mapper.Map<Person>(updated);
                 }
 
-                Log.Information($"Project manager with username {person.Username} could not be updated");
+                Log.Information($"Project manager {person.Username} could not be updated");
                 throw new CustomException($"Project manager could not be updated");
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return null;
+            });
         }
 
         public async Task<Person> GetPersonByEmail(string email)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var person = await _peoplesRepository.GetPersonByEmail(email);
                 if (person != null)
@@ -105,21 +91,14 @@ namespace TaskManagementSystem.BLL.Services
                     return _mapper.Map<DTO.Person>(person);
                 }
                 Log.Information("Person could not be retrieved");
-            }
-            catch (CustomException ex)
-            {
+                throw new CustomException($"Person not found");
 
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return null;
+            });
         }
 
         public async Task<Person> GetPersonByUsername(string username)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var person = await _peoplesRepository.GetPersonByUsername(username);
                 if (person != null)
@@ -129,12 +108,9 @@ namespace TaskManagementSystem.BLL.Services
                 }
 
                 Log.Error("Person could not be retrieved");
-            }
-            catch (Exception ex)
-            {
+                throw new CustomException($"Person not found");
 
-            }
-            return null;
+            });
         }
     }
 }

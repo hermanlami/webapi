@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using TaskManagementSystem.BLL;
 using TaskManagementSystem.BLL.Interfaces;
 
 namespace TaskManagementSystem.Controllers
@@ -13,6 +15,7 @@ namespace TaskManagementSystem.Controllers
         }
 
         [HttpPost]
+        [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "ProjectManager" } })]
         [Route("api/tasks")]
         public async Task<IActionResult> AddTask([FromBody] BLL.DTO.Task model)
         {
@@ -26,6 +29,7 @@ namespace TaskManagementSystem.Controllers
         }
 
         [HttpGet]
+        [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "ProjectManager" } })]
         [Route("api/tasks")]
         public async Task<IActionResult> GetTasks()
         {
@@ -39,6 +43,8 @@ namespace TaskManagementSystem.Controllers
         }
 
         [HttpGet]
+        [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "ProjectManager" } })]
+
         [Route("api/tasks/completed")]
         public async Task<IActionResult> GetCompletedTasks()
         {
@@ -52,6 +58,8 @@ namespace TaskManagementSystem.Controllers
         }
 
         [HttpGet]
+        [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "ProjectManager" } })]
+
         [Route("api/tasks/byDeveloperUsername/{username}")]
         public async Task<IActionResult> GetTasksByDevelopersUsername(string username)
         {
@@ -138,6 +146,19 @@ namespace TaskManagementSystem.Controllers
                 return Ok(deleted);
 
             });
+        }
+
+        [HttpGet]
+        [Route("api/tasks/notify")]
+        public async Task<IActionResult> NotifyForTasksCloseToDeadline()
+        {
+            return await HandleExceptionAsync(async () =>
+            {
+                await _tasksService.NotifyForTasksCloseToDeadline();
+
+                return Ok();
+            }
+            );
         }
     }
 }

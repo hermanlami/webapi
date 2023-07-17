@@ -12,6 +12,7 @@ using Serilog;
 namespace TaskManagementSystem.Controllers
 {
     [ApiController]
+    [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "ProjectManager" } })]
 
     public class DevelopersController : BaseController
     {
@@ -21,7 +22,8 @@ namespace TaskManagementSystem.Controllers
             _developersService = developersService;
         }
 
-        [HttpPost, Authorize]
+        [HttpPost]
+        [AllowAnonymous]
         [Route("api/developers")]
         public async Task<IActionResult> AddDeveloper([FromBody] Developer model)
         {
@@ -33,6 +35,7 @@ namespace TaskManagementSystem.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [Route("api/developers/{id}")]
         public async Task<IActionResult> GetDeveloper(int id)
         {
@@ -45,7 +48,7 @@ namespace TaskManagementSystem.Controllers
             });
         }
 
-        [HttpGet, Authorize]
+        [HttpGet]
         [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "Developer" } })]
         [Route("api/developers")]
         public async Task<IActionResult> GetDevelopers()

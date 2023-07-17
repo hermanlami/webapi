@@ -17,7 +17,7 @@ namespace TaskManagementSystem.BLL.Services
         }
         public async Task<TaskTag> AddTaskTag(TaskTag model)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var addedTaskTag = await _repository.AddTaskTag(_mapper.Map<DAL.Entities.TaskTag>(model));
                 if (addedTaskTag.Id > 0)
@@ -25,20 +25,14 @@ namespace TaskManagementSystem.BLL.Services
                     Log.Information($"Task tag added successfully");
                     return _mapper.Map<TaskTag>(addedTaskTag);
                 }
-
                 Log.Information("Task tag could not be added");
-
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new DTO.TaskTag();
+                return null; 
+            });
         }
 
         public async Task<TaskTag> DeleteTaskTag(int id)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var taskTag = await _repository.GetTaskTagById(id);
                 if (taskTag == null)
@@ -53,18 +47,15 @@ namespace TaskManagementSystem.BLL.Services
                     Log.Information("Task tag deleted successfully");
                     return _mapper.Map<TaskTag>(deletedTaskTag);
                 }
+                return null;
 
-            }
-            catch (Exception ex)
-            {
 
-            }
-            return new DTO.TaskTag();
+            });
         }
 
         public async Task<TaskTag> GetTaskTagById(int id)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var task = await _repository.GetTaskTagById(id);
                 if (task != null)
@@ -74,17 +65,14 @@ namespace TaskManagementSystem.BLL.Services
                 }
 
                 Log.Information("Task tag could not be retrieved");
-            }
-            catch (Exception ex)
-            {
+                return null;
 
-            }
-            return new TaskTag();
+            });
         }
 
         public async Task<List<TaskTag>> GetTaskTagByTagId(int id)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var task = await _repository.GetTaskTagByTagId(id);
                 if (task != null)
@@ -94,18 +82,14 @@ namespace TaskManagementSystem.BLL.Services
                 }
 
                 Log.Information("Task tag could not be retrieved");
+                return null;
 
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new List<TaskTag>();
+            });
         }
 
         public async Task<List<TaskTag>> GetTaskTags()
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var taskTags = await _repository.GetTaskTags();
                 if (taskTags != null)
@@ -115,18 +99,14 @@ namespace TaskManagementSystem.BLL.Services
                 }
 
                 Log.Information("Task tags could not be retrieved");
+                return null;
 
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new List<TaskTag>();
+            });
         }
 
         public async Task<TaskTag> UpdateTaskTag(TaskTag model)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var taskTag = await _repository.GetTaskTagById(model.Id);
                 if (taskTag == null)
@@ -141,13 +121,9 @@ namespace TaskManagementSystem.BLL.Services
                     return _mapper.Map<TaskTag>(updated);
                 }
                 Log.Information("Task tag could not be updated");
+                return null;
 
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new DTO.TaskTag();
+            });
         }
     }
 }

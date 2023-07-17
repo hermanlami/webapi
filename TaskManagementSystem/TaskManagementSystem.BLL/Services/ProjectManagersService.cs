@@ -21,17 +21,22 @@ namespace TaskManagementSystem.BLL.Services
         }
         public async Task<ProjectManager> AddProjectManager(ProjectManager model)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 if (await _repository.GetProjectManagerByEmail(model.Email) != null)
                 {
                     Log.Error($"Project manager with email {model.Email} already exists");
                     throw new CustomException($"Project manager with email {model.Email} already exists");
                 }
+
                 var dalPM = _mapper.Map<DAL.Entities.ProjectManager>(model);
+                
                 dalPM.PasswordHash = PasswordHashing.HashPasword(model.Password, out byte[] salt);
+                
                 dalPM.PasswordSalt = salt;
+                
                 dalPM.PersonType = PersonType.ProjectManager;
+                
                 var addedPM = await _repository.AddProjectManager(dalPM);
 
                 if (addedPM.Id > 0)
@@ -43,21 +48,12 @@ namespace TaskManagementSystem.BLL.Services
                 Log.Error($"Project manager with username {dalPM.Username} could not be added");
                 throw new CustomException($"Project manager could not be added");
 
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new DTO.ProjectManager();
+            });
         }
 
         public async Task<ProjectManager> DeleteProjectManager(int id)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var pM = await _repository.GetProjectManagerById(id);
                 if (pM == null)
@@ -67,6 +63,7 @@ namespace TaskManagementSystem.BLL.Services
                 }
 
                 pM.IsDeleted = true;
+                
                 var deletedPM = await _repository.DeleteProjectManager(pM);
                 if (deletedPM != null)
                 {
@@ -79,21 +76,12 @@ namespace TaskManagementSystem.BLL.Services
                 throw new CustomException($"Project manager {pM.Username} could not be deleted");
 
 
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new DTO.ProjectManager();
+            });
         }
 
         public async Task<ProjectManager> GetProjectManagerById(int id)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var pM = await _repository.GetProjectManagerById(id);
                 if (pM != null)
@@ -106,21 +94,12 @@ namespace TaskManagementSystem.BLL.Services
                 throw new CustomException($"Project manager not found");
 
 
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new DTO.ProjectManager();
+            });
         }
 
         public async Task<List<ProjectManager>> GetProjectManagers()
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var pMs = await _repository.GetProjectManagers();
                 if (pMs != null)
@@ -133,21 +112,12 @@ namespace TaskManagementSystem.BLL.Services
                 throw new CustomException($"Project managers could not be retrieved");
 
 
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new List<ProjectManager>();
+            });
         }
 
         public async Task<ProjectManager> UpdateProjectManager(int id, ProjectManager model)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var pM = await _repository.GetProjectManagerById(id);
                 if (pM == null)
@@ -165,16 +135,7 @@ namespace TaskManagementSystem.BLL.Services
 
                 Log.Error($"Project manager with username {pM.Username} could not be updated");
                 throw new CustomException($"Project manager could not be updated");
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new ProjectManager();
+            });
         }
     }
 }

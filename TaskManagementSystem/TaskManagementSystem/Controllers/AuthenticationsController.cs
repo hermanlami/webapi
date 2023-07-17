@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TaskManagementSystem.BLL;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
@@ -14,8 +15,9 @@ namespace TaskManagementSystem.Controllers
         {
             _authenticationsService = authenticationsService;
         }
-
+        
         [HttpPost]
+        [AllowAnonymous]
         [Route("api/login")]
         public async Task<IActionResult> Authenticate([FromBody] AuthenticationRequest request)
         {
@@ -25,7 +27,6 @@ namespace TaskManagementSystem.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                Mail.OnAccountCredentialsSent("lamiherman0@gmail.com");
                 var response = await _authenticationsService.Authenticate(request);
                 return Ok(response);
             });

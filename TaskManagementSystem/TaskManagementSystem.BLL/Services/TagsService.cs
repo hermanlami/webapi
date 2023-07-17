@@ -18,7 +18,7 @@ namespace TaskManagementSystem.BLL.Services
         }
         public async Task<Tag> AddTag(Tag model)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 if (await _repository.GetTagByName(model.Name) != null)
                 {
@@ -35,21 +35,12 @@ namespace TaskManagementSystem.BLL.Services
                 Log.Error("Tag could not be added");
                 throw new CustomException("Tag could not be added");
 
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new DTO.Tag();
+            });
         }
 
         public async Task<Tag> DeleteTag(int id)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var tag = await _repository.GetTagById(id);
                 if (tag == null)
@@ -60,6 +51,7 @@ namespace TaskManagementSystem.BLL.Services
                 }
 
                 tag.IsDeleted = true;
+                
                 var deletedTag = await _repository.DeleteTag(tag);
                 if (deletedTag != null)
                 {
@@ -69,21 +61,12 @@ namespace TaskManagementSystem.BLL.Services
 
                 Log.Error("Tag could not be deleted");
                 throw new CustomException("Tag could not be deleted");
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new DTO.Tag();
+            });
         }
 
         public async Task<Tag> GetTagById(int id)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var tag = await _repository.GetTagById(id);
                 if (tag == null)
@@ -94,21 +77,12 @@ namespace TaskManagementSystem.BLL.Services
                 }
                 Log.Information($"Tag {tag.Name} retrieved successfully");
                 return _mapper.Map<Tag>(tag);
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new DTO.Tag();
+            });
         }
 
         public async Task<Tag> GetTagByName(string name)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var tag = await _repository.GetTagByName(name);
                 if (tag != null)
@@ -118,21 +92,12 @@ namespace TaskManagementSystem.BLL.Services
                 }
                 Log.Error("Tag not found");
                 throw new CustomException("Tag not found");
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new DTO.Tag();
+            });
         }
 
         public async Task<List<Tag>> GetTags()
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var tags = await _repository.GetTags();
                 if (tags != null)
@@ -144,16 +109,7 @@ namespace TaskManagementSystem.BLL.Services
                 Log.Error("Tags could not be retrieved");
                 throw new CustomException("Tag could not be retrieved");
 
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new List<Tag>();
+            });
         }
     }
 }

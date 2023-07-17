@@ -22,7 +22,7 @@ namespace TaskManagementSystem.BLL.Services
         }
         public async Task<Developer> AddDeveloper(Developer model)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 if (await _repository.GetDeveloperByUsername(model.Username) != null)
                 {
@@ -36,9 +36,13 @@ namespace TaskManagementSystem.BLL.Services
                 }
 
                 var dalDeveloper = _mapper.Map<DAL.Entities.Developer>(model);
+
                 dalDeveloper.PasswordHash = PasswordHashing.HashPasword(model.Password, out byte[] salt);
+
                 dalDeveloper.PasswordSalt = salt;
+
                 dalDeveloper.PersonType = PersonType.Developer;
+
                 var addedDeveloper = await _repository.AddDeveloper(dalDeveloper);
                 if (addedDeveloper.Id > 0)
                 {
@@ -49,21 +53,12 @@ namespace TaskManagementSystem.BLL.Services
                 Log.Error($"Developer with username {dalDeveloper.Username} could not be added");
                 throw new CustomException($"Developer could not be added");
 
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new DTO.Developer();
+            });
         }
 
         public async Task<Developer> DeleteDeveloper(int id)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var developer = await _repository.GetDeveloperById(id);
                 if (developer == null)
@@ -73,9 +68,9 @@ namespace TaskManagementSystem.BLL.Services
                 }
 
                 developer.IsDeleted = true;
+               
                 var deletedDeveloper = await _repository.DeleteDeveloper(developer);
-
-                if (deletedDeveloper != null)
+                if (deletedDeveloper != null) 
                 {
                     Log.Information($"Developer with username {deletedDeveloper.Username} deleted successfully");
                     return _mapper.Map<DTO.Developer>(deletedDeveloper);
@@ -85,21 +80,12 @@ namespace TaskManagementSystem.BLL.Services
                 Log.Error($"Developer with username {developer.Username} could not be deleted");
                 throw new CustomException("Developer could not be deleted");
 
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new DTO.Developer();
+            });
         }
 
         public async Task<Developer> GetDeveloperById(int id)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var developer = await _repository.GetDeveloperById(id);
                 if (developer != null)
@@ -109,21 +95,12 @@ namespace TaskManagementSystem.BLL.Services
                 }
                 Log.Error("Developer could not be retrieved");
                 throw new CustomException("Developer not found");
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new DTO.Developer();
+            });
         }
 
         public async Task<List<Developer>> GetDevelopers()
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var developers = await _repository.GetDevelopers();
                 if (developers != null)
@@ -135,17 +112,12 @@ namespace TaskManagementSystem.BLL.Services
                 Log.Error("Developers could not be retrieved");
                 throw new CustomException($"Developers could not be retrieved");
 
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new List<Developer>();
+            });
         }
 
         public async Task<Developer> UpdateDeveloper(int id, Developer model)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var developer = await _repository.GetDeveloperById(id);
                 if (developer == null)
@@ -165,12 +137,7 @@ namespace TaskManagementSystem.BLL.Services
                 Log.Error($"Developer with username {developer.Username} could not be updated");
                 throw new CustomException("Developer could not be updated");
 
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new Developer();
+            });
         }
     }
 }

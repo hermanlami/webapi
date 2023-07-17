@@ -20,18 +20,19 @@ namespace TaskManagementSystem.BLL.Services
 
         private readonly IMapper _mapper;
 
-        public TasksService(ITasksRepository repository, ITaskTagsService taskTagsService, ITagsService tagsService, IProjectsService projectsService, IMapper mapper, IAuthenticationsService peoplesService)
+        public TasksService(ITasksRepository repository, ITaskTagsService taskTagsService, ITagsService tagsService, IProjectsService projectsService, IMapper mapper, IAuthenticationsService peoplesService, IDevelopersService developersService)
         {
             _repository = repository;
             _taskTagsService = taskTagsService;
             _tagsService = tagsService;
             _projectsService = projectsService;
+            _developersService = developersService;
             _mapper = mapper;
             _peoplesService = peoplesService;
         }
         public async Task<DTO.Task> AddTask(DTO.Task model)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var addedTask = await _repository.AddTask(_mapper.Map<DAL.Entities.Task>(model));
                 if (addedTask.Id == 0)
@@ -53,21 +54,12 @@ namespace TaskManagementSystem.BLL.Services
                 Log.Information($"Task {addedTask.Name} added successfully");
                 return _mapper.Map<DTO.Task>(model);
 
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new DTO.Task();
+            });
         }
 
         public async Task<DTO.Task> DeleteTask(int id)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var task = await _repository.GetTaskById(id);
                 if (task == null)
@@ -78,6 +70,7 @@ namespace TaskManagementSystem.BLL.Services
                 }
 
                 task.IsDeleted = true;
+             
                 var deletedTask = await _repository.DeleteTask(task);
                 if (deletedTask != null)
                 {
@@ -88,21 +81,12 @@ namespace TaskManagementSystem.BLL.Services
                 throw new CustomException("Task could not be deleted");
 
 
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new DTO.Task();
+            });
         }
 
         public async Task<List<DTO.Task>> GetCompletedTasks()
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var tasks = await _repository.GetCompletedTasks();
                 if (tasks != null)
@@ -114,21 +98,12 @@ namespace TaskManagementSystem.BLL.Services
                 Log.Error("Tasks could not be retrieved");
                 throw new CustomException("Tasks could not be retrieved");
 
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new List<DTO.Task>();
+            });
         }
 
         public async Task<DTO.Task> GetTaskById(int id)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var task = await _repository.GetTaskById(id);
                 if (task != null)
@@ -140,21 +115,12 @@ namespace TaskManagementSystem.BLL.Services
                 Log.Error("Task not found");
                 throw new CustomException("Task not found");
 
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new DTO.Task();
+            });
         }
 
         public async Task<List<DTO.Task>> GetTasks()
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var tasks = await _repository.GetTasks();
                 if (tasks != null)
@@ -166,21 +132,12 @@ namespace TaskManagementSystem.BLL.Services
                 Log.Error("Task could not be retrieved");
                 throw new CustomException("Tasks could not be retrieved");
 
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new List<DTO.Task>();
+            });
         }
 
         public async Task<List<DTO.Task>> GetTasksByDevelopersUsername(string username)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var developer = await _peoplesService.GetPersonByUsername(username);
                 if (developer == null)
@@ -198,21 +155,12 @@ namespace TaskManagementSystem.BLL.Services
 
                 Log.Error($"Tasks could not be retrieved");
                 throw new CustomException("Tasks could not be retrieved");
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new List<DTO.Task>();
+            });
         }
 
         public async Task<List<DTO.Task>> GetTasksByProjectName(string name)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var project = await _projectsService.GetProjectByName(name);
                 if (project == null)
@@ -231,21 +179,12 @@ namespace TaskManagementSystem.BLL.Services
                 Log.Error("Task could not be retrieved");
                 throw new CustomException("Tasks could not be retrieved");
 
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new List<DTO.Task>();
+            });
         }
 
         public async Task<List<DTO.Task>> GetTasksByTagName(string name)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var tag = await _tagsService.GetTagByName(name);
                 if (tag == null)
@@ -268,21 +207,33 @@ namespace TaskManagementSystem.BLL.Services
 
                 return _mapper.Map<List<DTO.Task>>(tasks);
 
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
+            });
+        }
+
+        public async System.Threading.Tasks.Task NotifyForTasksCloseToDeadline()
+        {
+            try { 
+                var tasks = await _repository.GetTasksCloseToDeadline();
+                if (tasks != null)
+                {
+                    Log.Information("Tasks retrieved successfully");
+                    foreach (var task in tasks)
+                    {
+                        var developer = await _developersService.GetDeveloperById(task.DeveloperId);
+                        var daysLeft = (task.EndDate - DateTime.Now).TotalDays;
+                        Mail.DeadlineNotification(developer.Email, daysLeft);
+                    }
+                }
+                throw new CustomException("Tasks could not be retrieved"); 
+            }catch(CustomException ex)
             {
 
             }
-            return new List<DTO.Task>();
         }
 
         public async Task<DTO.Task> MarkTaskAsCompleted(int id)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var task = await _repository.GetTaskById(id);
                 if (task == null)
@@ -300,21 +251,12 @@ namespace TaskManagementSystem.BLL.Services
                 }
                 Log.Error("Could not mark task as completed");
                 throw new CustomException("Could not mark task as completed");
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new DTO.Task();
+            });
         }
 
         public async Task<DTO.Task> UpdateTask(int id, DTO.Task model)
         {
-            try
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var task = await _repository.GetTaskById(id);
                 if (task == null)
@@ -335,16 +277,7 @@ namespace TaskManagementSystem.BLL.Services
                 Log.Error("Task could not be updated");
                 throw new CustomException("Task could not be updated");
 
-            }
-            catch (CustomException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return new DTO.Task();
+            });
         }
     }
 }

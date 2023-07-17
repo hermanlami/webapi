@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaskManagementSystem.DAL.Entities;
 using TaskManagementSystem.DAL.Interfaces;
 
 namespace TaskManagementSystem.DAL.Repositories
@@ -45,6 +46,8 @@ namespace TaskManagementSystem.DAL.Repositories
         {
 
             return _dbSet.Where(x => x.IsDeleted != true && x.Status == false).OrderBy(x => x.EndDate).ToListAsync();
+
+
         }
         public Task<List<Entities.Task>> GetCompletedTasks()
         {
@@ -69,6 +72,12 @@ namespace TaskManagementSystem.DAL.Repositories
             _dbSet.Update(entity);
             await _context.SaveChangesAsync();
             return entity;
+        }
+
+        public async Task<List<Entities.Task>> GetTasksCloseToDeadline()
+        {
+            return await _dbSet.Where(x => x.IsDeleted != true && x.Status == false && x.EndDate <= DateTime.Now.AddDays(3)).OrderBy(x => x.EndDate).ThenByDescending(x => x.Importance).ToListAsync();
+
         }
     }
 }

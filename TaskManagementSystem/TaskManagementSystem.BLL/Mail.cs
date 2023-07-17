@@ -10,12 +10,12 @@ namespace TaskManagementSystem.BLL
 {
     public static class Mail
     {
-        public static async Task OnAccountCredentialsSent(string toEmail)
+        public static async Task DeadlineNotification(string toEmail, double daysLeft)
         {
             string fromEmail = "hermanlami991@gmail.com";
             string password = "dqvp roym ilie xopz";
-
-            string message ="Your task is ending in ...";
+            var days = daysLeft > 1 ? daysLeft.ToString()+" days" : "today";
+            string message =$"Your task is ending in {days}!";
             var email = EmailStructure(fromEmail, toEmail, message, "Task Deadline");
 
             SmtpClient smtpClient = new SmtpClient("smtp.gmail.com", 587);

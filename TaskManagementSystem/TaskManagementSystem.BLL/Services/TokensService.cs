@@ -28,6 +28,7 @@ namespace TaskManagementSystem.BLL.Services
             );
             var tokenHandler = new JwtSecurityTokenHandler();
             var refreshToken = CreateRefreshToken(user);
+            
 
             return new TokenResponse
             {

@@ -1,10 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using TaskManagementSystem.BLL;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
+using TaskManagementSystem.Common.Enums;
 
 namespace TaskManagementSystem.Controllers
 {
     [ApiController]
+    [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "Developer"} })]
+
     public class ProjectsController : BaseController
     {
         private readonly IProjectsService _projectsService;
@@ -13,6 +18,7 @@ namespace TaskManagementSystem.Controllers
             _projectsService = projectsService;
         }
         [HttpPost]
+        [AllowAnonymous]
         [Route("api/projects")]
         public async Task<IActionResult> AddProject([FromBody] Project model)
         {
