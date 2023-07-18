@@ -3,7 +3,7 @@
     public interface ITasksRepository
     {
         Task<Entities.Task> AddTask(Entities.Task entity);
-        Task<List<Entities.Task>> GetTasks();
+        Task<List<Entities.Task>> GetTasks(int id=0);
         Task<Entities.Task> GetTaskById(int id);
         Task<List<Entities.Task>> GetTasksByDeveloperId(int developerId);
         Task<List<Entities.Task>> GetCompletedTasks();

@@ -10,6 +10,8 @@ namespace TaskManagementSystem.BLL.Interfaces
     public interface ITokensService
     {
         TokenResponse CreateToken(DAL.Entities.Person user);
+        Task<TokenResponse> RefreshToken(string refreshToken);
+
 
     }
 }

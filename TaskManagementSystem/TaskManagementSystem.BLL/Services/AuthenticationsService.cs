@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
 using Azure.Core;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using TaskManagementSystem.BLL.DTO;
@@ -42,6 +46,7 @@ namespace TaskManagementSystem.BLL.Services
                         Username = person.Username,
                         Email = person.Email,
                         Token = accessToken.AccessToken,
+                        RefreshToken=accessToken.RefreshToken,
                     };
                 }
                 throw new CustomException($"Person with email {request.Email} could not be authenticated");
@@ -101,6 +106,23 @@ namespace TaskManagementSystem.BLL.Services
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var person = await _peoplesRepository.GetPersonByUsername(username);
+                if (person != null)
+                {
+                    Log.Information($"Person with username {person.Username} retrieved successfully");
+                    return _mapper.Map<DTO.Person>(person);
+                }
+
+                Log.Error("Person could not be retrieved");
+                throw new CustomException($"Person not found");
+
+            });
+        }
+
+        public async Task<Person> GetPersonById(int id)
+        {
+            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
+            {
+                var person = await _peoplesRepository.GetPersonById(id);
                 if (person != null)
                 {
                     Log.Information($"Person with username {person.Username} retrieved successfully");

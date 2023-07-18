@@ -12,7 +12,6 @@ namespace TaskManagementSystem.Middlewares
         {
 
             if (AllowsAnonymous(context))
-
             {
                 await next(context);
                 return;
@@ -45,6 +44,14 @@ namespace TaskManagementSystem.Middlewares
             try
             {
                 ClaimsPrincipal claimsPrincipal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken validatedToken);
+                var tokenTypeClaim = claimsPrincipal.FindFirst("TokenType");
+                if (tokenTypeClaim == null || tokenTypeClaim.Value != "Access")
+                {
+                    context.Response.StatusCode = 401;
+                    context.Response.ContentType = "text/plain";
+                    await context.Response.WriteAsync("Invalid access token.");
+                    return;
+                }
                 context.User = claimsPrincipal;
             }
             catch (Exception)

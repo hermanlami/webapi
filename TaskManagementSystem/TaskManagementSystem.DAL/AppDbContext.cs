@@ -21,6 +21,8 @@ namespace TaskManagementSystem.DAL
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Entities.Task> Tasks { get; set; }
         public DbSet<TaskTag> TaskTags { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

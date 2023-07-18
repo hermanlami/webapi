@@ -42,11 +42,16 @@ namespace TaskManagementSystem.DAL.Repositories
             return await _dbSet.Where(x => x.IsDeleted != true && x.Id == id).FirstOrDefaultAsync();
         }
 
-        public Task<List<Entities.Task>> GetTasks()
+        public Task<List<Entities.Task>> GetTasks(int id)
         {
-
-            return _dbSet.Where(x => x.IsDeleted != true && x.Status == false).OrderBy(x => x.EndDate).ToListAsync();
-
+            if (id == 0)
+            {
+                return _dbSet.Where(x => x.IsDeleted != true && x.Status == false).OrderBy(x => x.EndDate).ToListAsync();
+            }
+            else
+            {
+                return _dbSet.Where(x => x.IsDeleted != true && x.Status == false&& x.DeveloperId==id).OrderBy(x => x.EndDate).ToListAsync();
+            }
 
         }
         public Task<List<Entities.Task>> GetCompletedTasks()

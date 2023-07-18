@@ -1,4 +1,5 @@
-﻿using Azure.Core;
+﻿using AutoMapper;
+using Azure.Core;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -11,18 +12,30 @@ using System.Text;
 using System.Threading.Tasks;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
+using TaskManagementSystem.Common;
+using TaskManagementSystem.DAL.Interfaces;
 
 namespace TaskManagementSystem.BLL.Services
 {
     internal class TokensService:ITokensService
     {
+
+        private readonly IAuthenticationsRepository _authenticationsRepository;
+        private readonly IMapper _mapper;
+        public TokensService(IAuthenticationsRepository authenticationsRepository, IMapper mapper)
+        {
+            _authenticationsRepository = authenticationsRepository;
+            _mapper = mapper;
+        }
         private const int ExpirationMinutes = 30;
         public TokenResponse CreateToken(DAL.Entities.Person user)
         {
 
             var expiration = DateTime.UtcNow.AddMinutes(ExpirationMinutes);
+            var accessClaims = CreateClaims(user);
+            accessClaims.Add(new Claim("TokenType", "Access"));
             var token = CreateJwtToken(
-                CreateClaims(user),
+                accessClaims,
                 CreateSigningCredentials(),
                 expiration
             );
@@ -34,7 +47,6 @@ namespace TaskManagementSystem.BLL.Services
             {
                 AccessToken = tokenHandler.WriteToken(token),
                 RefreshToken = refreshToken,
-                ExpiresIn = ExpirationMinutes * 60
             };
 
         }
@@ -90,6 +102,58 @@ namespace TaskManagementSystem.BLL.Services
                 ),
                 SecurityAlgorithms.HmacSha256
             );
+        }
+        public async Task<TokenResponse> RefreshToken(string refreshToken)
+        {
+            var principal = GetPrincipalFromExpiredToken(refreshToken);
+
+            if (principal == null)
+            {
+                throw new CustomException("Invalid refresh token");
+            }
+
+            Int32.TryParse(principal.FindFirst(ClaimTypes.NameIdentifier)?.Value, out int userId);
+
+            var user = await _authenticationsRepository.GetPersonById(userId);
+
+            if (user == null)
+            {
+                throw new CustomException("User not found");
+            }
+
+            var accessToken = CreateToken(_mapper.Map<DAL.Entities.Person>(user));
+
+            return new TokenResponse
+            {
+                AccessToken = accessToken.AccessToken,
+                RefreshToken = accessToken.RefreshToken,
+            };
+        }
+
+        private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var validationParameters = new TokenValidationParameters
+            {
+                ClockSkew = TimeSpan.Zero,
+                ValidateAudience = true,
+                ValidateIssuer = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = "apiWithAuthBackend",
+                ValidAudience = "apiWithAuthBackend",
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("!SomethingSecretAndLongEnoughToBeUseful!"))
+            };
+
+            try
+            {
+                var principal = tokenHandler.ValidateToken(token, validationParameters, out _);
+                return principal;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

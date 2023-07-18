@@ -4,6 +4,7 @@ using TaskManagementSystem.BLL;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
 using TaskManagementSystem.BLL.Services;
+using TaskManagementSystem.Common;
 
 namespace TaskManagementSystem.Controllers
 {
@@ -11,11 +12,13 @@ namespace TaskManagementSystem.Controllers
     public class AuthenticationsController : BaseController
     {
         private readonly IAuthenticationsService _authenticationsService;
-        public AuthenticationsController(IAuthenticationsService authenticationsService)
+        private readonly ITokensService _tokensService;
+        public AuthenticationsController(IAuthenticationsService authenticationsService, ITokensService tokensService)
         {
             _authenticationsService = authenticationsService;
+            _tokensService = tokensService;
         }
-        
+
         [HttpPost]
         [AllowAnonymous]
         [Route("api/login")]
@@ -44,6 +47,18 @@ namespace TaskManagementSystem.Controllers
                 }
                 var response = _authenticationsService.ChangePassword(id, request);
                 return Ok(response);
+            });
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("api/refresh-token")]
+        public async Task<IActionResult> RefreshToken(string refreshToken)
+        {
+            return await HandleExceptionAsync(async () =>
+            {
+                var tokenResponse = _tokensService.RefreshToken(refreshToken);
+                return Ok(tokenResponse);
             });
         }
     }

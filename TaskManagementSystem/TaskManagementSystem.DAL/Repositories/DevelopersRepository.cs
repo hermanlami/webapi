@@ -44,7 +44,7 @@ namespace TaskManagementSystem.DAL.Repositories
         public async Task<Developer> GetDeveloperById(int id)
         {
 
-            return (Developer)await _context.People.Where(x => x.IsDeleted != true && x.Id == id).FirstOrDefaultAsync();
+            return (Developer)await _context.People.Where(x => x.IsDeleted != true && x.PersonType==PersonType.Developer && x.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<Developer> GetDeveloperByUsername(string username)

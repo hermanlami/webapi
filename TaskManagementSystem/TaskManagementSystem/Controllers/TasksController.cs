@@ -29,14 +29,15 @@ namespace TaskManagementSystem.Controllers
         }
 
         [HttpGet]
-        [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "ProjectManager" } })]
+        [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "ProjectManager", "Developer" } })]
         [Route("api/tasks")]
         public async Task<IActionResult> GetTasks()
         {
             return await HandleExceptionAsync(async () =>
             {
-                var tasks = await _tasksService.GetTasks();
-
+                var userRole = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value;
+                Int32.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value, out int userId);
+                var tasks = await _tasksService.GetTasks(userId, userRole);
                 return Ok(tasks);
             }
             );
@@ -104,7 +105,7 @@ namespace TaskManagementSystem.Controllers
         {
             return await HandleExceptionAsync(async () =>
             {
-                var task = await _tasksService.GetTasks();
+                var task = await _tasksService.GetTaskById(id);
 
                 return Ok(task);
 

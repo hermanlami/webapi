@@ -10,7 +10,7 @@ namespace TaskManagementSystem.BLL.Interfaces
     public interface ITasksService
     {
         Task<DTO.Task> AddTask(DTO.Task model);
-        Task<List<DTO.Task>> GetTasks();
+        Task<List<DTO.Task>> GetTasks(int id, string userRole);
         Task<List<DTO.Task>> GetCompletedTasks();
         Task<DTO.Task> GetTaskById(int id);
         Task<List<DTO.Task>> GetTasksByDevelopersUsername(string username);

@@ -5,6 +5,7 @@ using Serilog;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
 using TaskManagementSystem.Common;
+using TaskManagementSystem.Common.Enums;
 using TaskManagementSystem.DAL.Interfaces;
 
 namespace TaskManagementSystem.BLL.Services
@@ -70,7 +71,7 @@ namespace TaskManagementSystem.BLL.Services
                 }
 
                 task.IsDeleted = true;
-             
+
                 var deletedTask = await _repository.DeleteTask(task);
                 if (deletedTask != null)
                 {
@@ -118,11 +119,12 @@ namespace TaskManagementSystem.BLL.Services
             });
         }
 
-        public async Task<List<DTO.Task>> GetTasks()
+        public async Task<List<DTO.Task>> GetTasks(int id, string userRole)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
-            {
-                var tasks = await _repository.GetTasks();
+            { 
+                var tasks= userRole == PersonType.Developer.ToString() ? await _repository.GetTasks(id): await _repository.GetTasks();
+                
                 if (tasks != null)
                 {
                     Log.Information("Tasks retrieved successfully");
@@ -212,7 +214,8 @@ namespace TaskManagementSystem.BLL.Services
 
         public async System.Threading.Tasks.Task NotifyForTasksCloseToDeadline()
         {
-            try { 
+            try
+            {
                 var tasks = await _repository.GetTasksCloseToDeadline();
                 if (tasks != null)
                 {
@@ -224,8 +227,9 @@ namespace TaskManagementSystem.BLL.Services
                         Mail.DeadlineNotification(developer.Email, daysLeft);
                     }
                 }
-                throw new CustomException("Tasks could not be retrieved"); 
-            }catch(CustomException ex)
+                throw new CustomException("Tasks could not be retrieved");
+            }
+            catch (CustomException ex)
             {
 
             }
