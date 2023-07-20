@@ -8,7 +8,7 @@ using TaskManagementSystem.Common.Enums;
 
 namespace TaskManagementSystem.BLL.DTO
 {
-    public abstract class Person
+    public class Person
     {
         public int Id { get; set; }
         public string FirstName { get; set; }

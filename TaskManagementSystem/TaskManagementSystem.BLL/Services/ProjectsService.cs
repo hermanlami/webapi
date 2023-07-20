@@ -23,6 +23,11 @@ namespace TaskManagementSystem.BLL.Services
         {
             _repository = repository;
         }
+        /// <summary>
+        /// Krijon nje project te ri.
+        /// </summary>
+        /// <param name="model"> Modeli qe duhet te krijohet.</param>
+        /// <returns>Projektin e krijuar.</returns>
         public async Task<Project> AddProject(Project model)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
@@ -32,6 +37,7 @@ namespace TaskManagementSystem.BLL.Services
                     Log.Error($"Project {model.Name} already exists");
                     throw new CustomException($"Project {model.Name} already exists");
                 }
+
                 var addedProject = await _repository.AddProject(_mapper.Map<DAL.Entities.Project>(model));
 
                 if (addedProject.Id > 0)
@@ -44,7 +50,11 @@ namespace TaskManagementSystem.BLL.Services
                 throw new CustomException($"Project could not be added");
             });
         }
-
+        /// <summary>
+        /// Fshin nje projekt.
+        /// </summary>
+        /// <param name="id">Id qe identifikon projektin qe duhet fshire.</param>
+        /// <returns>Projektin e fshire.</returns>
         public async Task<Project> DeleteProject(int id)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
@@ -70,7 +80,11 @@ namespace TaskManagementSystem.BLL.Services
 
             });
         }
-
+        /// <summary>
+        /// Merr nje projekt ne baze te Id se tij.
+        /// </summary>
+        /// <param name="id">Id qe identifikon projektin qe duhet marre.</param>
+        /// <returns>Projektin perkates.</returns>
         public async Task<Project> GetProjectById(int id)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
@@ -88,7 +102,10 @@ namespace TaskManagementSystem.BLL.Services
 
             });
         }
-
+        /// <summary>
+        /// Merr te gjitha projektet.
+        /// </summary>
+        /// <returns>Listen e te gjitha projekteve.</returns>
         public async Task<List<Project>> GetProjects()
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
@@ -105,7 +122,12 @@ namespace TaskManagementSystem.BLL.Services
 
             });
         }
-
+        /// <summary>
+        /// Perditeson nje projekt.
+        /// </summary>
+        /// <param name="id">Id e projektit qe duhet perditesuar.</param>
+        /// <param name="model">Modeli qe sherben per te perditesuar vlerat e projektit te kapur nepermjet Id.</param>
+        /// <returns>Projektin e perditesuar.</returns>
         public async Task<Project> UpdateProject(int id, Project model)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
@@ -120,7 +142,7 @@ namespace TaskManagementSystem.BLL.Services
 
                 model.Id = id;
                 
-                var updated = await _repository.UpdateProject(_mapper.Map<DAL.Entities.Project>(model));
+                var updated = await _repository.UpdateProject(_mapper.Map(model, project));
                 if (updated != null)
                 {
                     Log.Information($"Project {updated.Name} updated successfully");
@@ -132,7 +154,11 @@ namespace TaskManagementSystem.BLL.Services
 
             });
         }
-
+        /// <summary>
+        /// Merr nje projekt bazuar ne emrin e tij.
+        /// </summary>
+        /// <param name="name">Emri qe sherben per te identifikuar projektin.</param>
+        /// <returns>Projektin perkates.</returns>
         public async Task<Project> GetProjectByName(string name)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>

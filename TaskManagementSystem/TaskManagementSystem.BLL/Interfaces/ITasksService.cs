@@ -16,7 +16,7 @@ namespace TaskManagementSystem.BLL.Interfaces
         Task<List<DTO.Task>> GetTasksByDevelopersUsername(string username);
         Task<List<DTO.Task>> GetTasksByProjectName(string name);
         Task<List<DTO.Task>> GetTasksByTagName(string name);
-        Task<DTO.Task> MarkTaskAsCompleted(int id);
+        Task<DTO.Task> SetTaskStatus(int id, string userRole, string response=null);
         Task<DTO.Task> UpdateTask(int id, DTO.Task model);
         Task<DTO.Task> DeleteTask(int id);
         Task NotifyForTasksCloseToDeadline();

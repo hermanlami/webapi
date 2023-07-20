@@ -99,8 +99,6 @@ app.UseHttpsRedirection();
 
 app.UseMiddleware(typeof(AuthenticationMiddleware));
 
-//app.UseAuthorization();
-
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();

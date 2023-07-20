@@ -13,7 +13,10 @@ namespace TaskManagementSystem.Controllers
         {
             _tasksService = tasksService;
         }
-
+        /// <summary>
+        /// Krijon nje task te ri.
+        /// </summary>
+        /// <param name="model">Modeli ne baze te te cilit do te krijohet task-u.</param>
         [HttpPost]
         [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "ProjectManager" } })]
         [Route("api/tasks")]
@@ -21,13 +24,19 @@ namespace TaskManagementSystem.Controllers
         {
             return await HandleExceptionAsync(async () =>
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
                 var task = await _tasksService.AddTask(model);
-
                 return Ok(task);
 
             });
         }
-
+        /// <summary>
+        /// Merr te gjithe task-et qe i takojne nje developer-i, nese eshte i tille ai qe e ben kerkesen, 
+        /// perndyshe merr te gjithe task-et pavaresisht se kujt i perkasin.
+        /// </summary>
         [HttpGet]
         [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "ProjectManager", "Developer" } })]
         [Route("api/tasks")]
@@ -42,12 +51,14 @@ namespace TaskManagementSystem.Controllers
             }
             );
         }
-
+        /// <summary>
+        /// Merr task-et e perfunduara.
+        /// </summary>
         [HttpGet]
         [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "ProjectManager" } })]
 
         [Route("api/tasks/completed")]
-        public async Task<IActionResult> GetCompletedTasks()
+        public async Task<IActionResult> GetCompletedTasks() 
         {
             return await HandleExceptionAsync(async () =>
             {
@@ -57,7 +68,10 @@ namespace TaskManagementSystem.Controllers
             }
             );
         }
-
+        /// <summary>
+        /// Merr tasket qe i perkasin nje developer-i me nje username te caktuar
+        /// </summary>
+        /// <param name="username">Username i developer.</param>
         [HttpGet]
         [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "ProjectManager" } })]
 
@@ -72,7 +86,10 @@ namespace TaskManagementSystem.Controllers
             }
             );
         }
-
+        /// <summary>
+        /// Merr task-et sipas emrit te projektit qe i perkasin.
+        /// </summary>
+        /// <param name="name">Emri i projektit</param>
         [HttpGet]
         [Route("api/tasks/byProjectName/{name}")]
         public async Task<IActionResult> GetTasksByProjectName(string name)
@@ -85,7 +102,10 @@ namespace TaskManagementSystem.Controllers
             }
             );
         }
-
+        /// <summary>
+        /// Merr tasket sipas emrit te tag-ut.
+        /// </summary>
+        /// <param name="name">Emri i tag-ut</param>
         [HttpGet]
         [Route("api/tasks/bytagname/{name}")]
         public async Task<IActionResult> GetTasksByTagName(string name)
@@ -98,7 +118,10 @@ namespace TaskManagementSystem.Controllers
             }
             );
         }
-
+        /// <summary>
+        /// Merr task ne baze te id se tij.
+        /// </summary>
+        /// <param name="id">Id qe identifikon task-un.</param>
         [HttpGet]
         [Route("api/tasks/{id}")]
         public async Task<IActionResult> GetTask(int id)
@@ -111,31 +134,45 @@ namespace TaskManagementSystem.Controllers
 
             });
         }
-        
+        /// <summary>
+        /// Deklaron task-un si te perfunduar.
+        /// </summary>
+        /// <param name="id">Id qe identifikon task-un.</param>
         [HttpPut]
         [Route("api/tasks/complete/{id}")]
-        public async Task<IActionResult> MarkTaskAsCompleted(int id)
+        public async Task<IActionResult> SetTaskStatus(int id, string response)
         {
             return await HandleExceptionAsync(async () =>
             {
-                var task = await _tasksService.MarkTaskAsCompleted(id);
+                var userRole = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value;
+                var task = await _tasksService.SetTaskStatus(id, userRole, response);
 
                 return Ok(task);
             });
         }
-
+        /// <summary>
+        /// Perditeson te dhenat e task-ut.
+        /// </summary>
+        /// <param name="id">Id qe identifikon task-un.</param>
+        /// <param name="model">Modeli ne baze te te cilit behet perditesimi.</param>
         [HttpPut]
         [Route("api/tasks/{id}")]
         public async Task<IActionResult> UpdateTask(int id, [FromBody] BLL.DTO.Task model)
         {
             return await HandleExceptionAsync(async () =>
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
                 var task = await _tasksService.UpdateTask(id, model);
-
                 return Ok(task);
             });
         }
-
+        /// <summary>
+        /// Fshin nje task.
+        /// </summary>
+        /// <param name="id">Id qe identifikon task-un.</param>
         [HttpDelete]
         [Route("api/tasks/{id}")]
         public async Task<IActionResult> DeleteTask(int id)
@@ -147,19 +184,6 @@ namespace TaskManagementSystem.Controllers
                 return Ok(deleted);
 
             });
-        }
-
-        [HttpGet]
-        [Route("api/tasks/notify")]
-        public async Task<IActionResult> NotifyForTasksCloseToDeadline()
-        {
-            return await HandleExceptionAsync(async () =>
-            {
-                await _tasksService.NotifyForTasksCloseToDeadline();
-
-                return Ok();
-            }
-            );
         }
     }
 }

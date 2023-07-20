@@ -16,6 +16,11 @@ namespace TaskManagementSystem.BLL.Services
             _repository = repository;
             _mapper = mapper;
         }
+        /// <summary>
+        /// Krijon nje tag te ri.
+        /// </summary>
+        /// <param name="model">Modlei ne baze te te cilit krijohet tag-u i ri</param>
+        /// <returns>Tag-un e krijuar.</returns>
         public async Task<Tag> AddTag(Tag model)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
@@ -37,7 +42,11 @@ namespace TaskManagementSystem.BLL.Services
 
             });
         }
-
+        /// <summary>
+        /// Fshin nje tag.
+        /// </summary>
+        /// <param name="id">Id qe sherben per te identifkuar tagu-un qe duhet fshire.</param>
+        /// <returns>Tag-un e fshire.</returns>
         public async Task<Tag> DeleteTag(int id)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
@@ -63,7 +72,11 @@ namespace TaskManagementSystem.BLL.Services
                 throw new CustomException("Tag could not be deleted");
             });
         }
-
+        /// <summary>
+        /// Merr nje tag ne baze te Id se tij.
+        /// </summary>
+        /// <param name="id">Id qe sherben per te identifikuar tag-un.</param>
+        /// <returns>Tag-un perkates.</returns>
         public async Task<Tag> GetTagById(int id)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
@@ -79,7 +92,11 @@ namespace TaskManagementSystem.BLL.Services
                 return _mapper.Map<Tag>(tag);
             });
         }
-
+        /// <summary>
+        /// Merr tag-un na bze te emrit te tij.
+        /// </summary>
+        /// <param name="name">Emri qe sherben per te identifkuar tagun.</param>
+        /// <returns>Tag-un perkates.</returns>
         public async Task<Tag> GetTagByName(string name)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
@@ -94,7 +111,11 @@ namespace TaskManagementSystem.BLL.Services
                 throw new CustomException("Tag not found");
             });
         }
-
+        /// <summary>
+        /// Merr te githe tag-et.
+        /// </summary>
+        /// <returns>Listen e te gjitha tag-eve.</returns>
+        /// <exception cref="CustomException"></exception>
         public async Task<List<Tag>> GetTags()
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>

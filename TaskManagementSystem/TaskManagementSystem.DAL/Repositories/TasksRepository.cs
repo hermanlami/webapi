@@ -46,30 +46,30 @@ namespace TaskManagementSystem.DAL.Repositories
         {
             if (id == 0)
             {
-                return _dbSet.Where(x => x.IsDeleted != true && x.Status == false).OrderBy(x => x.EndDate).ToListAsync();
+                return _dbSet.Where(x => x.IsDeleted != true && x.FinalStatus == false).OrderBy(x => x.EndDate).ToListAsync();
             }
             else
             {
-                return _dbSet.Where(x => x.IsDeleted != true && x.Status == false&& x.DeveloperId==id).OrderBy(x => x.EndDate).ToListAsync();
+                return _dbSet.Where(x => x.IsDeleted != true && x.FinalStatus == false && x.DeveloperId==id).OrderBy(x => x.EndDate).ToListAsync();
             }
 
         }
         public Task<List<Entities.Task>> GetCompletedTasks()
         {
 
-            return _dbSet.Where(x => x.IsDeleted != true && x.Status == true).ToListAsync();
+            return _dbSet.Where(x => x.IsDeleted != true && x.FinalStatus == true).ToListAsync();
         }
 
         public Task<List<Entities.Task>> GetTasksByDeveloperId(int developerId)
         {
 
-            return _dbSet.Where(x => x.IsDeleted != true && x.DeveloperId == developerId && x.Status == false).OrderBy(x => x.EndDate).ThenByDescending(x => x.Importance).ToListAsync();
+            return _dbSet.Where(x => x.IsDeleted != true && x.DeveloperId == developerId && x.FinalStatus == false).OrderBy(x => x.EndDate).ThenByDescending(x => x.Importance).ToListAsync();
         }
 
         public Task<List<Entities.Task>> GetTasksByProjectId(int id)
         {
 
-            return _dbSet.Where(x => x.IsDeleted != true && x.Status == false && x.ProjectId == id).ToListAsync();
+            return _dbSet.Where(x => x.IsDeleted != true && x.FinalStatus == false && x.ProjectId == id).ToListAsync();
         }
 
         public async Task<Entities.Task> UpdateTask(Entities.Task entity)
@@ -81,7 +81,7 @@ namespace TaskManagementSystem.DAL.Repositories
 
         public async Task<List<Entities.Task>> GetTasksCloseToDeadline()
         {
-            return await _dbSet.Where(x => x.IsDeleted != true && x.Status == false && x.EndDate <= DateTime.Now.AddDays(3)).OrderBy(x => x.EndDate).ThenByDescending(x => x.Importance).ToListAsync();
+            return await _dbSet.Where(x => x.IsDeleted != true && x.PendingStatus == false && x.EndDate <= DateTime.Now.AddDays(3)).OrderBy(x => x.EndDate).ThenByDescending(x => x.Importance).ToListAsync();
 
         }
     }

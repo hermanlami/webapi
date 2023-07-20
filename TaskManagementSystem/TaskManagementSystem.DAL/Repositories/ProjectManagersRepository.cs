@@ -20,7 +20,7 @@ namespace TaskManagementSystem.DAL.Repositories
         public async Task<ProjectManager> AddProjectManager(ProjectManager entity)
         {
 
-            await _context.AddAsync(entity);
+            await _context.People.AddAsync(entity);
             await _context.SaveChangesAsync();
             return entity;
         }
@@ -28,7 +28,7 @@ namespace TaskManagementSystem.DAL.Repositories
         public async Task<ProjectManager> DeleteProjectManager(ProjectManager entity)
         {
 
-            _context.Update(entity);
+            _context.People.Update(entity);
             await _context.SaveChangesAsync();
             return entity;
         }
@@ -52,7 +52,7 @@ namespace TaskManagementSystem.DAL.Repositories
         public async Task<ProjectManager> UpdateProjectManager(ProjectManager entity)
         {
 
-            _context.Update(entity);
+            _context.People.Update(entity);
             await _context.SaveChangesAsync();
             return entity;
         }

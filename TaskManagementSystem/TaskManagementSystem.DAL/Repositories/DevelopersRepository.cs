@@ -18,19 +18,28 @@ namespace TaskManagementSystem.DAL.Repositories
         {
             _context = context;
         }
+        /// <summary>
+        /// Krijon nje developer te ri.
+        /// </summary>
+        /// <param name="entity">Modeli qe sherben per te krijuar developer-in e ri.</param>
+        /// <returns>Developerin e krijuar.</returns>
         public async Task<Developer> AddDeveloper(Developer entity)
         {
 
-                await _context.AddAsync(entity);
+                await _context.People.AddAsync(entity);
                 await _context.SaveChangesAsync();
                 return entity;
            
         }
-
+        /// <summary>
+        /// Fshin nje developer.
+        /// </summary>
+        /// <param name="entity">Entiteti qe duhet fshire.</param>
+        /// <returns>Developer-in e fshire.</returns>
         public async Task<Developer> DeleteDeveloper(Developer entity)
         {
 
-            _context.Update(entity);
+            _context.People.Update(entity);
             await _context.SaveChangesAsync();
             return entity;
         }
@@ -40,7 +49,11 @@ namespace TaskManagementSystem.DAL.Repositories
 
             return (Developer)await _context.People.Where(x => x.IsDeleted != true && x.PersonType == PersonType.Developer && x.Email == email).FirstOrDefaultAsync();
         }
-
+        /// <summary>
+        /// Kap nje develoepr ne baze te Id se tij.
+        /// </summary>
+        /// <param name="id">Id qe sherben per te idetifikuar developer-in qe duhet fshire.</param>
+        /// <returns>Developer-in perkates.</returns>
         public async Task<Developer> GetDeveloperById(int id)
         {
 
@@ -52,17 +65,24 @@ namespace TaskManagementSystem.DAL.Repositories
 
             return (Developer)await _context.People.Where(x => x.IsDeleted != true && x.PersonType == PersonType.Developer && x.Username == username).FirstOrDefaultAsync();
         }
-
+        /// <summary>
+        /// Merr te gjithe developers.
+        /// </summary>
+        /// <returns>Listen e te gjithe developers.</returns>
         public async Task<List<Developer>> GetDevelopers()
         {
 
             return await _context.People.Where(x => x.PersonType == PersonType.Developer && x.IsDeleted != true).Cast<Developer>().ToListAsync();
         }
-
+        /// <summary>
+        /// Perditeson te dhenat e nje developer.
+        /// </summary>
+        /// <param name="entity">Modeli ne baze te te cilit behet perditesimi i te dhenave.</param>
+        /// <returns>Developer-in e perditesuar.</returns>
         public async Task<Developer> UpdateDeveloper(Developer entity)
         {
 
-            _context.Update(entity);
+            _context.People.Update(entity);
             await _context.SaveChangesAsync();
             return entity;
         }

@@ -27,11 +27,15 @@ namespace TaskManagementSystem.BLL.Services
             _authenticationsRepository = authenticationsRepository;
             _mapper = mapper;
         }
-        private const int ExpirationMinutes = 30;
+        /// <summary>
+        /// Krijon nje token per nje perdorues te caktuar.
+        /// </summary>
+        /// <param name="user">Perdoruesi i cili dot e pajiset me token.</param>
+        /// <returns>Token se basku me nje refresh token per te shmangur dhenien e perseritur te kredencialeve. </returns>
         public TokenResponse CreateToken(DAL.Entities.Person user)
         {
 
-            var expiration = DateTime.UtcNow.AddMinutes(ExpirationMinutes);
+            var expiration = DateTime.UtcNow.AddMinutes(30);
             var accessClaims = CreateClaims(user);
             accessClaims.Add(new Claim("TokenType", "Access"));
             var token = CreateJwtToken(
@@ -50,6 +54,11 @@ namespace TaskManagementSystem.BLL.Services
             };
 
         }
+        /// <summary>
+        /// Krijon nje refresh token per nje perdorues te caktuar.
+        /// </summary>
+        /// <param name="user">Perdoruesi i cili dot e pajiset me refresh token.</param>
+        /// <returns>Refresh token-in prkates.</returns>
         private string CreateRefreshToken(DAL.Entities.Person user)
         {
             var expiration = DateTime.UtcNow.AddDays(7);
@@ -61,7 +70,13 @@ namespace TaskManagementSystem.BLL.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             return tokenHandler.WriteToken(refreshToken);
         }
-
+        /// <summary>
+        /// Krijon nje token me te drejtat e caktuara, kredencialet, dhe kohen e skadimit.
+        /// </summary>
+        /// <param name="claims">Lista e te drejtave te token-it.</param>
+        /// <param name="credentials">Kredencilaet e token.</param>
+        /// <param name="expiration">Koha e skadimit e token.</param>
+        /// <returns>Token-in e krijuar.</returns> 
         private JwtSecurityToken CreateJwtToken(List<Claim> claims, SigningCredentials credentials,
             DateTime expiration) =>
             new(
@@ -72,6 +87,11 @@ namespace TaskManagementSystem.BLL.Services
                 signingCredentials: credentials
             );
 
+        /// <summary>
+        /// Krijon listen e te drejtave bazuar ne perdoruesin perkates.
+        /// </summary>
+        /// <param name="user">Perdoruesi perkates.</param>
+        /// <returns>Listen e te drejtave te perdoruesit.</returns>
         private List<Claim> CreateClaims(DAL.Entities.Person user)
         {
             try
@@ -94,6 +114,10 @@ namespace TaskManagementSystem.BLL.Services
                 throw;
             }
         }
+        /// <summary>
+        /// Kriijon kredencialet e token-it.
+        /// </summary>
+        /// <returns>Kredencialet e token-it.</returns>
         private SigningCredentials CreateSigningCredentials()
         {
             return new SigningCredentials(
@@ -103,6 +127,12 @@ namespace TaskManagementSystem.BLL.Services
                 SecurityAlgorithms.HmacSha256
             );
         }
+        /// <summary>
+        /// Ben refresh token-in e saposkaduar duke perdorur nje refresh token.
+        /// </summary>
+        /// <param name="refreshToken">Refresh token qe i eshte bashkangjitur token-it te saposkaduar 
+        /// ne momentin e krijimit te tij.</param>
+        /// <returns>TokenResponse qe permban nje token te ri dhe nje refresh token te ri.</returns>
         public async Task<TokenResponse> RefreshToken(string refreshToken)
         {
             var principal = GetPrincipalFromExpiredToken(refreshToken);
@@ -129,7 +159,11 @@ namespace TaskManagementSystem.BLL.Services
                 RefreshToken = accessToken.RefreshToken,
             };
         }
-
+        /// <summary>
+        /// Merr te drejtat e token-it te saposkaduar.
+        /// </summary>
+        /// <param name="token">Token-i i saposkaduar.</param>
+        /// <returns>Te drejtat e token-it.</returns>
         private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();

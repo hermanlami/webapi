@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using TaskManagementSystem.BLL;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
 using TaskManagementSystem.BLL.Services;
 using TaskManagementSystem.Common;
+using TaskManagementSystem.Middlewares;
 
 namespace TaskManagementSystem.Controllers
 {
@@ -18,7 +19,10 @@ namespace TaskManagementSystem.Controllers
             _authenticationsService = authenticationsService;
             _tokensService = tokensService;
         }
-
+        /// <summary>
+        /// Kryen autentifikimin e perdoruesit.
+        /// </summary>
+        /// <param name="request">Modeli qe permban kredencialet</param>
         [HttpPost]
         [AllowAnonymous]
         [Route("api/login")]
@@ -34,10 +38,14 @@ namespace TaskManagementSystem.Controllers
                 return Ok(response);
             });
         }
-
+        /// <summary>
+        /// Ndryshon password-in e perdoruesit.
+        /// </summary>
+        /// <param name="id">Id e perdoruesit.</param>
+        /// <param name="request">Mdeli qe permban password-in e ri dhe ate te vjeter.</param>
         [HttpPost]
         [Route("api/changePassword")]
-        public async Task<IActionResult> ChangePassword(int id, [FromBody] UpdatePasswordRequest request)
+        public async Task<IActionResult> ChangePassword([FromBody] UpdatePasswordRequest request)
         {
             return await HandleExceptionAsync(async () =>
             {
@@ -45,11 +53,15 @@ namespace TaskManagementSystem.Controllers
                 {
                     return BadRequest(ModelState);
                 }
+                Int32.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value, out int id);
                 var response = _authenticationsService.ChangePassword(id, request);
                 return Ok(response);
             });
         }
-
+        /// <summary>
+        /// Ben refresh token-in e saposkaduar duke perdorur nje refresh token.
+        /// </summary>
+        /// <param name="refreshToken">Refresh tokne i nevojshem per te bere refresh token-in e skaduar.</param>
         [HttpPost]
         [AllowAnonymous]
         [Route("api/refresh-token")]

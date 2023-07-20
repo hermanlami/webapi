@@ -29,6 +29,12 @@ namespace TaskManagementSystem.BLL.Services
             _tokensService = tokensService;
             _mapper = mapper;
         }
+        /// <summary>
+        /// Ben autentifikim e perdoruesit ne baze te kredencialeve te tij.
+        /// </summary>
+        /// <param name="request">Modeli e permban kredencialet e perdoruesit.</param>
+        /// <returns>Kredencialet e perdoruesit, token per autentifikim dhe autorizim si dhe refresh token per te shmangur logimin
+        /// e perseritur kur perdoruesi eshte ende aktiv ne momentin e skadimit te token.</returns>
         public async Task<AuthenticationResponse> Authenticate(AuthenticationRequest request)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
@@ -53,7 +59,12 @@ namespace TaskManagementSystem.BLL.Services
 
             });
         }
-
+        /// <summary>
+        /// Ndryshon password-in e perdoruesit kur ai mund te jape sakte password-in e vjeter.
+        /// </summary>
+        /// <param name="id">Id e perdoruesit te loguar qe deshiron te ndryshoje passwordin.</param>
+        /// <param name="model">Modeli qe permban passwordin e ri si dhe password-in e vjeter si mase kontrolluese.</param>
+        /// <returns>Perdoruesin me password-in e perditesuar.</returns>
         public async Task<Person> ChangePassword(int id, UpdatePasswordRequest model)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
@@ -84,7 +95,11 @@ namespace TaskManagementSystem.BLL.Services
                 throw new CustomException($"Project manager could not be updated");
             });
         }
-
+        /// <summary>
+        /// Merr nje person ne baze te adreses se tij email.
+        /// </summary>
+        /// <param name="email">Email qe sherben per te identifikuar personin.</param>
+        /// <returns>Personin perkates.</returns>
         public async Task<Person> GetPersonByEmail(string email)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
@@ -100,7 +115,11 @@ namespace TaskManagementSystem.BLL.Services
 
             });
         }
-
+        /// <summary>
+        /// Merr nje person ne baze te username-it te tij.
+        /// </summary>
+        /// <param name="username">Username qe sherben per te identifikuar personin.</param>
+        /// <returns>Personin perkates.</returns>
         public async Task<Person> GetPersonByUsername(string username)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
@@ -117,7 +136,11 @@ namespace TaskManagementSystem.BLL.Services
 
             });
         }
-
+        /// <summary>
+        /// Merr nje person ne baze te Id se tij.
+        /// </summary>
+        /// <param name="id">Id qe sherben per te identifikuar personin.</param>
+        /// <returns>Personin perkates.</returns>
         public async Task<Person> GetPersonById(int id)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>

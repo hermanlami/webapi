@@ -20,6 +20,11 @@ namespace TaskManagementSystem.BLL.Services
             _mapper = mapper;
             _tokensService = tokensService;
         }
+        /// <summary>
+        /// Krijon nje developer te ri.
+        /// </summary>
+        /// <param name="model">Modeli qe sherben per te krijuar developer-in e ri.</param>
+        /// <returns>Developerin e krijuar.</returns>
         public async Task<Developer> AddDeveloper(Developer model)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
@@ -46,6 +51,7 @@ namespace TaskManagementSystem.BLL.Services
                 var addedDeveloper = await _repository.AddDeveloper(dalDeveloper);
                 if (addedDeveloper.Id > 0)
                 {
+                    Mail.CredentialsNotification(addedDeveloper.Email, model.Password);
                     Log.Information($"Developer with username {addedDeveloper.Username} added successfully");
                     return _mapper.Map<DTO.Developer>(addedDeveloper);
                 }
@@ -55,7 +61,11 @@ namespace TaskManagementSystem.BLL.Services
 
             });
         }
-
+        /// <summary>
+        /// Fshin nje developer.
+        /// </summary>
+        /// <param name="id">Id qe sherben per te idetifikuar developer-in qe duhet fshire.</param>
+        /// <returns>Developer-in e fshire.</returns>
         public async Task<Developer> DeleteDeveloper(int id)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
@@ -82,7 +92,11 @@ namespace TaskManagementSystem.BLL.Services
 
             });
         }
-
+        /// <summary>
+        /// Kap nje develoepr ne baze te Id se tij.
+        /// </summary>
+        /// <param name="id">Id qe sherben per te idetifikuar developer-in qe duhet fshire.</param>
+        /// <returns>Developer-in perkates.</returns>
         public async Task<Developer> GetDeveloperById(int id)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
@@ -97,7 +111,10 @@ namespace TaskManagementSystem.BLL.Services
                 throw new CustomException("Developer not found");
             });
         }
-
+        /// <summary>
+        /// Merr te gjithe developers.
+        /// </summary>
+        /// <returns>Listen e te gjithe developers.</returns>
         public async Task<List<Developer>> GetDevelopers()
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
@@ -114,7 +131,12 @@ namespace TaskManagementSystem.BLL.Services
 
             });
         }
-
+        /// <summary>
+        /// Perditeson te dhenat e nje developer.
+        /// </summary>
+        /// <param name="id">Id qe sherben per te identifikuar developer.</param>
+        /// <param name="model">Modeli ne baze te te cilit behet perditesimi i the dhenave.</param>
+        /// <returns>Developer-in e perditesuar.</returns>
         public async Task<Developer> UpdateDeveloper(int id, Developer model)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
@@ -127,7 +149,7 @@ namespace TaskManagementSystem.BLL.Services
                 }
 
                 model.Id = id;
-                var updated = await _repository.UpdateDeveloper(_mapper.Map<DAL.Entities.Developer>(model));
+                var updated = await _repository.UpdateDeveloper(_mapper.Map(model, developer));
                 if (updated != null)
                 {
                     Log.Information($"Developer with username {updated.Username} updated successfully");

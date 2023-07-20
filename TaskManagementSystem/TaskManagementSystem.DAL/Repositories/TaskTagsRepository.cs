@@ -26,37 +26,11 @@ namespace TaskManagementSystem.DAL.Repositories
             return entity;
         }
 
-        public async Task<TaskTag> DeleteTaskTag(TaskTag entity)
-        {
-
-            _dbSet.Update(entity);
-            await _context.SaveChangesAsync();
-            return entity;
-        }
-
-        public async Task<TaskTag> GetTaskTagById(int id)
-        {
-
-            return await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
-        }
-
         public async Task<List<TaskTag>> GetTaskTagByTagId(int id)
         {
 
             return await _dbSet.Where(x => x.TagId == id).ToListAsync();
         }
 
-        public async Task<List<TaskTag>> GetTaskTags()
-        {
-
-            return await _dbSet.ToListAsync();
-        }
-
-        public async Task<TaskTag> UpdateTaskTag(TaskTag entity)
-        {
-            _dbSet.Update(entity);
-            await _context.SaveChangesAsync();
-            return entity;
-        }
     }
 }

@@ -8,6 +8,11 @@ namespace TaskManagementSystem.Middlewares
 {
     public class AuthenticationMiddleware : IMiddleware
     {
+        /// <summary>
+        /// Ben middleware te kryeje autentifikimin dhe autorizimin.
+        /// </summary>
+        /// <param name="context">Konteksti i kerkeses se bere.</param>
+        /// <param name="next">Delegati qe perfaqeson middleware-in e rradhes ne pipeline.</param>
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
 
@@ -64,6 +69,11 @@ namespace TaskManagementSystem.Middlewares
 
             await next(context);
         }
+        /// <summary>
+        /// Kontrollon nese perdoruesit e paautorizuar mund ta aksesojne nje action method.
+        /// </summary>
+        /// <param name="context">Konteksti qe duhet verifikuar.</param>
+        /// <returns>True nese e lejon aksesin e paautorizar, perndryshe false.</returns>
         private bool AllowsAnonymous(HttpContext context)
         {
             var endpoint = context.GetEndpoint();

@@ -141,6 +141,9 @@ namespace TaskManagementSystem.DAL.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("FinalStatus")
+                        .HasColumnType("bit");
+
                     b.Property<byte>("Importance")
                         .HasColumnType("tinyint");
 
@@ -151,11 +154,11 @@ namespace TaskManagementSystem.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("PendingStatus")
+                        .HasColumnType("bit");
+
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -199,11 +202,6 @@ namespace TaskManagementSystem.DAL.Migrations
             modelBuilder.Entity("TaskManagementSystem.DAL.Entities.Developer", b =>
                 {
                     b.HasBaseType("TaskManagementSystem.DAL.Entities.Person");
-
-                    b.Property<int>("ManagerId")
-                        .HasColumnType("int");
-
-                    b.HasIndex("ManagerId");
 
                     b.HasDiscriminator().HasValue((byte)3);
                 });
@@ -257,16 +255,6 @@ namespace TaskManagementSystem.DAL.Migrations
                     b.Navigation("Tag");
 
                     b.Navigation("Task");
-                });
-
-            modelBuilder.Entity("TaskManagementSystem.DAL.Entities.Developer", b =>
-                {
-                    b.HasOne("TaskManagementSystem.DAL.Entities.ProjectManager", "Manager")
-                        .WithMany()
-                        .HasForeignKey("ManagerId")
-                        .IsRequired();
-
-                    b.Navigation("Manager");
                 });
 #pragma warning restore 612, 618
         }

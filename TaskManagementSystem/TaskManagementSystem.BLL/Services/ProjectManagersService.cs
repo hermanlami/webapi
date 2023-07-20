@@ -19,6 +19,11 @@ namespace TaskManagementSystem.BLL.Services
             _tokensService = tokensService;
             _mapper = mapper;
         }
+        /// <summary>
+        /// Krijon ne menaxher te ri projekti.
+        /// </summary>
+        /// <param name="model">Modeli qe sherben per te krijuar menaxherin e ri te projetit.</param>
+        /// <returns>Menaxherin e krijuar.</returns>
         public async Task<ProjectManager> AddProjectManager(ProjectManager model)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
@@ -41,6 +46,7 @@ namespace TaskManagementSystem.BLL.Services
 
                 if (addedPM.Id > 0)
                 {
+                    Mail.CredentialsNotification(addedPM.Email, model.Password);
                     Log.Information($"Project manager with username {addedPM.Username} added successfully");
                     return _mapper.Map<ProjectManager>(addedPM);
                 }
@@ -50,7 +56,11 @@ namespace TaskManagementSystem.BLL.Services
 
             });
         }
-
+        /// <summary>
+        /// Fshin nje menaxher projekti.
+        /// </summary>
+        /// <param name="id">Id qe sherben per te identifikuar menaxherin e projektit.</param>
+        /// <returns>Menaxherin e fshire.</returns>
         public async Task<ProjectManager> DeleteProjectManager(int id)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
@@ -78,7 +88,11 @@ namespace TaskManagementSystem.BLL.Services
 
             });
         }
-
+        /// <summary>
+        /// Merr nje menaxher projekti ne baze te Id se tij.
+        /// </summary>
+        /// <param name="id">Id qe sherben per te identifikuar menaxherin e projektit.</param>
+        /// <returns>Menaxherin perkates.</returns>
         public async Task<ProjectManager> GetProjectManagerById(int id)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
@@ -96,7 +110,10 @@ namespace TaskManagementSystem.BLL.Services
 
             });
         }
-
+        /// <summary>
+        /// Merr te gjithe menaxheret e projekteve.
+        /// </summary>
+        /// <returns>Listen e te gjithe menaxhereve.</returns>
         public async Task<List<ProjectManager>> GetProjectManagers()
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
@@ -114,7 +131,12 @@ namespace TaskManagementSystem.BLL.Services
 
             });
         }
-
+        /// <summary>
+        /// Perditeson menaxherin e projektit.
+        /// </summary>
+        /// <param name="id">Id qe sherben per te identifikuar menaxherin e projektit.</param>
+        /// <param name="model">Modeli ne baze te te cilit do te perditesohen te dhenat.</param>
+        /// <returns>Menaxherin e perditesuar.</returns>
         public async Task<ProjectManager> UpdateProjectManager(int id, ProjectManager model)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
@@ -126,7 +148,7 @@ namespace TaskManagementSystem.BLL.Services
                     throw new CustomException($"Project manager not found");
                 }
                 model.Id = id;
-                var updated = await _repository.UpdateProjectManager(_mapper.Map<DAL.Entities.ProjectManager>(model));
+                var updated = await _repository.UpdateProjectManager(_mapper.Map(model, pM));
                 if (updated != null)
                 {
                     Log.Information($"Project manager with username {updated.Username} updated successfully");

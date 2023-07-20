@@ -5,6 +5,11 @@ namespace TaskManagementSystem.Middlewares
 {
     public class CustomErrorMiddleware : IMiddleware
     {
+        /// <summary>
+        /// Kap dhe trajton exceptions qe ndodhin nepermjet middleware.
+        /// </summary>
+        /// <param name="context">Konteksti i kerkeses.</param>
+        /// <param name="next">Delegati qe perfaqeson middleware-in e rradhes ne pipeline.</param>
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             try

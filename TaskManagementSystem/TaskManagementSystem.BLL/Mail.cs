@@ -10,37 +10,53 @@ namespace TaskManagementSystem.BLL
 {
     public static class Mail
     {
-        public static async Task DeadlineNotification(string toEmail, double daysLeft)
+        public static void DeadlineNotification(string toEmail, string taskName, double daysLeft)
         {
-            string fromEmail = "hermanlami991@gmail.com";
-            string password = "dqvp roym ilie xopz";
-            var days = daysLeft > 1 ? daysLeft.ToString()+" days" : "today";
-            string message =$"Your task is ending in {days}!";
-            var email = EmailStructure(fromEmail, toEmail, message, "Task Deadline");
-
-            SmtpClient smtpClient = new SmtpClient("smtp.gmail.com", 587);
-
-            smtpClient.Credentials = new NetworkCredential(fromEmail, password);
-            smtpClient.EnableSsl = true;
-
-            try
-            {
-                smtpClient.Send(email);
-            }
-            catch (Exception ex)
-            {
-
-            }
-        }
-        private static MailMessage EmailStructure(string emailFrom, string EmailTo, string emailBody, string subject)
-        {
-            MailMessage mail = new MailMessage();
-            mail.Subject = subject;
-            mail.From = new MailAddress(emailFrom);
-            mail.To.Add(new MailAddress(EmailTo));
-            mail.Body = emailBody;
-            return mail;
+            var days = daysLeft > 1 ? daysLeft.ToString() + " days" : "today";
+            string message = $"Your task {taskName} is ending in {days}!";
+            EmailStructure(toEmail, message, "Task Deadline");
         }
 
+        public static void CredentialsNotification(string toEmail, string password)
+        {
+            string message = @$"Your login credentials are
+Email: {toEmail}
+Password: {password}";
+            EmailStructure(toEmail, message, "Login Credentials");
+        }
+
+        public static void TaskCompletionResponse(string toEmail, string response)
+        {
+            string message = $"Your task completion was {response}";
+            EmailStructure(toEmail, message, "Login Credentials");
+        }
+
+        private static void EmailStructure(string toEmail, string emailBody, string subject)
+        {
+            string fromEmail = "hermanlami991@gmail.com"; 
+            string password = "dqvp roym ilie xopz";  
+
+            using (MailMessage mail = new MailMessage())
+            using (SmtpClient smtpClient = new SmtpClient("smtp.gmail.com", 587))
+            {
+                mail.Subject = subject;
+                mail.From = new MailAddress(fromEmail);
+                mail.To.Add(new MailAddress(toEmail));
+                mail.Body = emailBody;
+
+                smtpClient.Credentials = new NetworkCredential(fromEmail, password);
+                smtpClient.EnableSsl = true;
+
+                try
+                {
+                    smtpClient.Send(mail);
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+        }
     }
+
 }

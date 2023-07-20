@@ -13,6 +13,10 @@ namespace TaskManagementSystem.BLL
         {
             _allowedRoles = allowedRoles;
         }
+        /// <summary>
+        /// Para se te ekzekutohet nje metode ne controller, kontrollon nese perdoruesi qe po e akseson ka rolin e duhur.
+        /// </summary>
+        /// <param name="context">Konteksti i ekzekutimit te metodes.</param>
         public void OnActionExecuting(ActionExecutingContext context)
         {
             var user = context.HttpContext.User;

@@ -10,10 +10,7 @@ namespace TaskManagementSystem.BLL.Interfaces
     public interface ITaskTagsService
     {
         Task<TaskTag> AddTaskTag(TaskTag model);
-        Task<List<TaskTag>> GetTaskTags();
         Task<List<TaskTag>> GetTaskTagByTagId(int id);
-        Task<TaskTag> GetTaskTagById(int id);
-        Task<TaskTag> UpdateTaskTag(TaskTag model);
-        Task<TaskTag> DeleteTaskTag(int id);
+
     }
 }
