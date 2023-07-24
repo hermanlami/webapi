@@ -2,7 +2,7 @@
 using Serilog;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
-using TaskManagementSystem.Common;
+using TaskManagementSystem.Common.CustomExceptions;
 using TaskManagementSystem.DAL.Interfaces;
 
 namespace TaskManagementSystem.BLL.Services
@@ -28,7 +28,7 @@ namespace TaskManagementSystem.BLL.Services
                 if (await _repository.GetTagByName(model.Name) != null)
                 {
                     Log.Error($"Tag {model.Name} already exists");
-                    throw new CustomException($"Tag {model.Name} already exists");
+                    throw new DuplicateInputException($"Tag {model.Name} already exists");
                 }
                 var addedTag = await _repository.AddTag(_mapper.Map<DAL.Entities.Tag>(model));
                 if (addedTag.Id > 0)
@@ -55,7 +55,7 @@ namespace TaskManagementSystem.BLL.Services
                 if (tag == null)
                 {
                     Log.Error("Tag not found");
-                    throw new CustomException("Tag not found");
+                    throw new NotFoundException("Tag not found");
 
                 }
 
@@ -85,7 +85,7 @@ namespace TaskManagementSystem.BLL.Services
                 if (tag == null)
                 {
                     Log.Error("Tag not found");
-                    throw new CustomException("Tag not found");
+                    throw new NotFoundException("Tag not found");
 
                 }
                 Log.Information($"Tag {tag.Name} retrieved successfully");
@@ -108,7 +108,7 @@ namespace TaskManagementSystem.BLL.Services
                     return _mapper.Map<Tag>(tag);
                 }
                 Log.Error("Tag not found");
-                throw new CustomException("Tag not found");
+                throw new NotFoundException("Tag not found");
             });
         }
         /// <summary>

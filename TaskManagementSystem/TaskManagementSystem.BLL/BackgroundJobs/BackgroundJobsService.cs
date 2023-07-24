@@ -16,13 +16,24 @@ namespace TaskManagementSystem.BLL.BackgroundJobs
         {
             _tasksService = tasksService;   
         }
-        protected async override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected async override Task ExecuteAsync(CancellationToken stoppingToken) 
         {
             while (!stoppingToken.IsCancellationRequested)
             {
+                DateTime now = DateTime.UtcNow;
+
+                DateTime nextExecutionTime = new DateTime(now.Year, now.Month, now.Day, 9, 0, 0);
+                if (now >= nextExecutionTime)
+                {
+                    nextExecutionTime = nextExecutionTime.AddDays(1);
+                }
+                TimeSpan timeUntilNextExecution = nextExecutionTime - now;
+
+                await Task.Delay(timeUntilNextExecution, stoppingToken);
+
                 await _tasksService.NotifyForTasksCloseToDeadline();
 
-                await Task.Delay(TimeSpan.FromHours(24), stoppingToken);
+                await Task.Delay(TimeSpan.FromHours(24), stoppingToken); 
             }
         }
     }

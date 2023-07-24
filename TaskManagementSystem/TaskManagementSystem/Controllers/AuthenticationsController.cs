@@ -42,7 +42,7 @@ namespace TaskManagementSystem.Controllers
         /// Ndryshon password-in e perdoruesit.
         /// </summary>
         /// <param name="id">Id e perdoruesit.</param>
-        /// <param name="request">Mdeli qe permban password-in e ri dhe ate te vjeter.</param>
+        /// <param name="request">Modeli qe permban password-in e ri dhe ate te vjeter.</param>
         [HttpPost]
         [Route("api/changePassword")]
         public async Task<IActionResult> ChangePassword([FromBody] UpdatePasswordRequest request)

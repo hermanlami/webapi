@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
 using TaskManagementSystem.Common;
+using TaskManagementSystem.Common.CustomExceptions;
 using TaskManagementSystem.DAL.Interfaces;
 
 [assembly: InternalsVisibleTo("TaskManagementSystem.UnitTesting")]
@@ -35,7 +36,7 @@ namespace TaskManagementSystem.BLL.Services
                 if (await _repository.GetProjectByName(model.Name) != null)
                 {
                     Log.Error($"Project {model.Name} already exists");
-                    throw new CustomException($"Project {model.Name} already exists");
+                    throw new DuplicateInputException($"Project {model.Name} already exists");
                 }
 
                 var addedProject = await _repository.AddProject(_mapper.Map<DAL.Entities.Project>(model));
@@ -63,7 +64,7 @@ namespace TaskManagementSystem.BLL.Services
                 if (project == null)
                 {
                     Log.Error("Project not found");
-                    throw new CustomException("Project not found");
+                    throw new NotFoundException("Project not found");
                 }
 
                 project.IsDeleted = true;
@@ -98,7 +99,7 @@ namespace TaskManagementSystem.BLL.Services
                 }
 
                 Log.Error("Project could not be retrieved");
-                throw new CustomException("Project not found");
+                throw new NotFoundException("Project not found");
 
             });
         }
@@ -136,7 +137,7 @@ namespace TaskManagementSystem.BLL.Services
                 if (project == null)
                 {
                     Log.Error($"Project not found");
-                    throw new CustomException("Projects not found");
+                    throw new NotFoundException("Projects not found");
 
                 }
 

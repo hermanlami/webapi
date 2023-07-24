@@ -17,6 +17,11 @@ namespace TaskManagementSystem.DAL.Repositories
         {
             _context = context;
         }
+        /// <summary>
+        /// Krijon ne menaxher te ri projekti.
+        /// </summary>
+        /// <param name="entity">Modeli qe sherben per te krijuar menaxherin e ri te projetit.</param>
+        /// <returns>Menaxherin e krijuar.</returns>
         public async Task<ProjectManager> AddProjectManager(ProjectManager entity)
         {
 
@@ -24,7 +29,11 @@ namespace TaskManagementSystem.DAL.Repositories
             await _context.SaveChangesAsync();
             return entity;
         }
-
+        /// <summary>
+        /// Fshin nje menaxher projekti.
+        /// </summary>
+        /// <param name="entity">Menaxheri qe do te fshihet.</param>
+        /// <returns>Menaxherin e fshire.</returns>
         public async Task<ProjectManager> DeleteProjectManager(ProjectManager entity)
         {
 
@@ -32,6 +41,11 @@ namespace TaskManagementSystem.DAL.Repositories
             await _context.SaveChangesAsync();
             return entity;
         }
+        /// <summary>
+        /// Merr nje menaxher projekti ne baze te Id se tij.
+        /// </summary>
+        /// <param name="id">Id qe sherben per te identifikuar menaxherin e projektit.</param>
+        /// <returns>Menaxherin perkates.</returns>
         public async Task<ProjectManager> GetProjectManagerById(int id)
         {
 
@@ -42,7 +56,10 @@ namespace TaskManagementSystem.DAL.Repositories
         {
             return (ProjectManager) await _context.People.Where(x => x.IsDeleted != true && x.PersonType == PersonType.ProjectManager && x.Email == email).FirstOrDefaultAsync();
         }
-
+        /// <summary>
+        /// Merr te gjithe menaxheret e projekteve.
+        /// </summary>
+        /// <returns>Listen e te gjithe menaxhereve.</returns>
         public async Task<List<ProjectManager>> GetProjectManagers()
         {
 

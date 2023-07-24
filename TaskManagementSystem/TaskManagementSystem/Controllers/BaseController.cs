@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using TaskManagementSystem.Common;
+using TaskManagementSystem.Common.CustomExceptions;
 
 namespace TaskManagementSystem.Controllers
 {
@@ -16,9 +18,30 @@ namespace TaskManagementSystem.Controllers
             {
                 return await action();
             }
-            catch (CustomException ex)
+            catch (Exception ex)
             {
-               return BadRequest(ex.Message);
+                int statusCode = 500;
+                if (ex is NotFoundException)
+                {
+                    statusCode = 404;
+                }
+                if(ex is DuplicateInputException)
+                {
+                    statusCode = 409;
+                }
+                if(ex is FailedToAuthencitcateException)
+                {
+                    statusCode = 401;
+                }
+                if(ex is CustomException)
+                {
+                    statusCode = 422;
+                }
+                if(statusCode != 500)
+                {
+                    Log.Error(ex.Message);
+                }
+                return BadRequest(ex.Message);
             }
         }
     }

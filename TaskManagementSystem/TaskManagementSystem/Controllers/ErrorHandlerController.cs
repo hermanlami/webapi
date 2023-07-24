@@ -10,7 +10,7 @@ namespace TaskManagementSystem.Controllers
         /// <summary>
         /// Kap exeptions qe hidhen nese nuk jane kapur dhe trajtuar ne BaseController.
         /// </summary>
-        /// <param name="ex">Exceptio qe ka ndodhur.</param>
+        /// <param name="ex">Exception qe ka ndodhur.</param>
         [HttpGet]
         public IActionResult HandleError(Exception ex)
         {

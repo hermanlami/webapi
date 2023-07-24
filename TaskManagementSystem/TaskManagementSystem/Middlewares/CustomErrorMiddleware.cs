@@ -1,5 +1,6 @@
 ﻿using Serilog;
 using TaskManagementSystem.Common;
+using TaskManagementSystem.Common.CustomExceptions;
 
 namespace TaskManagementSystem.Middlewares
 {
@@ -16,11 +17,36 @@ namespace TaskManagementSystem.Middlewares
             {
                 await next(context);
             }
+            catch (NotFoundException ex)
+            {
+                await HandleExceptionAsync(context, ex, 404);
+            }
+            catch (DuplicateInputException ex)
+            {
+                await HandleExceptionAsync(context, ex, 409);
+            }
+            catch (FailedToAuthencitcateException ex)
+            {
+                await HandleExceptionAsync(context, ex, 401);
+            }
+            catch (CustomException ex)
+            {
+                await HandleExceptionAsync(context, ex, 422);
+            }
             catch (Exception ex)
             {
-                context.Response.StatusCode = 500;
-                context.Response.ContentType = "text/plain";
-                await context.Response.WriteAsync("Custom Error: " + ex.Message);
+                await HandleExceptionAsync(context, ex, 500);
+            }
+        }
+
+        private async Task HandleExceptionAsync(HttpContext context, Exception ex, int statusCode)
+        {
+            context.Response.ContentType = "text/plain";
+            context.Response.StatusCode = statusCode;
+            await context.Response.WriteAsync("Custom Error: " + ex.Message);
+
+            if (statusCode != 500)
+            {
                 Log.Error(ex.Message);
             }
         }

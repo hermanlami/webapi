@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
 using TaskManagementSystem.Common;
+using TaskManagementSystem.Common.CustomExceptions;
 using TaskManagementSystem.DAL.Interfaces;
 
 namespace TaskManagementSystem.BLL.Services
@@ -148,7 +149,7 @@ namespace TaskManagementSystem.BLL.Services
 
             if (user == null)
             {
-                throw new CustomException("User not found");
+                throw new NotFoundException("User not found");
             }
 
             var accessToken = CreateToken(_mapper.Map<DAL.Entities.Person>(user));

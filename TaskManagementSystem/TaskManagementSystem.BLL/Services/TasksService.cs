@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
-using TaskManagementSystem.Common;
+using TaskManagementSystem.Common.CustomExceptions;
 using TaskManagementSystem.Common.Enums;
 using TaskManagementSystem.DAL.Interfaces;
 
@@ -76,7 +76,7 @@ namespace TaskManagementSystem.BLL.Services
                 if (task == null)
                 {
                     Log.Error("Task not found");
-                    throw new CustomException("Task not found");
+                    throw new NotFoundException("Task not found");
 
                 }
 
@@ -131,7 +131,7 @@ namespace TaskManagementSystem.BLL.Services
                 }
 
                 Log.Error("Task not found");
-                throw new CustomException("Task not found");
+                throw new NotFoundException("Task not found");
 
             });
         }
@@ -175,7 +175,7 @@ namespace TaskManagementSystem.BLL.Services
                 if (developer == null)
                 {
                     Log.Error($"User with username {username} does not exist");
-                    throw new CustomException("User does not exist");
+                    throw new NotFoundException("User does not exist");
 
                 }
                 var task = await _repository.GetTasksByDeveloperId(developer.Id);
@@ -203,7 +203,7 @@ namespace TaskManagementSystem.BLL.Services
                 {
                     Log.Error($"Project {name} not found");
 
-                    throw new CustomException("Project not found");
+                    throw new NotFoundException("Project not found");
                 }
                 var task = await _repository.GetTasksByProjectId(project.Id);
                 if (task != null)
@@ -230,7 +230,7 @@ namespace TaskManagementSystem.BLL.Services
                 if (tag == null)
                 {
                     Log.Error($"Tag {name} not found");
-                    throw new CustomException("Tag not found");
+                    throw new NotFoundException("Tag not found");
                 }
                 var taskTags = await _taskTagsService.GetTaskTagByTagId(tag.Id);
                 if (taskTags == null)
@@ -287,7 +287,7 @@ namespace TaskManagementSystem.BLL.Services
                 if (task == null)
                 {
                     Log.Error("Task not found");
-                    throw new CustomException("Task not found");
+                    throw new NotFoundException("Task not found");
                 }
                 if (userRole == PersonType.Developer.ToString())
                 {
@@ -333,7 +333,7 @@ namespace TaskManagementSystem.BLL.Services
                 if (task == null)
                 {
                     Log.Error("Task not found");
-                    throw new CustomException("Task not found");
+                    throw new NotFoundException("Task not found");
                 }
 
                 model.Id = id;

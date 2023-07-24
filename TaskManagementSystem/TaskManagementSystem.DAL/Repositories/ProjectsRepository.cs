@@ -1,9 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TaskManagementSystem.DAL.Entities;
 using TaskManagementSystem.DAL.Interfaces;
 
@@ -20,8 +15,7 @@ namespace TaskManagementSystem.DAL.Repositories
         }
         public async Task<Project> AddProject(Project entity)
         {
-
-            await _dbSet.AddAsync(entity);
+            await _context.Projects.AddAsync(entity);
             await _context.SaveChangesAsync();
             return entity;
         }

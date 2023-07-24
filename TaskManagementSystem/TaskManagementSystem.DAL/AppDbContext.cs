@@ -16,6 +16,7 @@ namespace TaskManagementSystem.DAL
         {
 
         }
+
         public DbSet<Person> People { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<Tag> Tags { get; set; }

@@ -3,6 +3,7 @@ using Serilog;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
 using TaskManagementSystem.Common;
+using TaskManagementSystem.Common.CustomExceptions;
 using TaskManagementSystem.Common.Enums;
 using TaskManagementSystem.DAL.Interfaces;
 
@@ -12,11 +13,13 @@ namespace TaskManagementSystem.BLL.Services
     {
         private readonly IProjectManagersRepository _repository;
         private readonly ITokensService _tokensService;
+        private readonly IAuthenticationsRepository _authenticationsRepository;
         private readonly IMapper _mapper;
-        public ProjectManagersService(IProjectManagersRepository repository, ITokensService tokensService, IMapper mapper)
+        public ProjectManagersService(IProjectManagersRepository repository, ITokensService tokensService, IAuthenticationsRepository authenticationsRepository,IMapper mapper)
         {
             _repository = repository;
             _tokensService = tokensService;
+            _authenticationsRepository= authenticationsRepository;
             _mapper = mapper;
         }
         /// <summary>
@@ -28,10 +31,15 @@ namespace TaskManagementSystem.BLL.Services
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
-                if (await _repository.GetProjectManagerByEmail(model.Email) != null)
+                if (await _authenticationsRepository.GetPersonByEmail(model.Email) != null)
                 {
                     Log.Error($"Project manager with email {model.Email} already exists");
-                    throw new CustomException($"Project manager with email {model.Email} already exists");
+                    throw new DuplicateInputException($"Project manager with email {model.Email} already exists");
+                }
+                if (await _authenticationsRepository.GetPersonByUsername(model.Username) != null)
+                {
+                    Log.Error($"project Manager with username {model.Username} already exists");
+                    throw new DuplicateInputException($"Project Manager with username {model.Username} already exists");
                 }
 
                 var dalPM = _mapper.Map<DAL.Entities.ProjectManager>(model);
@@ -69,7 +77,7 @@ namespace TaskManagementSystem.BLL.Services
                 if (pM == null)
                 {
                     Log.Error("Project manager not found");
-                    throw new CustomException($"Project manager not found");
+                    throw new NotFoundException($"Project manager not found");
                 }
 
                 pM.IsDeleted = true;
@@ -105,7 +113,7 @@ namespace TaskManagementSystem.BLL.Services
                 }
 
                 Log.Error("Project manager could not be retrieved");
-                throw new CustomException($"Project manager not found");
+                throw new NotFoundException($"Project manager not found");
 
 
             });
@@ -145,7 +153,7 @@ namespace TaskManagementSystem.BLL.Services
                 if (pM == null)
                 {
                     Log.Error("Project manager not found");
-                    throw new CustomException($"Project manager not found");
+                    throw new NotFoundException($"Project manager not found");
                 }
                 model.Id = id;
                 var updated = await _repository.UpdateProjectManager(_mapper.Map(model, pM));

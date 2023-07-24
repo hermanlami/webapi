@@ -4,6 +4,7 @@ using Serilog;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
 using TaskManagementSystem.Common;
+using TaskManagementSystem.Common.CustomExceptions;
 using TaskManagementSystem.Common.Enums;
 using TaskManagementSystem.DAL.Interfaces;
 
@@ -13,10 +14,12 @@ namespace TaskManagementSystem.BLL.Services
     {
         private readonly IDevelopersRepository _repository;
         private readonly IMapper _mapper;
+        private readonly IAuthenticationsRepository _authenticationRepository;
         private readonly ITokensService _tokensService;
-        public DevelopersService(IDevelopersRepository repository, IMapper mapper, ITokensService tokensService)
+        public DevelopersService(IDevelopersRepository repository, IAuthenticationsRepository authenticationsRepository, IMapper mapper, ITokensService tokensService)
         {
             _repository = repository;
+            _authenticationRepository = authenticationsRepository;
             _mapper = mapper;
             _tokensService = tokensService;
         }
@@ -29,23 +32,20 @@ namespace TaskManagementSystem.BLL.Services
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
-                if (await _repository.GetDeveloperByUsername(model.Username) != null)
+                if (await _authenticationRepository.GetPersonByUsername(model.Username) != null)
                 {
                     Log.Error($"Developer with username {model.Username} already exists");
-                    throw new CustomException($"Developer with username {model.Username} already exists");
+                    throw new DuplicateInputException($"Developer with username {model.Username} already exists");
                 }
-                if (await _repository.GetDeveloperByEmail(model.Email) != null)
+                if (await _authenticationRepository.GetPersonByEmail(model.Email) != null)
                 {
                     Log.Error($"Developer with email {model.Email} already exists");
-                    throw new CustomException($"Developer with email {model.Email} already exists");
+                    throw new DuplicateInputException($"Developer with email {model.Email} already exists");
                 }
 
                 var dalDeveloper = _mapper.Map<DAL.Entities.Developer>(model);
-
                 dalDeveloper.PasswordHash = PasswordHashing.HashPasword(model.Password, out byte[] salt);
-
                 dalDeveloper.PasswordSalt = salt;
-
                 dalDeveloper.PersonType = PersonType.Developer;
 
                 var addedDeveloper = await _repository.AddDeveloper(dalDeveloper);
@@ -74,13 +74,13 @@ namespace TaskManagementSystem.BLL.Services
                 if (developer == null)
                 {
                     Log.Error("Developer not found");
-                    throw new CustomException("Developer not found");
+                    throw new NotFoundException("Developer not found");
                 }
 
                 developer.IsDeleted = true;
-               
+
                 var deletedDeveloper = await _repository.DeleteDeveloper(developer);
-                if (deletedDeveloper != null) 
+                if (deletedDeveloper != null)
                 {
                     Log.Information($"Developer with username {deletedDeveloper.Username} deleted successfully");
                     return _mapper.Map<DTO.Developer>(deletedDeveloper);
@@ -108,7 +108,7 @@ namespace TaskManagementSystem.BLL.Services
                     return _mapper.Map<DTO.Developer>(developer);
                 }
                 Log.Error("Developer could not be retrieved");
-                throw new CustomException("Developer not found");
+                throw new NotFoundException("Developer not found");
             });
         }
         /// <summary>
@@ -145,7 +145,7 @@ namespace TaskManagementSystem.BLL.Services
                 if (developer == null)
                 {
                     Log.Error("Developer not found");
-                    throw new CustomException("Developer could not be found");
+                    throw new NotFoundException("Developer could not be found");
                 }
 
                 model.Id = id;

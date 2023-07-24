@@ -11,6 +11,8 @@ using SendGrid.Helpers.Mail;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using TaskManagementSystem.BLL.BackgroundJobs;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +28,20 @@ builder.Services.AddLogging(loggingBuilder =>
 {
     loggingBuilder.ClearProviders();
     loggingBuilder.AddSerilog();
+});
+
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    var supportedCultures = new[]
+    {
+            new CultureInfo("en-US"),
+            new CultureInfo("al-AL")
+    };
+
+    options.DefaultRequestCulture = new RequestCulture("en-US");
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
 });
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
@@ -110,6 +126,8 @@ app.UseEndpoints(endpoints =>
 });
 
 app.UseMiddleware<CustomErrorMiddleware>();
+
+app.UseRequestLocalization();
 
 app.UseEndpoints(endpoints =>
 {

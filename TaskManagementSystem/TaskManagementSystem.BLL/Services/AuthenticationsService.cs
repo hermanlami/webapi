@@ -1,32 +1,29 @@
 ﻿using AutoMapper;
-using Azure.Core;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
+using Serilog.Events;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
-using TaskManagementSystem.Common;
+using TaskManagementSystem.BLL.LoggingMessages;
+using TaskManagementSystem.Common.CustomExceptions;
 using TaskManagementSystem.DAL.Interfaces;
-using TaskManagementSystem.DAL.Repositories;
 
 namespace TaskManagementSystem.BLL.Services
 {
-    internal class AuthenticationsService : IAuthenticationsService
+    public class AuthenticationsService : IAuthenticationsService
     {
         private readonly IAuthenticationsRepository _peoplesRepository;
         private readonly ITokensService _tokensService;
+        private readonly ILogger<AuthenticationsService> _logger;
+        private readonly IStringLocalizer<LogMessages> _localizer;
         private readonly IMapper _mapper;
-        public AuthenticationsService(IAuthenticationsRepository peoplesRepository, ITokensService tokensService, IMapper mapper)
+        public AuthenticationsService(IAuthenticationsRepository peoplesRepository, ITokensService tokensService, ILogger<AuthenticationsService> logger, IStringLocalizer<LogMessages> localizer, IMapper mapper)
         {
             _peoplesRepository = peoplesRepository;
             _tokensService = tokensService;
+            _logger = logger;
+            _localizer = localizer;
             _mapper = mapper;
         }
         /// <summary>
@@ -39,10 +36,13 @@ namespace TaskManagementSystem.BLL.Services
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
+                var localizedMessage = "";
                 var person = await _peoplesRepository.GetPersonByEmail(request.Email);
                 if (person == null)
                 {
-                    throw new CustomException($"Person with email {request.Email} not found");
+                    localizedMessage = _localizer["NotFound"].Value;
+                    _logger.LogError($"{localizedMessage}");
+                    throw new NotFoundException($"Person with email {request.Email} not found");
                 }
                 if (person != null && PasswordHashing.VerifyPassword(request.Password, person.PasswordHash, person.PasswordSalt))
                 {
@@ -52,10 +52,12 @@ namespace TaskManagementSystem.BLL.Services
                         Username = person.Username,
                         Email = person.Email,
                         Token = accessToken.AccessToken,
-                        RefreshToken=accessToken.RefreshToken,
+                        RefreshToken = accessToken.RefreshToken,
                     };
                 }
-                throw new CustomException($"Person with email {request.Email} could not be authenticated");
+                localizedMessage = _localizer["NotAuthenticated"].Value;
+                _logger.LogError($"{localizedMessage}");
+                throw new FailedToAuthencitcateException($"Person with email {request.Email} could not be authenticated");
 
             });
         }
@@ -69,15 +71,18 @@ namespace TaskManagementSystem.BLL.Services
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
+                var localizedMessage = "";
                 var person = await _peoplesRepository.GetPersonById(id);
                 if (person == null)
                 {
-                    Log.Information("User not found");
-                    throw new CustomException($"User not found");
+                    localizedMessage = _localizer["NotFound"].Value;
+                    _logger.LogInformation($"{localizedMessage}");
+                    throw new NotFoundException($"User not found");
                 }
                 if (!PasswordHashing.VerifyPassword(model.OldPassword, person.PasswordHash, person.PasswordSalt))
                 {
-                    Log.Error("Old password value is incorrect");
+                    localizedMessage = _localizer["IncorrectPassword"].Value;
+                    _logger.LogInformation($"{localizedMessage}");
                     throw new CustomException($"Old password value is incorrect");
                 }
 
@@ -87,11 +92,14 @@ namespace TaskManagementSystem.BLL.Services
                 var updated = await _peoplesRepository.ChangePassword(person);
                 if (updated != null)
                 {
-                    Log.Information($"Password of {updated.Username} updated successfully");
+                    localizedMessage = _localizer["UpdateSuccessful"].Value;
+                    _logger.LogInformation($"{localizedMessage}");
                     return _mapper.Map<Person>(updated);
                 }
 
-                Log.Information($"Project manager {person.Username} could not be updated");
+                localizedMessage = _localizer["NotFound"].Value;
+                _logger.LogInformation($"{localizedMessage}");
+
                 throw new CustomException($"Project manager could not be updated");
             });
         }
@@ -104,14 +112,17 @@ namespace TaskManagementSystem.BLL.Services
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
+                var localizedMessage = "";
                 var person = await _peoplesRepository.GetPersonByEmail(email);
                 if (person != null)
                 {
-                    Log.Information($"Person with username {person.Username} retrieved successfully");
+                    localizedMessage = _localizer["RetrieveSuccessful"].Value;
+                    _logger.LogInformation($"{localizedMessage}");
                     return _mapper.Map<DTO.Person>(person);
                 }
-                Log.Information("Person could not be retrieved");
-                throw new CustomException($"Person not found");
+                localizedMessage = _localizer["NotFound"].Value;
+                _logger.LogInformation($"{localizedMessage}");
+                throw new NotFoundException($"Person not found");
 
             });
         }
@@ -124,15 +135,18 @@ namespace TaskManagementSystem.BLL.Services
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
+                var localizedMessage = "";
                 var person = await _peoplesRepository.GetPersonByUsername(username);
                 if (person != null)
                 {
-                    Log.Information($"Person with username {person.Username} retrieved successfully");
+                    localizedMessage = _localizer["RetrieveSuccessful"].Value;
+                    _logger.LogInformation($"{localizedMessage}");
                     return _mapper.Map<DTO.Person>(person);
                 }
 
-                Log.Error("Person could not be retrieved");
-                throw new CustomException($"Person not found");
+                localizedMessage = _localizer["NotFound"].Value;
+                _logger.LogInformation($"{localizedMessage}");
+                throw new NotFoundException($"Person not found");
 
             });
         }
@@ -145,15 +159,18 @@ namespace TaskManagementSystem.BLL.Services
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
+                var localizedMessage = "";
                 var person = await _peoplesRepository.GetPersonById(id);
                 if (person != null)
                 {
-                    Log.Information($"Person with username {person.Username} retrieved successfully");
+                    localizedMessage = _localizer["RetrieveSuccessful"].Value;
+                    _logger.LogInformation($"{localizedMessage}");
                     return _mapper.Map<DTO.Person>(person);
                 }
 
-                Log.Error("Person could not be retrieved");
-                throw new CustomException($"Person not found");
+                localizedMessage = _localizer["NotFound"].Value;
+                _logger.LogInformation($"{localizedMessage}");
+                throw new NotFoundException($"Person not found");
 
             });
         }

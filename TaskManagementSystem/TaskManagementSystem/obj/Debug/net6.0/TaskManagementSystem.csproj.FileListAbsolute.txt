@@ -291,3 +291,10 @@ C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSyste
 C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem\bin\Debug\net6.0\Castle.Core.dll
 C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem\bin\Debug\net6.0\SendGrid.dll
 C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem\bin\Debug\net6.0\StarkbankEcdsa.dll
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem\bin\Debug\net6.0\Microsoft.Extensions.Localization.dll
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem\bin\Debug\net6.0\Microsoft.Extensions.Localization.Abstractions.dll
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem\obj\Debug\net6.0\TaskManagementSystem.Resources.LogMessages.al.resources
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem\obj\Debug\net6.0\TaskManagementSystem.csproj.GenerateResource.cache
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem\bin\Debug\net6.0\en\TaskManagementSystem.resources.dll
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem\obj\Debug\net6.0\TaskManagementSystem.Resources.LogMessages.en.resources
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem\obj\Debug\net6.0\en\TaskManagementSystem.resources.dll
