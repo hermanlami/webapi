@@ -115,7 +115,6 @@ namespace TaskManagementSystem.BLL.Services
         /// Merr te githe tag-et.
         /// </summary>
         /// <returns>Listen e te gjitha tag-eve.</returns>
-        /// <exception cref="CustomException"></exception>
         public async Task<List<Tag>> GetTags()
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>

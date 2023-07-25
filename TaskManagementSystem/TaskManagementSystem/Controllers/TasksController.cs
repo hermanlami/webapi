@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc; 
 using System.Security.Claims;
 using TaskManagementSystem.BLL;
 using TaskManagementSystem.BLL.Interfaces;
@@ -63,7 +63,6 @@ namespace TaskManagementSystem.Controllers
             return await HandleExceptionAsync(async () =>
             {
                 var tasks = await _tasksService.GetCompletedTasks();
-
                 return Ok(tasks);
             }
             );
@@ -81,7 +80,6 @@ namespace TaskManagementSystem.Controllers
             return await HandleExceptionAsync(async () =>
             {
                 var tasks = await _tasksService.GetTasksByDevelopersUsername(username);
-
                 return Ok(tasks);
             }
             );
@@ -97,7 +95,6 @@ namespace TaskManagementSystem.Controllers
             return await HandleExceptionAsync(async () =>
             {
                 var tasks = await _tasksService.GetTasksByProjectName(name);
-
                 return Ok(tasks);
             }
             );
@@ -113,7 +110,6 @@ namespace TaskManagementSystem.Controllers
             return await HandleExceptionAsync(async () =>
             {
                 var tasks = await _tasksService.GetTasksByTagName(name);
-
                 return Ok(tasks);
             }
             );
@@ -129,7 +125,6 @@ namespace TaskManagementSystem.Controllers
             return await HandleExceptionAsync(async () =>
             {
                 var task = await _tasksService.GetTaskById(id);
-
                 return Ok(task);
 
             });
@@ -146,7 +141,6 @@ namespace TaskManagementSystem.Controllers
             {
                 var userRole = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value;
                 var task = await _tasksService.SetTaskStatus(id, userRole, response);
-
                 return Ok(task);
             });
         }
@@ -180,7 +174,6 @@ namespace TaskManagementSystem.Controllers
             return await HandleExceptionAsync(async () =>
             {
                 var deleted = await _tasksService.DeleteTask(id);
-
                 return Ok(deleted);
 
             });

@@ -47,7 +47,6 @@ namespace TaskManagementSystem.Controllers
             return await HandleExceptionAsync(async () =>
             {
                 var developer = await _developersService.GetDeveloperById(id);
-
                 return Ok(developer);
 
             });
@@ -63,7 +62,6 @@ namespace TaskManagementSystem.Controllers
             return await HandleExceptionAsync(async () =>
             {
                 var developers = await _developersService.GetDevelopers();
-
                 return Ok(developers);
             });
         }
@@ -99,7 +97,6 @@ namespace TaskManagementSystem.Controllers
             return await HandleExceptionAsync(async () =>
             {
                 var deleted = await _developersService.DeleteDeveloper(id);
-
                 return Ok(deleted);   
             });
         }

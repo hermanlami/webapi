@@ -118,18 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="IncorrectPassword" xml:space="preserve">
-    <value>Password-i i vjeter nuk ishte i sakte</value>
+    <value>Old password is incorrect</value>
   </data>
   <data name="NotAuthenticated" xml:space="preserve">
-    <value>Personi nuk mund te autentifikohej</value>
+    <value>Could not authenticate person</value>
   </data>
   <data name="NotFound" xml:space="preserve">
-    <value>Personi nuk u gjet</value>
+    <value>Person not found</value>
   </data>
   <data name="RetrieveSuccessful" xml:space="preserve">
-    <value>Te dhenat e personit u moren me sukses</value>
+    <value>Person retrieved successfully</value>
+  </data>
+  <data name="UpdateFailed" xml:space="preserve">
+    <value>Password could not be changed</value>
   </data>
   <data name="UpdateSuccessful" xml:space="preserve">
-    <value>Password-i u ndryshua me sukses</value>
+    <value>Password changed successfully</value>
   </data>
 </root>

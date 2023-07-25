@@ -65,7 +65,11 @@ namespace TaskManagementSystem.DAL.Repositories
 
             return await _context.People.Where(x => x.PersonType == PersonType.ProjectManager && x.IsDeleted != true).Cast<ProjectManager>().ToListAsync();
         }
-
+        /// <summary>
+        /// Perditeson menaxherin e projektit.
+        /// </summary>
+        /// <param name="entity">Modeli ne baze te te cilit do te perditesohen te dhenat.</param>
+        /// <returns>Menaxherin e perditesuar.</returns>
         public async Task<ProjectManager> UpdateProjectManager(ProjectManager entity)
         {
 

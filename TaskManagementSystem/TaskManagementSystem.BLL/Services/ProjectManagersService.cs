@@ -43,13 +43,9 @@ namespace TaskManagementSystem.BLL.Services
                 }
 
                 var dalPM = _mapper.Map<DAL.Entities.ProjectManager>(model);
-                
                 dalPM.PasswordHash = PasswordHashing.HashPasword(model.Password, out byte[] salt);
-                
                 dalPM.PasswordSalt = salt;
-                
                 dalPM.PersonType = PersonType.ProjectManager;
-                
                 var addedPM = await _repository.AddProjectManager(dalPM);
 
                 if (addedPM.Id > 0)

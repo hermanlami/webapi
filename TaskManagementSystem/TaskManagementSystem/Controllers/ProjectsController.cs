@@ -48,7 +48,6 @@ namespace TaskManagementSystem.Controllers
             return await HandleExceptionAsync(async () =>
             {
                 var project = await _projectsService.GetProjectById(id);
-
                 return Ok(project);
 
             });

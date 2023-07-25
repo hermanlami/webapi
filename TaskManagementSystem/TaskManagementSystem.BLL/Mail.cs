@@ -12,8 +12,8 @@ namespace TaskManagementSystem.BLL
     {
         public static void DeadlineNotification(string toEmail, string taskName, double daysLeft)
         {
-            var days = daysLeft > 1 ? daysLeft.ToString() + " days" : "today";
-            string message = $"Your task {taskName} is ending in {days}!";
+            var days = daysLeft <= 0.625 ? daysLeft.ToString() + " today" : $"in {Math.Floor(daysLeft)} days";
+            string message = $"Your task {taskName} is ending {days}!";
             EmailStructure(toEmail, message, "Task Deadline");
         }
 

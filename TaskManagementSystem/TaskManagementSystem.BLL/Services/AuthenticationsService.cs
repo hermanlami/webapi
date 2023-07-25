@@ -2,12 +2,14 @@
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using System.Resources;
 using Serilog.Events;
+using System.Globalization;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
-using TaskManagementSystem.BLL.LoggingMessages;
 using TaskManagementSystem.Common.CustomExceptions;
 using TaskManagementSystem.DAL.Interfaces;
+using TaskManagementSystem.BLL.Resources;
 
 namespace TaskManagementSystem.BLL.Services
 {
@@ -36,12 +38,10 @@ namespace TaskManagementSystem.BLL.Services
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
-                var localizedMessage = "";
                 var person = await _peoplesRepository.GetPersonByEmail(request.Email);
                 if (person == null)
                 {
-                    localizedMessage = _localizer["NotFound"].Value;
-                    _logger.LogError($"{localizedMessage}");
+                    _logger.LogError($"{GetLogValue("NotFound")}");
                     throw new NotFoundException($"Person with email {request.Email} not found");
                 }
                 if (person != null && PasswordHashing.VerifyPassword(request.Password, person.PasswordHash, person.PasswordSalt))
@@ -55,8 +55,7 @@ namespace TaskManagementSystem.BLL.Services
                         RefreshToken = accessToken.RefreshToken,
                     };
                 }
-                localizedMessage = _localizer["NotAuthenticated"].Value;
-                _logger.LogError($"{localizedMessage}");
+                _logger.LogError($"{GetLogValue("NotAuthenticated")}");
                 throw new FailedToAuthencitcateException($"Person with email {request.Email} could not be authenticated");
 
             });
@@ -71,18 +70,15 @@ namespace TaskManagementSystem.BLL.Services
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
-                var localizedMessage = "";
                 var person = await _peoplesRepository.GetPersonById(id);
                 if (person == null)
                 {
-                    localizedMessage = _localizer["NotFound"].Value;
-                    _logger.LogInformation($"{localizedMessage}");
+                    _logger.LogInformation($"{GetLogValue("NotFound")}");
                     throw new NotFoundException($"User not found");
                 }
                 if (!PasswordHashing.VerifyPassword(model.OldPassword, person.PasswordHash, person.PasswordSalt))
                 {
-                    localizedMessage = _localizer["IncorrectPassword"].Value;
-                    _logger.LogInformation($"{localizedMessage}");
+                    _logger.LogInformation($"{GetLogValue("IncorrectPassword")}");
                     throw new CustomException($"Old password value is incorrect");
                 }
 
@@ -92,13 +88,11 @@ namespace TaskManagementSystem.BLL.Services
                 var updated = await _peoplesRepository.ChangePassword(person);
                 if (updated != null)
                 {
-                    localizedMessage = _localizer["UpdateSuccessful"].Value;
-                    _logger.LogInformation($"{localizedMessage}");
+                    _logger.LogInformation($"{GetLogValue("UpdateSuccessful")}");
                     return _mapper.Map<Person>(updated);
                 }
 
-                localizedMessage = _localizer["NotFound"].Value;
-                _logger.LogInformation($"{localizedMessage}");
+                _logger.LogInformation($"{GetLogValue("UpdateFailed")}");
 
                 throw new CustomException($"Project manager could not be updated");
             });
@@ -112,16 +106,13 @@ namespace TaskManagementSystem.BLL.Services
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
-                var localizedMessage = "";
                 var person = await _peoplesRepository.GetPersonByEmail(email);
                 if (person != null)
                 {
-                    localizedMessage = _localizer["RetrieveSuccessful"].Value;
-                    _logger.LogInformation($"{localizedMessage}");
+                    _logger.LogInformation($"{GetLogValue("RetrieveSuccessful")}");
                     return _mapper.Map<DTO.Person>(person);
                 }
-                localizedMessage = _localizer["NotFound"].Value;
-                _logger.LogInformation($"{localizedMessage}");
+                _logger.LogInformation($"{GetLogValue("NotFound")}");
                 throw new NotFoundException($"Person not found");
 
             });
@@ -135,17 +126,14 @@ namespace TaskManagementSystem.BLL.Services
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
-                var localizedMessage = "";
                 var person = await _peoplesRepository.GetPersonByUsername(username);
                 if (person != null)
                 {
-                    localizedMessage = _localizer["RetrieveSuccessful"].Value;
-                    _logger.LogInformation($"{localizedMessage}");
+                    _logger.LogInformation($"{GetLogValue("RetrieveSuccessful")}");
                     return _mapper.Map<DTO.Person>(person);
                 }
 
-                localizedMessage = _localizer["NotFound"].Value;
-                _logger.LogInformation($"{localizedMessage}");
+                _logger.LogInformation($"{GetLogValue("NotFound")}");
                 throw new NotFoundException($"Person not found");
 
             });
@@ -159,20 +147,23 @@ namespace TaskManagementSystem.BLL.Services
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
-                var localizedMessage = "";
                 var person = await _peoplesRepository.GetPersonById(id);
                 if (person != null)
                 {
-                    localizedMessage = _localizer["RetrieveSuccessful"].Value;
-                    _logger.LogInformation($"{localizedMessage}");
+                    _logger.LogInformation($"{GetLogValue("RetrieveSuccessful")}");
                     return _mapper.Map<DTO.Person>(person);
                 }
 
-                localizedMessage = _localizer["NotFound"].Value;
-                _logger.LogInformation($"{localizedMessage}");
+                _logger.LogInformation($"{GetLogValue("NotFound")}");
                 throw new NotFoundException($"Person not found");
 
             });
+        }
+        private string GetLogValue(string key)
+        {
+            var cultureInfo = CultureInfo.CurrentCulture;
+            var resourceManager = new ResourceManager(typeof(LogMessages));
+            return resourceManager.GetString(key, cultureInfo); 
         }
     }
 }

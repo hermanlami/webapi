@@ -18,5 +18,6 @@
   </ImportGroup>
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <PkgMicrosoft_EntityFrameworkCore_Tools Condition=" '$(PkgMicrosoft_EntityFrameworkCore_Tools)' == '' ">C:\Users\Lenovo\.nuget\packages\microsoft.entityframeworkcore.tools\7.0.8</PkgMicrosoft_EntityFrameworkCore_Tools>
+    <PkgHangfire_SqlServer Condition=" '$(PkgHangfire_SqlServer)' == '' ">C:\Users\Lenovo\.nuget\packages\hangfire.sqlserver\1.8.3</PkgHangfire_SqlServer>
   </PropertyGroup>
 </Project>

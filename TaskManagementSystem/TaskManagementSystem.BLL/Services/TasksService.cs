@@ -10,7 +10,7 @@ using TaskManagementSystem.DAL.Interfaces;
 
 namespace TaskManagementSystem.BLL.Services
 {
-    internal class TasksService : ITasksService
+    public class TasksService : ITasksService
     {
         private readonly ITasksRepository _repository;
         private readonly ITaskTagsService _taskTagsService;
@@ -67,7 +67,6 @@ namespace TaskManagementSystem.BLL.Services
         /// </summary>
         /// <param name="id">Id qe sherben per identifikimin e task-ut.</param>
         /// <returns>Task-un e fshire.</returns>
-        /// <exception cref="CustomException"></exception>
         public async Task<DTO.Task> DeleteTask(int id)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
@@ -254,25 +253,22 @@ namespace TaskManagementSystem.BLL.Services
         /// </summary>
         public async System.Threading.Tasks.Task NotifyForTasksCloseToDeadline()
         {
-            try
+            await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
                 var tasks = await _repository.GetTasksCloseToDeadline();
-                if (tasks != null)
+                if (tasks == null)
                 {
-                    Log.Information("Tasks retrieved successfully");
-                    foreach (var task in tasks)
-                    {
-                        var developer = await _developersService.GetDeveloperById(task.DeveloperId);
-                        var daysLeft = (task.EndDate - DateTime.Now).TotalDays;
-                        Mail.DeadlineNotification(developer.Email, task.Name, daysLeft);
-                    }
+                    throw new CustomException("Tasks could not be retrieved");
                 }
-                throw new CustomException("Tasks could not be retrieved");
-            }
-            catch (CustomException ex)
-            {
+                Log.Information("Tasks retrieved successfully");
+                foreach (var task in tasks)
+                {
+                    var developer = await _developersService.GetDeveloperById(task.DeveloperId);
+                    var daysLeft = (task.EndDate - DateTime.Now).TotalDays;
+                    Mail.DeadlineNotification(developer.Email, task.Name, daysLeft);
+                }
 
-            }
+            });
         }
         /// <summary>
         /// E ben nje task te perfunduar.
@@ -318,7 +314,6 @@ namespace TaskManagementSystem.BLL.Services
             });
         }
 
-
         /// <summary>
         /// Perditeson te dhenat e nje task-u.
         /// </summary>
@@ -329,7 +324,7 @@ namespace TaskManagementSystem.BLL.Services
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
-                var task = await _repository.GetTaskById(id);         
+                var task = await _repository.GetTaskById(id);
                 if (task == null)
                 {
                     Log.Error("Task not found");

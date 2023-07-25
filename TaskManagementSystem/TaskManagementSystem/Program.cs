@@ -2,17 +2,18 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using Newtonsoft.Json.Serialization;
 using System.Text;
 using TaskManagementSystem.BLL;
 using TaskManagementSystem.Middlewares;
 using Newtonsoft.Json;
-using SendGrid.Helpers.Mail;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using TaskManagementSystem.BLL.BackgroundJobs;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
+using TaskManagementSystem.BLL.BackgroundJobs;
+using Hangfire;
+using Hangfire.SqlServer;
+using System.Configuration;
+using TaskManagementSystem.BLL.Interfaces;
+using TaskManagementSystem.BLL.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,19 +31,7 @@ builder.Services.AddLogging(loggingBuilder =>
     loggingBuilder.AddSerilog();
 });
 
-builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
-builder.Services.Configure<RequestLocalizationOptions>(options =>
-{
-    var supportedCultures = new[]
-    {
-            new CultureInfo("en-US"),
-            new CultureInfo("al-AL")
-    };
-
-    options.DefaultRequestCulture = new RequestCulture("en-US");
-    options.SupportedCultures = supportedCultures;
-    options.SupportedUICultures = supportedCultures;
-});
+builder.Services.AddLocalization(options => options.ResourcesPath = "TaskManagementSystem.BLL.Resources");
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
@@ -53,6 +42,11 @@ builder.Services.AddScoped<CustomErrorMiddleware>();
 //builder.Services.AddHostedService<BackgroundJobsService>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddSingleton<AuthenticationMiddleware>();
+
+builder.Services.AddHangfire(config =>
+{
+    config.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
@@ -103,11 +97,32 @@ builder.Services
     });
 var app = builder.Build();
 
+var supportedCultures = new[]
+        {
+            new CultureInfo("en-US"),
+            new CultureInfo("al-AL")
+        };
+
+var localizationOptions = new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("en-US"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures
+};
+
+app.UseRequestLocalization(localizationOptions);
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseHangfireServer();
+
+app.UseHangfireDashboard();
+
+RecurringJob.AddOrUpdate<TasksService>("NotifyForTasksCloseToDeadline", x => x.NotifyForTasksCloseToDeadline(), "52 12 * * *");
 
 app.UseRouting();
 
@@ -126,8 +141,6 @@ app.UseEndpoints(endpoints =>
 });
 
 app.UseMiddleware<CustomErrorMiddleware>();
-
-app.UseRequestLocalization();
 
 app.UseEndpoints(endpoints =>
 {

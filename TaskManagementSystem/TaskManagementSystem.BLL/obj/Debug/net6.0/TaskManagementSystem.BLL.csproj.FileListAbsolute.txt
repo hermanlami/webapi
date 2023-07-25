@@ -17,3 +17,8 @@ C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSyste
 C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.BLL\obj\Debug\net6.0\TaskManagementSystem.BLL.pdb
 C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.BLL\obj\Debug\net6.0\TaskManagementSystem.BLL.genruntimeconfig.cache
 C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.BLL\obj\Debug\net6.0\ref\TaskManagementSystem.BLL.dll
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.BLL\obj\Debug\net6.0\TaskManagementSystem.BLL.csproj.GenerateResource.cache
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.BLL\obj\Debug\net6.0\TaskManagementSystem.BLL.Resources.LogMessages.resources
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.BLL\bin\Debug\net6.0\en\TaskManagementSystem.BLL.resources.dll
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.BLL\obj\Debug\net6.0\TaskManagementSystem.BLL.Resources.LogMessages.en.resources
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.BLL\obj\Debug\net6.0\en\TaskManagementSystem.BLL.resources.dll

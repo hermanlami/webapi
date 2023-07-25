@@ -27,6 +27,18 @@ namespace TaskManagementSystem.BLL
                 throw ex;
             }
         }
+
+        public static async Task HandleExceptionAsync(Func<Task> action)
+        {
+            try
+            {
+                await action();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 
 }

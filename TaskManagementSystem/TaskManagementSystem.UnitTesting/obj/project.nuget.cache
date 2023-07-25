@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "zeOKMPH5x4U47rTAVhJnDM4TaPqSHSwscnT9fgGcpUGJCZcWFVl7Fsb9/bgInud/YfQb3C+IAblIBGASDBL96w==",
+  "dgSpecHash": "pi4mnN6hN8uh5+6p35p3vh0TMnYhL5iM4Q5Shsie+u07wX9UhLW+pVlLqEged96igetZgh2Mh0qu0BrlvbkoyQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\Lenovo\\Documents\\GitHub\\webapi\\TaskManagementSystem\\TaskManagementSystem.UnitTesting\\TaskManagementSystem.UnitTesting.csproj",
   "expectedPackageFiles": [
@@ -10,6 +10,11 @@
     "C:\\Users\\Lenovo\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\castle.core\\5.1.1\\castle.core.5.1.1.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\coverlet.collector\\3.2.0\\coverlet.collector.3.2.0.nupkg.sha512",
+    "C:\\Users\\Lenovo\\.nuget\\packages\\hangfire\\1.8.3\\hangfire.1.8.3.nupkg.sha512",
+    "C:\\Users\\Lenovo\\.nuget\\packages\\hangfire.aspnetcore\\1.8.3\\hangfire.aspnetcore.1.8.3.nupkg.sha512",
+    "C:\\Users\\Lenovo\\.nuget\\packages\\hangfire.core\\1.8.3\\hangfire.core.1.8.3.nupkg.sha512",
+    "C:\\Users\\Lenovo\\.nuget\\packages\\hangfire.netcore\\1.8.3\\hangfire.netcore.1.8.3.nupkg.sha512",
+    "C:\\Users\\Lenovo\\.nuget\\packages\\hangfire.sqlserver\\1.8.3\\hangfire.sqlserver.1.8.3.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\6.0.19\\microsoft.aspnetcore.authentication.jwtbearer.6.0.19.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\6.0.19\\microsoft.aspnetcore.cryptography.internal.6.0.19.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\6.0.19\\microsoft.aspnetcore.cryptography.keyderivation.6.0.19.nupkg.sha512",
@@ -33,6 +38,8 @@
     "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.extensions.configuration.binder\\6.0.0\\microsoft.extensions.configuration.binder.6.0.0.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\7.0.0\\microsoft.extensions.dependencyinjection.7.0.0.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\7.0.0\\microsoft.extensions.dependencyinjection.abstractions.7.0.0.nupkg.sha512",
+    "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.extensions.fileproviders.abstractions\\3.0.0\\microsoft.extensions.fileproviders.abstractions.3.0.0.nupkg.sha512",
+    "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.extensions.hosting.abstractions\\3.0.0\\microsoft.extensions.hosting.abstractions.3.0.0.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.extensions.identity.core\\6.0.19\\microsoft.extensions.identity.core.6.0.19.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.extensions.identity.stores\\6.0.19\\microsoft.extensions.identity.stores.6.0.19.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.extensions.localization\\7.0.9\\microsoft.extensions.localization.7.0.9.nupkg.sha512",

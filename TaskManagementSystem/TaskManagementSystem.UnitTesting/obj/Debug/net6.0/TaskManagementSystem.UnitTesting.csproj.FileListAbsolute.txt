@@ -171,3 +171,5 @@ C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSyste
 C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.UnitTesting\bin\Debug\net6.0\TaskManagementSystem.DAL.pdb
 C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.UnitTesting\bin\Debug\net6.0\SendGrid.dll
 C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.UnitTesting\bin\Debug\net6.0\StarkbankEcdsa.dll
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.UnitTesting\bin\Debug\net6.0\Microsoft.Extensions.Localization.dll
+C:\Users\Lenovo\Documents\GitHub\webapi\TaskManagementSystem\TaskManagementSystem.UnitTesting\bin\Debug\net6.0\Microsoft.Extensions.Localization.Abstractions.dll

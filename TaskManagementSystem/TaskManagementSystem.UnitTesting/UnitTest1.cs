@@ -18,9 +18,11 @@ namespace TaskManagementSystem.UnitTesting
             _projectsRepository = new Mock<IProjectsRepository>();
             _projectsService=new ProjectsService(_projectsRepository.Object);
         }
-
+        /// <summary>
+        /// Kontrollon nese metoda AddProject hston nje modle bosh.
+        /// </summary>
         [Test]
-        public async System.Threading.Tasks.Task AddProject_ReturnsEmptyObject_WhenIdIsZero() 
+        public async System.Threading.Tasks.Task AddProject_ReturnsEmptyObject_WhenModelIsEmpty() 
         {
             var project = new DAL.Entities.Project
             {
@@ -34,7 +36,9 @@ namespace TaskManagementSystem.UnitTesting
 
             Assert.True(result.Id==0);
         }
-
+        /// <summary>
+        /// Kontrollon cfare kthen metoda GetProjectById nese projekti me ate id nuk ekziston
+        /// </summary>
         [Test]
         public async System.Threading.Tasks.Task GetProjectById_ReturnsEmptyObject_WhenObjectDoesNotExist()
         {
@@ -45,7 +49,9 @@ namespace TaskManagementSystem.UnitTesting
             var result = await _projectsService.GetProjectById(id);
             Assert.True(result.Id==0);
         }
-
+        /// <summary>
+        /// Kontrollon cfare kthen metoda DeleteProject nese projekti nuk ekziston
+        /// </summary>
         [Test]
         public async System.Threading.Tasks.Task DeleteProject_ReturnsEmptyObject_WhenObjectDoesNotExist()
         {
@@ -64,7 +70,9 @@ namespace TaskManagementSystem.UnitTesting
             var result = await _projectsService.DeleteProject(project.Id);
             Assert.True(result.Id == 0);
         }
-
+        /// <summary>
+        /// Kontrollon cfare kthen metoda UpdateProject kur projekti nuk ekziston
+        /// </summary>
         [Test]
         public async System.Threading.Tasks.Task UpdateProject_ReturnsEmptyObject_WhenObjectDoesNotExist()
         {

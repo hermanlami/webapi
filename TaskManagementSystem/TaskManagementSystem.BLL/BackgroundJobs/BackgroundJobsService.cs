@@ -16,6 +16,11 @@ namespace TaskManagementSystem.BLL.BackgroundJobs
         {
             _tasksService = tasksService;   
         }
+
+        /// <summary>
+        /// Ekzekuton cdo dite ne oren 9 metoden qe dergon email-e per tasket qe mbarojne se shpejti.
+        /// </summary>
+        /// <param name="stoppingToken">Token qe ndalon background service.</param>
         protected async override Task ExecuteAsync(CancellationToken stoppingToken) 
         {
             while (!stoppingToken.IsCancellationRequested)

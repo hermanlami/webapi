@@ -13,13 +13,22 @@ namespace TaskManagementSystem.DAL.Repositories
             _context = context;
             _dbSet = _context.Projects;
         }
+        /// <summary>
+        /// Krijon nje project te ri.
+        /// </summary>
+        /// <param name="entity"> Modeli qe duhet te krijohet.</param>
+        /// <returns>Projektin e krijuar.</returns>
         public async Task<Project> AddProject(Project entity)
         {
             await _context.Projects.AddAsync(entity);
             await _context.SaveChangesAsync();
             return entity;
         }
-
+        /// <summary>
+        /// Fshin nje projekt.
+        /// </summary>
+        /// <param name="entity">Projekti qe duhet fshire.</param>
+        /// <returns>Projektin e fshire.</returns>
         public async Task<Project> DeleteProject(Project entity)
         {
 
@@ -27,25 +36,40 @@ namespace TaskManagementSystem.DAL.Repositories
             await _context.SaveChangesAsync();
             return entity;
         }
-
+        /// <summary>
+        /// Merr nje projekt ne baze te Id se tij.
+        /// </summary>
+        /// <param name="id">Id qe identifikon projektin qe duhet marre.</param>
+        /// <returns>Projektin perkates.</returns>
         public async Task<Project> GetProjectById(int id)
         {
 
             return await _dbSet.Where(x => x.IsDeleted != true && x.Id == id).FirstOrDefaultAsync();
         }
-
+        /// <summary>
+        /// Merr nje projekt bazuar ne emrin e tij.
+        /// </summary>
+        /// <param name="name">Emri qe sherben per te identifikuar projektin.</param>
+        /// <returns>Projektin perkates.</returns>
         public async Task<Project> GetProjectByName(string name)
         {
 
             return await _dbSet.Where(x => x.IsDeleted != true && x.Name == name).FirstOrDefaultAsync();
         }
-
+        /// <summary>
+        /// Merr te gjitha projektet.
+        /// </summary>
+        /// <returns>Listen e te gjitha projekteve.</returns>
         public async Task<List<Project>> GetProjects()
         {
 
             return await _dbSet.Where(x => x.IsDeleted != true).ToListAsync();
         }
-
+        /// <summary>
+        /// Perditeson nje projekt.
+        /// </summary>
+        /// <param name="entity">Projekti qe duhet perditesuar</param>
+        /// <returns>Projektin e perditesuar.</returns>
         public async Task<Project> UpdateProject(Project entity)
         {
 
