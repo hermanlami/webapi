@@ -41,6 +41,7 @@ namespace TaskManagementSystem.BLL.Services
                 var person = await _peoplesRepository.GetPersonByEmail(request.Email);
                 if (person == null)
                 {
+                    var s = GetLogValue("NotFound");
                     _logger.LogError($"{GetLogValue("NotFound")}");
                     throw new NotFoundException($"Person with email {request.Email} not found");
                 }
@@ -56,7 +57,7 @@ namespace TaskManagementSystem.BLL.Services
                     };
                 }
                 _logger.LogError($"{GetLogValue("NotAuthenticated")}");
-                throw new FailedToAuthencitcateException($"Person with email {request.Email} could not be authenticated");
+                throw new FailedToAuthencitcateException($"Wrong password! Person with email {request.Email} could not be authenticated");
 
             });
         }
@@ -102,11 +103,11 @@ namespace TaskManagementSystem.BLL.Services
         /// </summary>
         /// <param name="email">Email qe sherben per te identifikuar personin.</param>
         /// <returns>Personin perkates.</returns>
-        public async Task<Person> GetPersonByEmail(string email)
+        public async Task<Person> GetPersonByEmail(string email,int id)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
-                var person = await _peoplesRepository.GetPersonByEmail(email);
+                var person = await _peoplesRepository.GetPersonByEmail(email,id);
                 if (person != null)
                 {
                     _logger.LogInformation($"{GetLogValue("RetrieveSuccessful")}");
@@ -122,11 +123,11 @@ namespace TaskManagementSystem.BLL.Services
         /// </summary>
         /// <param name="username">Username qe sherben per te identifikuar personin.</param>
         /// <returns>Personin perkates.</returns>
-        public async Task<Person> GetPersonByUsername(string username)
+        public async Task<Person> GetPersonByUsername(string username, int id)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
-                var person = await _peoplesRepository.GetPersonByUsername(username);
+                var person = await _peoplesRepository.GetPersonByUsername(username,id);
                 if (person != null)
                 {
                     _logger.LogInformation($"{GetLogValue("RetrieveSuccessful")}");
@@ -159,6 +160,11 @@ namespace TaskManagementSystem.BLL.Services
 
             });
         }
+        /// <summary>
+        /// Merr vleren e mesazhit sipas celesit identifikues ne file-t per lokalizimin e aplikacionit.
+        /// </summary>
+        /// <param name="key">Celesi qe identifikin mesazhin ne file-t sipas gjuhes se perzgjedhur.</param>
+        /// <returns>Vleren perkatese.</returns>
         private string GetLogValue(string key)
         {
             var cultureInfo = CultureInfo.CurrentCulture;

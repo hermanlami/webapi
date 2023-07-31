@@ -11,8 +11,6 @@ namespace TaskManagementSystem.DAL.Interfaces
     {
         Task<Developer> AddDeveloper(Developer entity);
         Task<List<Developer>> GetDevelopers();
-        Task<Developer> GetDeveloperByEmail(string email);
-        Task<Developer> GetDeveloperByUsername(string email);
         Task<Developer> GetDeveloperById(int id);
         Task<Developer> UpdateDeveloper(Developer entity);
         Task<Developer> DeleteDeveloper(Developer entity);

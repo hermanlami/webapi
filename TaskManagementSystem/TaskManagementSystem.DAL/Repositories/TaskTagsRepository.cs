@@ -31,6 +31,18 @@ namespace TaskManagementSystem.DAL.Repositories
             return entity;
         }
 
+        public async Task<bool> DeleteTaskTag(int id)
+        {
+            var tasksToDelete = _dbSet.Where(x => x.TaskId == id).ToList();
+
+            if (tasksToDelete.Any())
+            {
+                _dbSet.RemoveRange(tasksToDelete);
+                return await _context.SaveChangesAsync()>0;
+            }
+            return true;
+        }
+
         /// <summary>
         /// Merr nje task-tag ne baze te Id se tag.
         /// </summary>

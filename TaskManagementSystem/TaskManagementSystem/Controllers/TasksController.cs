@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc; 
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using TaskManagementSystem.BLL;
 using TaskManagementSystem.BLL.Interfaces;
@@ -44,9 +44,8 @@ namespace TaskManagementSystem.Controllers
         {
             return await HandleExceptionAsync(async () =>
             {
-                var userRole = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value;
-                Int32.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value, out int userId);
-                var tasks = await _tasksService.GetTasks(userId, userRole);
+                var userRole = UserRole(out int userId);
+                var tasks = await _tasksService.GetTasks(userRole, userId);
                 return Ok(tasks);
             }
             );
@@ -58,11 +57,12 @@ namespace TaskManagementSystem.Controllers
         [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "ProjectManager" } })]
 
         [Route("api/tasks/completed")]
-        public async Task<IActionResult> GetCompletedTasks() 
+        public async Task<IActionResult> GetCompletedTasks()
         {
             return await HandleExceptionAsync(async () =>
             {
-                var tasks = await _tasksService.GetCompletedTasks();
+                var userRole = UserRole(out int userId);
+                var tasks = await _tasksService.GetCompletedTasks(userRole, userId);
                 return Ok(tasks);
             }
             );
@@ -79,7 +79,8 @@ namespace TaskManagementSystem.Controllers
         {
             return await HandleExceptionAsync(async () =>
             {
-                var tasks = await _tasksService.GetTasksByDevelopersUsername(username);
+                var userRole = UserRole(out int userId);
+                var tasks = await _tasksService.GetTasksByDevelopersUsername(username, userRole, userId);
                 return Ok(tasks);
             }
             );
@@ -90,11 +91,13 @@ namespace TaskManagementSystem.Controllers
         /// <param name="name">Emri i projektit</param>
         [HttpGet]
         [Route("api/tasks/byProjectName/{name}")]
+        [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "ProjectManager", "Developer" } })]
         public async Task<IActionResult> GetTasksByProjectName(string name)
         {
             return await HandleExceptionAsync(async () =>
             {
-                var tasks = await _tasksService.GetTasksByProjectName(name);
+                var userRole = UserRole(out int userId);
+                var tasks = await _tasksService.GetTasksByProjectName(name, userRole, userId);
                 return Ok(tasks);
             }
             );
@@ -105,11 +108,13 @@ namespace TaskManagementSystem.Controllers
         /// <param name="name">Emri i tag-ut</param>
         [HttpGet]
         [Route("api/tasks/bytagname/{name}")]
+        [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "ProjectManager", "Developer" } })]
         public async Task<IActionResult> GetTasksByTagName(string name)
         {
             return await HandleExceptionAsync(async () =>
             {
-                var tasks = await _tasksService.GetTasksByTagName(name);
+                var userRole = UserRole(out int userId);
+                var tasks = await _tasksService.GetTasksByTagName(name, userRole, userId);
                 return Ok(tasks);
             }
             );
@@ -117,14 +122,16 @@ namespace TaskManagementSystem.Controllers
         /// <summary>
         /// Merr task ne baze te id se tij.
         /// </summary>
-        /// <param name="id">Id qe identifikon task-un.</param>
+        /// <param name="name">Emri qe identifikon task-un.</param>
         [HttpGet]
-        [Route("api/tasks/{id}")]
-        public async Task<IActionResult> GetTask(int id)
+        [Route("api/tasks/{name}")]
+        [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "ProjectManager", "Developer" } })]
+        public async Task<IActionResult> GetTask(string name)
         {
             return await HandleExceptionAsync(async () =>
             {
-                var task = await _tasksService.GetTaskById(id);
+                var userRole = UserRole(out int userId);
+                var task = await _tasksService.GetTaskByName(name, userRole, userId);
                 return Ok(task);
 
             });
@@ -132,26 +139,29 @@ namespace TaskManagementSystem.Controllers
         /// <summary>
         /// Deklaron task-un si te perfunduar.
         /// </summary>
-        /// <param name="id">Id qe identifikon task-un.</param>
+        /// <param name="name">Emri qe identifikon task-un.</param>
         [HttpPut]
-        [Route("api/tasks/complete/{id}")]
-        public async Task<IActionResult> SetTaskStatus(int id, string response)
+        [Route("api/tasks/complete/{name}")]
+        [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "ProjectManager", "Developer" } })]
+        public async Task<IActionResult> SetTaskStatus(string name, string response)
         {
             return await HandleExceptionAsync(async () =>
             {
-                var userRole = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value;
-                var task = await _tasksService.SetTaskStatus(id, userRole, response);
+                var userRole = UserRole(out int userId);
+                var task = await _tasksService.SetTaskStatus(name, userRole, userId, response);
                 return Ok(task);
             });
         }
         /// <summary>
         /// Perditeson te dhenat e task-ut.
         /// </summary>
-        /// <param name="id">Id qe identifikon task-un.</param>
+        /// <param name="name">Id qe identifikon task-un.</param>
         /// <param name="model">Modeli ne baze te te cilit behet perditesimi.</param>
         [HttpPut]
-        [Route("api/tasks/{id}")]
-        public async Task<IActionResult> UpdateTask(int id, [FromBody] BLL.DTO.Task model)
+        [Route("api/tasks/{name}")]
+        [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "ProjectManager" } })]
+
+        public async Task<IActionResult> UpdateTask(string name, [FromBody] BLL.DTO.Task model)
         {
             return await HandleExceptionAsync(async () =>
             {
@@ -159,24 +169,33 @@ namespace TaskManagementSystem.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                var task = await _tasksService.UpdateTask(id, model);
+                var userRole = UserRole(out int userId);
+                var task = await _tasksService.UpdateTask(name, model, userId, userRole);
                 return Ok(task);
             });
         }
         /// <summary>
         /// Fshin nje task.
         /// </summary>
-        /// <param name="id">Id qe identifikon task-un.</param>
+        /// <param name="name">Emri qe identifikon task-un.</param>
         [HttpDelete]
-        [Route("api/tasks/{id}")]
-        public async Task<IActionResult> DeleteTask(int id)
+        [Route("api/tasks/{name}")]
+        [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "ProjectManager"} })]
+
+        public async Task<IActionResult> DeleteTask(string name)
         {
             return await HandleExceptionAsync(async () =>
             {
-                var deleted = await _tasksService.DeleteTask(id);
+                var deleted = await _tasksService.DeleteTask(name);
                 return Ok(deleted);
 
             });
+        }
+
+        private string UserRole(out int userId)
+        {
+            Int32.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value, out userId);
+            return User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value;
         }
     }
 }

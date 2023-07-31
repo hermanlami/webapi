@@ -10,8 +10,8 @@ namespace TaskManagementSystem.BLL.Interfaces
     public interface IAuthenticationsService
     {
         Task<AuthenticationResponse> Authenticate(AuthenticationRequest request);
-        Task<Person> GetPersonByEmail(string email);
-        Task<Person> GetPersonByUsername(string username);
+        Task<Person> GetPersonByEmail(string email, int id = 0);
+        Task<Person> GetPersonByUsername(string username, int id = 0); 
         Task<Person> GetPersonById(int id);
 
         Task<Person> ChangePassword(int id, UpdatePasswordRequest request);

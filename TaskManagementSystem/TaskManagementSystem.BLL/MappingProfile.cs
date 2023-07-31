@@ -16,11 +16,15 @@ namespace TaskManagementSystem.BLL
 
             CreateMap<ProjectManager, DAL.Entities.ProjectManager>().ReverseMap();
 
-            CreateMap<Project, DAL.Entities.Project>().ReverseMap();
+            CreateMap<DAL.Entities.Project, Project>().ForMember(dest => dest.ProjectManager, opt => opt.MapFrom(src => src.ProjectManager.FirstName + " " + src.ProjectManager.LastName));
+
+            CreateMap<Project, DAL.Entities.Project>().ForMember(dest => dest.ProjectManager, opt => opt.Ignore());
 
             CreateMap<Tag, DAL.Entities.Tag>().ReverseMap();
 
-            CreateMap<DTO.Task, DAL.Entities.Task>().ReverseMap();
+            CreateMap<DAL.Entities.Task,DTO.Task>().ForMember(dest => dest.Developer, opt => opt.MapFrom(src => src.Developer.FirstName + " " + src.Developer.LastName));
+
+            CreateMap<DTO.Task, DAL.Entities.Task>().ForMember(dest => dest.Developer, opt => opt.Ignore());
 
             CreateMap<TaskTag, DAL.Entities.TaskTag>().ReverseMap();
 

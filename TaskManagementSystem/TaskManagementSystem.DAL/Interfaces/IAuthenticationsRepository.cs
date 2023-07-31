@@ -9,8 +9,8 @@ namespace TaskManagementSystem.DAL.Interfaces
 {
     public interface IAuthenticationsRepository
     {
-        Task<Person> GetPersonByEmail(string email);
-        Task<Person> GetPersonByUsername(string username);
+        Task<Person> GetPersonByEmail(string email,int id=0);
+        Task<Person> GetPersonByUsername(string username,int id=0);
         Task<Person> ChangePassword(Person person);
         Task<Person> GetPersonById(int id);
 

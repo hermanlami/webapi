@@ -34,9 +34,9 @@ namespace TaskManagementSystem.DAL.Repositories
         /// </summary>
         /// <param name="email">Email qe sherben per te identifikuar personin.</param>
         /// <returns>Personin perkates.</returns>
-        public async Task<Person> GetPersonByEmail(string email)
+        public async Task<Person> GetPersonByEmail(string email, int id)
         {
-            return await _dbSet.Where(x => x.IsDeleted != true && x.Email == email).FirstOrDefaultAsync();
+            return id==0? await _dbSet.Where(x => x.IsDeleted != true && x.Email == email).FirstOrDefaultAsync(): await _dbSet.Where(x => x.IsDeleted != true && x.Email == email && x.Id != id).FirstOrDefaultAsync(); 
         }
         /// <summary>
         /// Merr nje person ne baze te Id se tij.
@@ -52,10 +52,10 @@ namespace TaskManagementSystem.DAL.Repositories
         /// </summary>
         /// <param name="username">Username qe sherben per te identifikuar personin.</param>
         /// <returns>Personin perkates.</returns>
-        public async Task<Person> GetPersonByUsername(string username)
+        public async Task<Person> GetPersonByUsername(string username, int id)
         {
-            return await _dbSet.Where(x => x.IsDeleted != true && x.Username == username).FirstOrDefaultAsync();
-
+            return id == 0 ? await _dbSet.Where(x => x.IsDeleted != true && x.Username == username).FirstOrDefaultAsync(): await _dbSet.Where(x => x.IsDeleted != true && x.Username == username&&x.Id!=id).FirstOrDefaultAsync();
+            
         }
     }
 }

@@ -8,11 +8,7 @@ using TaskManagementSystem.Middlewares;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
-using TaskManagementSystem.BLL.BackgroundJobs;
 using Hangfire;
-using Hangfire.SqlServer;
-using System.Configuration;
-using TaskManagementSystem.BLL.Interfaces;
 using TaskManagementSystem.BLL.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,10 +34,9 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
 });
 
+builder.Services.AddScoped<AuthenticationMiddleware>();
 builder.Services.AddScoped<CustomErrorMiddleware>();
-//builder.Services.AddHostedService<BackgroundJobsService>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
-builder.Services.AddSingleton<AuthenticationMiddleware>();
 
 builder.Services.AddHangfire(config =>
 {
@@ -51,7 +46,7 @@ builder.Services.AddHangfire(config =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {
-    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "TMS", Version = "v1" });
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -122,9 +117,11 @@ app.UseHangfireServer();
 
 app.UseHangfireDashboard();
 
-RecurringJob.AddOrUpdate<TasksService>("NotifyForTasksCloseToDeadline", x => x.NotifyForTasksCloseToDeadline(), "52 12 * * *");
+RecurringJob.AddOrUpdate<TasksService>("NotifyForTasksCloseToDeadline", x => x.NotifyForTasksCloseToDeadline(), "0 7 * * 1-5");
 
 app.UseRouting();
+
+app.UseMiddleware<CustomErrorMiddleware>();
 
 app.UseHttpsRedirection();
 
@@ -138,13 +135,6 @@ app.UseEndpoints(endpoints =>
         pattern: "/api/errorHandler",
         defaults: new { controller = "ErrorHandler", action = "HandleError" }
     );
-});
-
-app.UseMiddleware<CustomErrorMiddleware>();
-
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
 });
 
 app.Run();

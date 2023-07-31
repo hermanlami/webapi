@@ -1,7 +1,9 @@
+using AutoMapper;
 using Moq;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
 using TaskManagementSystem.BLL.Services;
+using TaskManagementSystem.Common.CustomExceptions;
 using TaskManagementSystem.DAL.Interfaces;
 
 namespace TaskManagementSystem.UnitTesting
@@ -11,85 +13,88 @@ namespace TaskManagementSystem.UnitTesting
     {
         private IProjectsService _projectsService;
         private Mock<IProjectsRepository> _projectsRepository;
+        private Mock<IMapper> _mapperMock;
 
         [SetUp]
         public void Setup()
         {
             _projectsRepository = new Mock<IProjectsRepository>();
-            _projectsService=new ProjectsService(_projectsRepository.Object);
+            _mapperMock = new Mock<IMapper>();
+            _projectsService = new ProjectsService(_projectsRepository.Object, _mapperMock.Object);
         }
         /// <summary>
         /// Kontrollon nese metoda AddProject hston nje modle bosh.
         /// </summary>
         [Test]
-        public async System.Threading.Tasks.Task AddProject_ReturnsEmptyObject_WhenModelIsEmpty() 
+        public async System.Threading.Tasks.Task AddProject_ThrowsCustomException_WhenModelIsEmpty()
         {
             var project = new DAL.Entities.Project
             {
+
             };
 
-            var dtoProject = new Project() { };
+            var dtoProject = new Project { };
+
+            _mapperMock.Setup(x => x.Map<DAL.Entities.Project>(It.IsAny<Project>()))
+                       .Returns(project);
+
             _projectsRepository.Setup(x => x.AddProject(project))
-                        .ReturnsAsync(new DAL.Entities.Project());
+                               .ReturnsAsync(project);
 
-            var result = await _projectsService.AddProject(dtoProject);
+            Assert.ThrowsAsync<CustomException>(async () => await _projectsService.AddProject(dtoProject));
 
-            Assert.True(result.Id==0);
         }
+
         /// <summary>
         /// Kontrollon cfare kthen metoda GetProjectById nese projekti me ate id nuk ekziston
         /// </summary>
         [Test]
-        public async System.Threading.Tasks.Task GetProjectById_ReturnsEmptyObject_WhenObjectDoesNotExist()
+        public async System.Threading.Tasks.Task GetProjectByName_ThrowsNotFoundException_WhenObjectDoesNotExist()
         {
-            int id = 0;
-            _projectsRepository.Setup(x => x.GetProjectById(id))
-                        .ReturnsAsync(new DAL.Entities.Project());
+            string name = "ProjectName";
 
-            var result = await _projectsService.GetProjectById(id);
-            Assert.True(result.Id==0);
+            _projectsRepository.Setup(x => x.GetProjectByName(name, 0, 0))
+                               .ReturnsAsync((DAL.Entities.Project)null);
+
+            Assert.ThrowsAsync<NotFoundException>(async () => await _projectsService.GetProjectByName(name, " ", 0));
+
         }
         /// <summary>
         /// Kontrollon cfare kthen metoda DeleteProject nese projekti nuk ekziston
         /// </summary>
         [Test]
-        public async System.Threading.Tasks.Task DeleteProject_ReturnsEmptyObject_WhenObjectDoesNotExist()
+        public async System.Threading.Tasks.Task DeleteProject_ThrowsNotFoundException_WhenObjectDoesNotExist()
         {
-            var project = new Project
-            {
-                Id = 50,
-                Name = "Project",
-                StartDate = DateTime.Now,
-                EndDate = DateTime.Now.AddDays(10),
-                ProjectManagerId = 12
-            };
+            string projectName = "ProjectName";
 
-            _projectsRepository.Setup(x => x.GetProjectById(project.Id))
-                         .ReturnsAsync(new DAL.Entities.Project());
+            _projectsRepository.Setup(x => x.GetProjectByName(projectName, 0, 0))
+                               .ReturnsAsync((DAL.Entities.Project)null);
 
-            var result = await _projectsService.DeleteProject(project.Id);
-            Assert.True(result.Id == 0);
+            NotFoundException notFoundException = Assert.ThrowsAsync<NotFoundException>(async () => await _projectsService.DeleteProject(projectName));
+            Assert.AreEqual("Project not found", notFoundException.Message);
+
+            _projectsRepository.Setup(x => x.DeleteProject(It.IsAny<DAL.Entities.Project>()))
+                               .ReturnsAsync(new DAL.Entities.Project());
+
+            Assert.ThrowsAsync<NotFoundException>(async () => await _projectsService.DeleteProject(projectName));
         }
+
         /// <summary>
         /// Kontrollon cfare kthen metoda UpdateProject kur projekti nuk ekziston
         /// </summary>
         [Test]
-        public async System.Threading.Tasks.Task UpdateProject_ReturnsEmptyObject_WhenObjectDoesNotExist()
+        public async System.Threading.Tasks.Task UpdateProject_ThrowsNotFoundException_WhenProjectDoesNotExist()
         {
-            var project = new Project
+            string projectName = "ProjectName";
+            Project model = new Project
             {
-                Id = 50,
-                Name = "Project",
-                StartDate = DateTime.Now,
-                EndDate = DateTime.Now.AddDays(10),
-                ProjectManagerId = 12
+                Name = projectName,
             };
 
-            _projectsRepository.Setup(x => x.GetProjectById(project.Id))
-                         .ReturnsAsync(new DAL.Entities.Project());
+            _projectsRepository.Setup(x => x.GetProjectByName(projectName, 0, 0))
+                               .ReturnsAsync((DAL.Entities.Project)null);
 
-            var result = await _projectsService.UpdateProject(project.Id, project);
-            Assert.True(result.Id == 0);
+            Assert.ThrowsAsync<NotFoundException>(async () => await _projectsService.UpdateProject(projectName, model));
         }
     }
 }

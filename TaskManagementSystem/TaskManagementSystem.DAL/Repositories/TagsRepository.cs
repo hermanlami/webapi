@@ -47,11 +47,11 @@ namespace TaskManagementSystem.DAL.Repositories
         /// </summary>
         /// <param name="id">Id qe sherben per te identifikuar tag-un.</param>
         /// <returns>Tag-un perkates.</returns>
-        public async Task<Tag> GetTagById(int id)
-        {
+        //public async Task<Tag> GetTagById(int id)
+        //{
 
-            return await _dbSet.Where(x => x.IsDeleted != true && x.Id == id).FirstOrDefaultAsync();
-        }
+        //    return await _dbSet.Where(x => x.IsDeleted != true && x.Id == id).FirstOrDefaultAsync();
+        //}
         /// <summary>
         /// Merr tag-un na bze te emrit te tij.
         /// </summary>

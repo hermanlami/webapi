@@ -45,6 +45,8 @@ namespace TaskManagementSystem.Controllers
         /// <param name="request">Modeli qe permban password-in e ri dhe ate te vjeter.</param>
         [HttpPost]
         [Route("api/changePassword")]
+        [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "ProjectManager", "Developer" } })]
+
         public async Task<IActionResult> ChangePassword([FromBody] UpdatePasswordRequest request)
         {
             return await HandleExceptionAsync(async () =>
@@ -54,7 +56,7 @@ namespace TaskManagementSystem.Controllers
                     return BadRequest(ModelState);
                 }
                 Int32.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value, out int id);
-                var response = _authenticationsService.ChangePassword(id, request);
+                var response = await _authenticationsService.ChangePassword(id, request);
                 return Ok(response);
             });
         }
@@ -63,13 +65,13 @@ namespace TaskManagementSystem.Controllers
         /// </summary>
         /// <param name="refreshToken">Refresh tokne i nevojshem per te bere refresh token-in e skaduar.</param>
         [HttpPost]
-        [AllowAnonymous]
         [Route("api/refresh-token")]
+        [AllowAnonymous]
         public async Task<IActionResult> RefreshToken(string refreshToken)
         {
             return await HandleExceptionAsync(async () =>
             {
-                var tokenResponse = _tokensService.RefreshToken(refreshToken);
+                var tokenResponse = await _tokensService.RefreshToken(refreshToken);
                 return Ok(tokenResponse);
             });
         }

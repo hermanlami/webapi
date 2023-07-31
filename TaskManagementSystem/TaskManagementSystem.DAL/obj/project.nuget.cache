@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "2eGWqhtA66KWUKmJjPL7dMNt5ONlwvKpgYPb8xvqpjOBhhkLjMR8ZuPz1YBk9wps65hXUAYHijRPr/bQfcTBVA==",
+  "dgSpecHash": "DI4bWAxnw0fjmAx9hcdEO/Sg1xpUzyeXGoDkyynWZ+ZM1Ro1Q1Oel6F3plkQ+KSbgncCtQtIdhAi9cYK6tHOTg==",
   "success": true,
   "projectFilePath": "C:\\Users\\Lenovo\\Documents\\GitHub\\webapi\\TaskManagementSystem\\TaskManagementSystem.DAL\\TaskManagementSystem.DAL.csproj",
   "expectedPackageFiles": [
@@ -29,6 +29,7 @@
     "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\7.0.8\\microsoft.entityframeworkcore.abstractions.7.0.8.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\7.0.8\\microsoft.entityframeworkcore.analyzers.7.0.8.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.entityframeworkcore.design\\7.0.8\\microsoft.entityframeworkcore.design.7.0.8.nupkg.sha512",
+    "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.entityframeworkcore.proxies\\6.0.20\\microsoft.entityframeworkcore.proxies.6.0.20.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\7.0.8\\microsoft.entityframeworkcore.relational.7.0.8.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.entityframeworkcore.sqlserver\\7.0.8\\microsoft.entityframeworkcore.sqlserver.7.0.8.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.entityframeworkcore.tools\\7.0.8\\microsoft.entityframeworkcore.tools.7.0.8.nupkg.sha512",

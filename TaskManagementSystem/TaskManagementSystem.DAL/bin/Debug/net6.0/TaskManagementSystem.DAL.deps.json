@@ -19,6 +19,7 @@
           "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "6.0.19",
           "Microsoft.EntityFrameworkCore": "7.0.8",
           "Microsoft.EntityFrameworkCore.Design": "7.0.8",
+          "Microsoft.EntityFrameworkCore.Proxies": "6.0.20",
           "Microsoft.EntityFrameworkCore.SqlServer": "7.0.8",
           "Microsoft.EntityFrameworkCore.Tools": "7.0.8",
           "Microsoft.Extensions.Localization": "7.0.9",
@@ -384,6 +385,18 @@
           "lib/net6.0/Microsoft.EntityFrameworkCore.Design.dll": {
             "assemblyVersion": "7.0.8.0",
             "fileVersion": "7.0.823.31802"
+          }
+        }
+      },
+      "Microsoft.EntityFrameworkCore.Proxies/6.0.20": {
+        "dependencies": {
+          "Castle.Core": "5.1.1",
+          "Microsoft.EntityFrameworkCore": "7.0.8"
+        },
+        "runtime": {
+          "lib/net6.0/Microsoft.EntityFrameworkCore.Proxies.dll": {
+            "assemblyVersion": "6.0.20.0",
+            "fileVersion": "6.0.2023.31908"
           }
         }
       },
@@ -1097,6 +1110,7 @@
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.19",
           "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "6.0.19",
           "Microsoft.EntityFrameworkCore": "7.0.8",
+          "Microsoft.EntityFrameworkCore.Proxies": "6.0.20",
           "Microsoft.EntityFrameworkCore.SqlServer": "7.0.8",
           "Microsoft.Extensions.Localization": "7.0.9",
           "Newtonsoft.Json": "13.0.3",
@@ -1292,6 +1306,13 @@
       "sha512": "sha512-dG+QxTeRZhtEbsN+VXF2D5z6kT1/pOFRkSTXnggugqTz3p7qSceyLqJoyGZXI8l3YsmDywgD7yfxvcy0X8uZMA==",
       "path": "microsoft.entityframeworkcore.design/7.0.8",
       "hashPath": "microsoft.entityframeworkcore.design.7.0.8.nupkg.sha512"
+    },
+    "Microsoft.EntityFrameworkCore.Proxies/6.0.20": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-n56WLOQLVjS4E+krAQ4lVx24Cho8eexqpRP/Qp+Z7j+pisWgVgCvmRcrncgyhVTd5PthHoaL86sjl2dMg0PcRg==",
+      "path": "microsoft.entityframeworkcore.proxies/6.0.20",
+      "hashPath": "microsoft.entityframeworkcore.proxies.6.0.20.nupkg.sha512"
     },
     "Microsoft.EntityFrameworkCore.Relational/7.0.8": {
       "type": "package",

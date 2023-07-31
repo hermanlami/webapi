@@ -12,7 +12,7 @@ namespace TaskManagementSystem.BLL
     {
         public static void DeadlineNotification(string toEmail, string taskName, double daysLeft)
         {
-            var days = daysLeft <= 0.625 ? daysLeft.ToString() + " today" : $"in {Math.Floor(daysLeft)} days";
+            var days = daysLeft <= 0.625 ? " today" : $"in {Math.Ceiling(daysLeft)} days";
             string message = $"Your task {taskName} is ending {days}!";
             EmailStructure(toEmail, message, "Task Deadline");
         }
@@ -27,8 +27,8 @@ Password: {password}";
 
         public static void TaskCompletionResponse(string toEmail, string response)
         {
-            string message = $"Your task completion was {response}";
-            EmailStructure(toEmail, message, "Login Credentials");
+            string message = $"Your task completion was {response}ed";
+            EmailStructure(toEmail, message, "Task Completion Response");
         }
 
         private static void EmailStructure(string toEmail, string emailBody, string subject)

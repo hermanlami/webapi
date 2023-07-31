@@ -8,7 +8,7 @@ using TaskManagementSystem.BLL;
 namespace TaskManagementSystem.Controllers
 {
     [ApiController]
-    [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin" } })]
+    [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "ProjectManager" } })]
     public class TagsController : BaseController
     {
         private readonly ITagsService _tagsService;
@@ -41,12 +41,12 @@ namespace TaskManagementSystem.Controllers
         /// <param name="id">Id qe identifikon tag-un.</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("api/tags/{id}")]
-        public async Task<IActionResult> GetTag(int id)
+        [Route("api/tags/{name}")]
+        public async Task<IActionResult> GetTag(string name)
         {
             return await HandleExceptionAsync(async () =>
             {
-                var tag = await _tagsService.GetTagById(id);
+                var tag = await _tagsService.GetTagByName(name);
                 return Ok(tag);
 
             });
@@ -70,12 +70,12 @@ namespace TaskManagementSystem.Controllers
         /// <param name="id">Id qe identifikon tag-un.</param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("api/tags/{id}")]
-        public async Task<IActionResult> DeleteTag(int id)
+        [Route("api/tags/{name}")]
+        public async Task<IActionResult> DeleteTag(string name)
         {
             return await HandleExceptionAsync(async () =>
             {
-                var deleted = await _tagsService.DeleteTag(id);
+                var deleted = await _tagsService.DeleteTag(name);
                 return Ok(deleted);
 
             });

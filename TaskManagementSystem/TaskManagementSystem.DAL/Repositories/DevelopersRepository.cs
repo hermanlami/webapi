@@ -44,11 +44,6 @@ namespace TaskManagementSystem.DAL.Repositories
             return entity;
         }
 
-        public async Task<Developer> GetDeveloperByEmail(string email)
-        {
-
-            return (Developer)await _context.People.Where(x => x.IsDeleted != true && x.PersonType == PersonType.Developer && x.Email == email).FirstOrDefaultAsync();
-        }
         /// <summary>
         /// Kap nje develoepr ne baze te Id se tij.
         /// </summary>
@@ -60,11 +55,6 @@ namespace TaskManagementSystem.DAL.Repositories
             return (Developer)await _context.People.Where(x => x.IsDeleted != true && x.PersonType==PersonType.Developer && x.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task<Developer> GetDeveloperByUsername(string username)
-        {
-
-            return (Developer)await _context.People.Where(x => x.IsDeleted != true && x.PersonType == PersonType.Developer && x.Username == username).FirstOrDefaultAsync();
-        }
         /// <summary>
         /// Merr te gjithe developers.
         /// </summary>

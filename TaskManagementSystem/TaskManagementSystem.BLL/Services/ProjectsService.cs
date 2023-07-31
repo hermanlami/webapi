@@ -5,6 +5,7 @@ using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
 using TaskManagementSystem.Common;
 using TaskManagementSystem.Common.CustomExceptions;
+using TaskManagementSystem.Common.Enums;
 using TaskManagementSystem.DAL.Interfaces;
 
 [assembly: InternalsVisibleTo("TaskManagementSystem.UnitTesting")]
@@ -20,10 +21,6 @@ namespace TaskManagementSystem.BLL.Services
             _repository = repository;
             _mapper = mapper;
         }
-        public ProjectsService(IProjectsRepository repository)
-        {
-            _repository = repository;
-        }
         /// <summary>
         /// Krijon nje project te ri.
         /// </summary>
@@ -36,7 +33,7 @@ namespace TaskManagementSystem.BLL.Services
                 if (await _repository.GetProjectByName(model.Name) != null)
                 {
                     Log.Error($"Project {model.Name} already exists");
-                    throw new DuplicateInputException($"Project {model.Name} already exists");
+                    throw new DuplicateInputException($"Project {model.Name} already exists");   
                 }
 
                 var addedProject = await _repository.AddProject(_mapper.Map<DAL.Entities.Project>(model));
@@ -56,11 +53,11 @@ namespace TaskManagementSystem.BLL.Services
         /// </summary>
         /// <param name="id">Id qe identifikon projektin qe duhet fshire.</param>
         /// <returns>Projektin e fshire.</returns>
-        public async Task<Project> DeleteProject(int id)
+        public async Task<Project> DeleteProject(string name)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
-                var project = await _repository.GetProjectById(id);
+                var project = await _repository.GetProjectByName(name);
                 if (project == null)
                 {
                     Log.Error("Project not found");
@@ -86,32 +83,32 @@ namespace TaskManagementSystem.BLL.Services
         /// </summary>
         /// <param name="id">Id qe identifikon projektin qe duhet marre.</param>
         /// <returns>Projektin perkates.</returns>
-        public async Task<Project> GetProjectById(int id)
-        {
-            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
-            {
-                var project = await _repository.GetProjectById(id);
-                if (project != null)
-                {
-                    Log.Information($"Project {project.Name} retrieved successfully");
-                    return _mapper.Map<DTO.Project>(project);
+        //public async Task<Project> GetProjectById(int id)
+        //{
+        //    return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
+        //    {
+        //        var project = await _repository.GetProjectById(id);
+        //        if (project != null)
+        //        {
+        //            Log.Information($"Project {project.Name} retrieved successfully");
+        //            return _mapper.Map<DTO.Project>(project);
 
-                }
+        //        }
 
-                Log.Error("Project could not be retrieved");
-                throw new NotFoundException("Project not found");
+        //        Log.Error("Project could not be retrieved");
+        //        throw new NotFoundException("Project not found");
 
-            });
-        }
+        //    });
+        //}
         /// <summary>
         /// Merr te gjitha projektet.
         /// </summary>
         /// <returns>Listen e te gjitha projekteve.</returns>
-        public async Task<List<Project>> GetProjects()
+        public async Task<List<Project>> GetProjects(int userId, string userRole)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
-                var projects = await _repository.GetProjects();
+                var projects = userRole==PersonType.ProjectManager.ToString()? await _repository.GetProjects(userId): await _repository.GetProjects();
                 if (projects != null)
                 {
                     Log.Information("Projects retrieved successfully");
@@ -126,23 +123,28 @@ namespace TaskManagementSystem.BLL.Services
         /// <summary>
         /// Perditeson nje projekt.
         /// </summary>
-        /// <param name="id">Id e projektit qe duhet perditesuar.</param>
+        /// <param name="name">Emri i projektit qe duhet perditesuar.</param>
         /// <param name="model">Modeli qe sherben per te perditesuar vlerat e projektit te kapur nepermjet Id.</param>
         /// <returns>Projektin e perditesuar.</returns>
-        public async Task<Project> UpdateProject(int id, Project model)
+        public async Task<Project> UpdateProject(string name, Project model)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
-                var project = await _repository.GetProjectById(id);
+                if (await _repository.GetProjectByName(model.Name, model.Id) != null)
+                {
+                    Log.Error($"Project {model.Name} already exists");
+                    throw new DuplicateInputException($"Project {model.Name} already exists");
+                }
+
+                var project = await _repository.GetProjectByName(name);
                 if (project == null)
                 {
                     Log.Error($"Project not found");
                     throw new NotFoundException("Projects not found");
 
                 }
+                model.Id=project.Id;
 
-                model.Id = id;
-                
                 var updated = await _repository.UpdateProject(_mapper.Map(model, project));
                 if (updated != null)
                 {
@@ -160,19 +162,19 @@ namespace TaskManagementSystem.BLL.Services
         /// </summary>
         /// <param name="name">Emri qe sherben per te identifikuar projektin.</param>
         /// <returns>Projektin perkates.</returns>
-        public async Task<Project> GetProjectByName(string name)
+        public async Task<Project> GetProjectByName(string name, string userRole, int userId)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
-                var project = await _repository.GetProjectByName(name);
+                var project = userRole == PersonType.ProjectManager.ToString() ? await _repository.GetProjectByName(name, 0, userId) :await _repository.GetProjectByName(name);
                 if (project != null)
                 {
                     Log.Information($"Project {name} retrieved successfully");
                     return _mapper.Map<DTO.Project>(project);
 
                 }
-                Log.Information($"Project {name} could not be retrieved");
-                throw new CustomException($"Project {name} could not be retrieved");
+                Log.Information($"Project {name} not found");
+                throw new NotFoundException($"Project {name} not be found");
 
             });
         }

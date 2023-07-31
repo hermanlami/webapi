@@ -15,13 +15,11 @@ namespace TaskManagementSystem.BLL.Services
         private readonly IDevelopersRepository _repository;
         private readonly IMapper _mapper;
         private readonly IAuthenticationsRepository _authenticationRepository;
-        private readonly ITokensService _tokensService;
-        public DevelopersService(IDevelopersRepository repository, IAuthenticationsRepository authenticationsRepository, IMapper mapper, ITokensService tokensService)
+        public DevelopersService(IDevelopersRepository repository, IAuthenticationsRepository authenticationsRepository, IMapper mapper)
         {
             _repository = repository;
             _authenticationRepository = authenticationsRepository;
             _mapper = mapper;
-            _tokensService = tokensService;
         }
         /// <summary>
         /// Krijon nje developer te ri.
@@ -141,6 +139,17 @@ namespace TaskManagementSystem.BLL.Services
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
+                if (await _authenticationRepository.GetPersonByUsername(model.Username, model.Id) != null)
+                {
+                    Log.Error($"Developer with username {model.Username} already exists");
+                    throw new DuplicateInputException($"Developer with username {model.Username} already exists");
+                }
+                if (await _authenticationRepository.GetPersonByEmail(model.Email, model.Id) != null)
+                {
+                    Log.Error($"Developer with email {model.Email} already exists");
+                    throw new DuplicateInputException($"Developer with email {model.Email} already exists");
+                }
+
                 var developer = await _repository.GetDeveloperById(id);
                 if (developer == null)
                 {
@@ -148,7 +157,8 @@ namespace TaskManagementSystem.BLL.Services
                     throw new NotFoundException("Developer could not be found");
                 }
 
-                model.Id = id;
+                model.Id=developer.Id;
+
                 var updated = await _repository.UpdateDeveloper(_mapper.Map(model, developer));
                 if (updated != null)
                 {

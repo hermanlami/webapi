@@ -145,13 +145,26 @@ namespace TaskManagementSystem.BLL.Services
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
+                if (await _authenticationsRepository.GetPersonByEmail(model.Email, model.Id) != null)
+                {
+                    Log.Error($"Project manager with email {model.Email} already exists");
+                    throw new DuplicateInputException($"Project manager with email {model.Email} already exists");
+                }
+                if (await _authenticationsRepository.GetPersonByUsername(model.Username, model.Id) != null)
+                {
+                    Log.Error($"project Manager with username {model.Username} already exists");
+                    throw new DuplicateInputException($"Project Manager with username {model.Username} already exists");
+                }
+
                 var pM = await _repository.GetProjectManagerById(id);
                 if (pM == null)
                 {
                     Log.Error("Project manager not found");
                     throw new NotFoundException($"Project manager not found");
                 }
-                model.Id = id;
+
+                model.Id=pM.Id;
+
                 var updated = await _repository.UpdateProjectManager(_mapper.Map(model, pM));
                 if (updated != null)
                 {

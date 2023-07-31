@@ -22,7 +22,7 @@ namespace TaskManagementSystem.Middlewares
                 return;
             }
 
-            string token = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            string token = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", ""); 
             if (string.IsNullOrEmpty(token))
             {
                 context.Response.StatusCode = 401;
@@ -74,7 +74,7 @@ namespace TaskManagementSystem.Middlewares
         /// </summary>
         /// <param name="context">Konteksti qe duhet verifikuar.</param>
         /// <returns>True nese e lejon aksesin e paautorizar, perndryshe false.</returns>
-        private bool AllowsAnonymous(HttpContext context)
+        private bool AllowsAnonymous(HttpContext context) 
         {
             var endpoint = context.GetEndpoint();
             if (endpoint != null)

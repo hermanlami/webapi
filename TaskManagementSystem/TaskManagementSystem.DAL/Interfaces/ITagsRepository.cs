@@ -11,7 +11,7 @@ namespace TaskManagementSystem.DAL.Interfaces
     {
         Task<Tag> AddTag(Tag entity);
         Task<List<Tag>> GetTags();
-        Task<Tag> GetTagById(int id);
+        //Task<Tag> GetTagById(int id);
         Task<Tag> GetTagByName(string name);
         Task<Tag> DeleteTag(Tag entity);
     }

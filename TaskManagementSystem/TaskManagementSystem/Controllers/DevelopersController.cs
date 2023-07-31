@@ -7,7 +7,7 @@ using TaskManagementSystem.Middlewares;
 namespace TaskManagementSystem.Controllers
 {
     [ApiController]
-   // [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "ProjectManager" } })]
+    [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "ProjectManager" } })]
 
     public class DevelopersController : BaseController
     {
@@ -21,7 +21,6 @@ namespace TaskManagementSystem.Controllers
         /// </summary>
         /// <param name="model">Modeli ne baze te te cilit do te krijohet developer i ri</param>
         [HttpPost]
-        [AllowAnonymous]
         [Route("api/developers/add")]
         public async Task<IActionResult> AddDeveloper([FromBody] Developer model)
         {
@@ -40,7 +39,6 @@ namespace TaskManagementSystem.Controllers
         /// </summary>
         /// <param name="id">Id qe identifikon developer-in.</param>
         [HttpGet]
-        [AllowAnonymous]
         [Route("api/developers/{id}")]
         public async Task<IActionResult> GetDeveloper(int id)
         {
@@ -55,7 +53,6 @@ namespace TaskManagementSystem.Controllers
         /// Merr te gjithe developers.
         /// </summary>
         [HttpGet]
-        [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "Developer" } })]
         [Route("api/developers")]
         public async Task<IActionResult> GetDevelopers()
         {

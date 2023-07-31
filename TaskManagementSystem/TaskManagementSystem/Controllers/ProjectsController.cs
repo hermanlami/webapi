@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using TaskManagementSystem.BLL;
 using TaskManagementSystem.BLL.DTO;
 using TaskManagementSystem.BLL.Interfaces;
@@ -8,7 +9,6 @@ using TaskManagementSystem.Middlewares;
 namespace TaskManagementSystem.Controllers
 {
     [ApiController]
-    //[TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "Developer"} })]
 
     public class ProjectsController : BaseController
     {
@@ -22,8 +22,9 @@ namespace TaskManagementSystem.Controllers
         /// </summary>
         /// <param name="model">Modeli ne baze te te cilit do te behet krijimi.</param>
         [HttpPost]
-        [AllowAnonymous]
         [Route("api/projects")]
+        [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin"} })]
+
         public async Task<IActionResult> AddProject([FromBody] Project model)
         {
             return await HandleExceptionAsync(async () =>
@@ -40,14 +41,16 @@ namespace TaskManagementSystem.Controllers
         /// <summary>
         /// Merr nje projekt ne baze te id se tij.
         /// </summary>
-        /// <param name="id">Id qe identifikon projektin.</param>
+        /// <param name="name">Emri qe identifikon projektin.</param>
         [HttpGet]
-        [Route("api/projects/{id}")]
-        public async Task<IActionResult> GetProject(int id)
+        [Route("api/projects/{name}")]
+        [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "ProjectManager" } })]
+        public async Task<IActionResult> GetProject(string name)
         {
             return await HandleExceptionAsync(async () =>
             {
-                var project = await _projectsService.GetProjectById(id);
+                var userRole = UserRole(out int userId);
+                var project = await _projectsService.GetProjectByName(name, userRole, userId);
                 return Ok(project);
 
             });
@@ -57,11 +60,13 @@ namespace TaskManagementSystem.Controllers
         /// </summary>
         [HttpGet]
         [Route("api/projects")]
+        [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin", "ProjectManager" } })]
         public async Task<IActionResult> GetProjects()
         {
             return await HandleExceptionAsync(async () =>
             {
-                var projects = await _projectsService.GetProjects();
+                var userRole = UserRole(out int userId);
+                var projects = await _projectsService.GetProjects(userId, userRole);
                 return Ok(projects);
 
             });
@@ -70,11 +75,12 @@ namespace TaskManagementSystem.Controllers
         /// <summary>
         /// Perditeson te dhenat e nje projekti.
         /// </summary>
-        /// <param name="id">Id qe identifikon projektin.</param>
+        /// <param name="name">Emri qe identifikon projektin.</param>
         /// <param name="model">Modeli ne baze te te cilit do te behet perditesimi.</param>
         [HttpPut]
-        [Route("api/projects/{id}")]
-        public async Task<IActionResult> UpdateProject(int id, [FromBody] Project model)
+        [Route("api/projects/{name}")]
+        [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin" } })]
+        public async Task<IActionResult> UpdateProject(string name, [FromBody] Project model)
         {
             return await HandleExceptionAsync(async () =>
             {
@@ -82,7 +88,7 @@ namespace TaskManagementSystem.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                var project = await _projectsService.UpdateProject(id, model);
+                var project = await _projectsService.UpdateProject(name, model);
                 return Ok(project);
 
             });
@@ -90,16 +96,23 @@ namespace TaskManagementSystem.Controllers
         /// <summary>
         /// Fshin nje projekt.
         /// </summary>
-        /// <param name="id">Id qe identifikon projektin.</param>
+        /// <param name="name">Emri qe identifikon projektin.</param>
         [HttpDelete]
-        [Route("api/projects/{id}")]
-        public async Task<IActionResult> DeleteProject(int id)
+        [Route("api/projects/{name}")]
+        [TypeFilter(typeof(RoleActionFilter), Arguments = new object[] { new string[] { "Admin" } })]
+        public async Task<IActionResult> DeleteProject(string name)
         {
             return await HandleExceptionAsync(async () =>
             {
-                var deleted = await _projectsService.DeleteProject(id);
+                var deleted = await _projectsService.DeleteProject(name);
                 return Ok(deleted);
             });
+        }
+
+        private string UserRole(out int userId)
+        {
+            Int32.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value, out userId);
+            return User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value;
         }
     }
 }

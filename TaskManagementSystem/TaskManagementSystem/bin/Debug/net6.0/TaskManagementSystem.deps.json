@@ -19,6 +19,7 @@
           "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "6.0.19",
           "Microsoft.EntityFrameworkCore": "7.0.8",
           "Microsoft.EntityFrameworkCore.Design": "7.0.8",
+          "Microsoft.EntityFrameworkCore.Proxies": "6.0.20",
           "Microsoft.EntityFrameworkCore.SqlServer": "7.0.8",
           "Microsoft.EntityFrameworkCore.Tools": "7.0.8",
           "Microsoft.Extensions.Localization": "7.0.9",
@@ -1424,6 +1425,18 @@
           }
         }
       },
+      "Microsoft.EntityFrameworkCore.Proxies/6.0.20": {
+        "dependencies": {
+          "Castle.Core": "5.1.1",
+          "Microsoft.EntityFrameworkCore": "7.0.8"
+        },
+        "runtime": {
+          "lib/net6.0/Microsoft.EntityFrameworkCore.Proxies.dll": {
+            "assemblyVersion": "6.0.20.0",
+            "fileVersion": "6.0.2023.31908"
+          }
+        }
+      },
       "Microsoft.EntityFrameworkCore.Relational/7.0.8": {
         "dependencies": {
           "Microsoft.EntityFrameworkCore": "7.0.8",
@@ -2218,30 +2231,30 @@
       "Swashbuckle.AspNetCore/6.2.3": {
         "dependencies": {
           "Microsoft.Extensions.ApiDescription.Server": "3.0.0",
-          "Swashbuckle.AspNetCore.Swagger": "6.2.3",
-          "Swashbuckle.AspNetCore.SwaggerGen": "6.2.3",
+          "Swashbuckle.AspNetCore.Swagger": "6.5.0",
+          "Swashbuckle.AspNetCore.SwaggerGen": "6.5.0",
           "Swashbuckle.AspNetCore.SwaggerUI": "6.2.3"
         }
       },
-      "Swashbuckle.AspNetCore.Swagger/6.2.3": {
+      "Swashbuckle.AspNetCore.Swagger/6.5.0": {
         "dependencies": {
           "Microsoft.OpenApi": "1.2.3"
         },
         "runtime": {
           "lib/net6.0/Swashbuckle.AspNetCore.Swagger.dll": {
-            "assemblyVersion": "6.2.3.0",
-            "fileVersion": "6.2.3.0"
+            "assemblyVersion": "6.5.0.0",
+            "fileVersion": "6.5.0.0"
           }
         }
       },
-      "Swashbuckle.AspNetCore.SwaggerGen/6.2.3": {
+      "Swashbuckle.AspNetCore.SwaggerGen/6.5.0": {
         "dependencies": {
-          "Swashbuckle.AspNetCore.Swagger": "6.2.3"
+          "Swashbuckle.AspNetCore.Swagger": "6.5.0"
         },
         "runtime": {
           "lib/net6.0/Swashbuckle.AspNetCore.SwaggerGen.dll": {
-            "assemblyVersion": "6.2.3.0",
-            "fileVersion": "6.2.3.0"
+            "assemblyVersion": "6.5.0.0",
+            "fileVersion": "6.5.0.0"
           }
         }
       },
@@ -3095,6 +3108,7 @@
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.19",
           "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "6.0.19",
           "Microsoft.EntityFrameworkCore": "7.0.8",
+          "Microsoft.EntityFrameworkCore.Proxies": "6.0.20",
           "Microsoft.EntityFrameworkCore.SqlServer": "7.0.8",
           "Microsoft.Extensions.Localization": "7.0.9",
           "Newtonsoft.Json": "13.0.3",
@@ -3102,6 +3116,7 @@
           "Serilog": "3.0.1",
           "Serilog.Extensions.Logging": "7.0.0",
           "Serilog.Sinks.MSSqlServer": "6.3.0",
+          "Swashbuckle.AspNetCore.SwaggerGen": "6.5.0",
           "System.IdentityModel.Tokens.Jwt": "6.31.0",
           "TaskManagementSystem.Common": "1.0.0",
           "TaskManagementSystem.DAL": "1.0.0"
@@ -3127,6 +3142,7 @@
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.19",
           "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "6.0.19",
           "Microsoft.EntityFrameworkCore": "7.0.8",
+          "Microsoft.EntityFrameworkCore.Proxies": "6.0.20",
           "Microsoft.EntityFrameworkCore.SqlServer": "7.0.8",
           "Microsoft.Extensions.Localization": "7.0.9",
           "Newtonsoft.Json": "13.0.3",
@@ -3152,6 +3168,7 @@
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.19",
           "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "6.0.19",
           "Microsoft.EntityFrameworkCore": "7.0.8",
+          "Microsoft.EntityFrameworkCore.Proxies": "6.0.20",
           "Microsoft.EntityFrameworkCore.SqlServer": "7.0.8",
           "Microsoft.Extensions.Localization": "7.0.9",
           "Newtonsoft.Json": "13.0.3",
@@ -3818,6 +3835,13 @@
       "path": "microsoft.entityframeworkcore.design/7.0.8",
       "hashPath": "microsoft.entityframeworkcore.design.7.0.8.nupkg.sha512"
     },
+    "Microsoft.EntityFrameworkCore.Proxies/6.0.20": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-n56WLOQLVjS4E+krAQ4lVx24Cho8eexqpRP/Qp+Z7j+pisWgVgCvmRcrncgyhVTd5PthHoaL86sjl2dMg0PcRg==",
+      "path": "microsoft.entityframeworkcore.proxies/6.0.20",
+      "hashPath": "microsoft.entityframeworkcore.proxies.6.0.20.nupkg.sha512"
+    },
     "Microsoft.EntityFrameworkCore.Relational/7.0.8": {
       "type": "package",
       "serviceable": true,
@@ -4406,19 +4430,19 @@
       "path": "swashbuckle.aspnetcore/6.2.3",
       "hashPath": "swashbuckle.aspnetcore.6.2.3.nupkg.sha512"
     },
-    "Swashbuckle.AspNetCore.Swagger/6.2.3": {
+    "Swashbuckle.AspNetCore.Swagger/6.5.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-qOF7j1sL0bWm8g/qqHVPCvkO3JlVvUIB8WfC98kSh6BT5y5DAnBNctfac7XR5EZf+eD7/WasvANncTqwZYfmWQ==",
-      "path": "swashbuckle.aspnetcore.swagger/6.2.3",
-      "hashPath": "swashbuckle.aspnetcore.swagger.6.2.3.nupkg.sha512"
+      "sha512": "sha512-XWmCmqyFmoItXKFsQSwQbEAsjDKcxlNf1l+/Ki42hcb6LjKL8m5Db69OTvz5vLonMSRntYO1XLqz0OP+n3vKnA==",
+      "path": "swashbuckle.aspnetcore.swagger/6.5.0",
+      "hashPath": "swashbuckle.aspnetcore.swagger.6.5.0.nupkg.sha512"
     },
-    "Swashbuckle.AspNetCore.SwaggerGen/6.2.3": {
+    "Swashbuckle.AspNetCore.SwaggerGen/6.5.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-+Xq7WdMCCfcXlnbLJVFNgY8ITdP2TRYIlpbt6IKzDw5FwFxdi9lBfNDtcT+/wkKwX70iBBFmXldnnd02/VO72A==",
-      "path": "swashbuckle.aspnetcore.swaggergen/6.2.3",
-      "hashPath": "swashbuckle.aspnetcore.swaggergen.6.2.3.nupkg.sha512"
+      "sha512": "sha512-Y/qW8Qdg9OEs7V013tt+94OdPxbRdbhcEbw4NiwGvf4YBcfhL/y7qp/Mjv/cENsQ2L3NqJ2AOu94weBy/h4KvA==",
+      "path": "swashbuckle.aspnetcore.swaggergen/6.5.0",
+      "hashPath": "swashbuckle.aspnetcore.swaggergen.6.5.0.nupkg.sha512"
     },
     "Swashbuckle.AspNetCore.SwaggerUI/6.2.3": {
       "type": "package",

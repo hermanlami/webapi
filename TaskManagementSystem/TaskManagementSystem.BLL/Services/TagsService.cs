@@ -47,11 +47,11 @@ namespace TaskManagementSystem.BLL.Services
         /// </summary>
         /// <param name="id">Id qe sherben per te identifkuar tagu-un qe duhet fshire.</param>
         /// <returns>Tag-un e fshire.</returns>
-        public async Task<Tag> DeleteTag(int id)
+        public async Task<Tag> DeleteTag(string name)
         {
             return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
             {
-                var tag = await _repository.GetTagById(id);
+                var tag = await _repository.GetTagByName(name);
                 if (tag == null)
                 {
                     Log.Error("Tag not found");
@@ -77,21 +77,21 @@ namespace TaskManagementSystem.BLL.Services
         /// </summary>
         /// <param name="id">Id qe sherben per te identifikuar tag-un.</param>
         /// <returns>Tag-un perkates.</returns>
-        public async Task<Tag> GetTagById(int id)
-        {
-            return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
-            {
-                var tag = await _repository.GetTagById(id);
-                if (tag == null)
-                {
-                    Log.Error("Tag not found");
-                    throw new NotFoundException("Tag not found");
+        //public async Task<Tag> GetTagById(int id)
+        //{
+        //    return await ServiceExceptionHandler.HandleExceptionAsync(async () =>
+        //    {
+        //        var tag = await _repository.GetTagById(id);
+        //        if (tag == null)
+        //        {
+        //            Log.Error("Tag not found");
+        //            throw new NotFoundException("Tag not found");
 
-                }
-                Log.Information($"Tag {tag.Name} retrieved successfully");
-                return _mapper.Map<Tag>(tag);
-            });
-        }
+        //        }
+        //        Log.Information($"Tag {tag.Name} retrieved successfully");
+        //        return _mapper.Map<Tag>(tag);
+        //    });
+        //}
         /// <summary>
         /// Merr tag-un na bze te emrit te tij.
         /// </summary>
